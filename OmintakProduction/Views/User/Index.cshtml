@@ -1,0 +1,37 @@
+﻿@model List<OmintakProduction.Models.User>;
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "List Users";
+}
+<button type="submit" class="btn btn-info btn-lg shadow-sm">
+    <i class="bi bi-box-arrow-in-right me-2"></i> List Users
+</button>
+
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>UserId</th>
+            <th>User</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var user in Model)
+        {
+            if(user.isActive = true)
+            {
+                <tr>
+                    <td>@user.UserId</td>
+                    <td>@user.UserName</td>
+                    <td>
+                        <a asp-controller="User" asp-action="Update" asp-route-id="@user.UserId" class="btn btn-primary">Update</a>
+                        <a asp-controller="User" asp-action="Delete" asp-route-id="@user.UserId" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
