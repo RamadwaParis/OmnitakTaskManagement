@@ -1,9 +1,9 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - OmintakProduction</title>
+    <title>@ViewData["Title"] - OmnitakProduction</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -11,9 +11,9 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">OmintakProduction</a>
+                <a class="navbar-brand text-light" asp-area="" asp-controller="Home" asp-action="Index">OmintakProduction</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -22,41 +22,38 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                 @if(User.Identity.IsAuthenticated)
                 {
-
-
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                        <a class="nav-link text-light" asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Project" asp-action="Index">Projects</a>
+                        <a class="nav-link text-light" asp-area="" asp-controller="Project" asp-action="Index">Projects</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Ticket" asp-action="Index">Tickets</a>
+                        <a class="nav-link text-light" asp-area="" asp-controller="Ticket" asp-action="Index">Tickets</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">User</a>
+                        <a class="nav-link text-light" asp-area="" asp-controller="User" asp-action="Index">User</a>
                     </li>
                     <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
                         <button type="submit" class="btn btn-link">Logout</button>
                     </form>
+ 
                 }
                 else
                 {
-                    <span class="navbar-text">Please log in.</span>
+                    <span class="navbar-text text-light">Please log in.</span>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+                                <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
-                            </li>
-
-                            
+                                <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                            </li>   
                 }
 
 
@@ -66,13 +63,16 @@
         </nav>
     </header>
     <div class="container">
-        <div>
-            <h1>
-                Welcome, @User.Identity.Name!
-            </h1>
-        </div>
 
         <main role="main" class="pb-3">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="d-flex justify-content-center justify-align-center mb-4">
+                    <h1 class="fw-bold">
+                        Welcome, @User.Identity.Name!
+                    </h1>
+                </div>
+            }
             @RenderBody()
         </main>
     </div>

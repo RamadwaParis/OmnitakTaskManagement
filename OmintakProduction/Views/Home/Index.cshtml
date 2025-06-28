@@ -1,11 +1,16 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http
+
+@{
+    var isAuthenticated = User.Identity.IsAuthenticated;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@if (!isAuthenticated)
+{
+    <div class="d-flex justify-content-center align-items-center vh-100">
+        <h1 class="display-4 fw-bold m-0">Welcome to OmniTask</h1>
+    </div>
+}
 
-
-)
