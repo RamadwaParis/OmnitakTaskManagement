@@ -129,7 +129,7 @@ namespace OmintakProduction.Controllers
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("UsersList", "Home");
         }
 
 
