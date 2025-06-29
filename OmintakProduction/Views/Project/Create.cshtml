@@ -10,10 +10,10 @@
     <div class="form-horizontal">
         <h4>Project</h4>
         <hr />
-       
+
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-       
+
         <div class="form-group">
             @Html.LabelFor(m => m.ProjectName, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -22,7 +22,7 @@
             </div>
         </div>
 
-      
+
         <div class="form-group">
             @Html.LabelFor(m => m.Description, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -31,7 +31,7 @@
             </div>
         </div>
 
-        
+
         <div class="form-group">
             @Html.LabelFor(m => m.DueDate, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -42,7 +42,7 @@
 
 
 
-        
+
         <div class="form-group">
             @Html.LabelFor(m => m.Status, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
