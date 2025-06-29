@@ -1,0 +1,80 @@
+﻿@model OmintakProduction.Models.Ticket
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@using (Html.BeginForm())
+{
+
+    <div class="form-horizontal">
+        <h4>Ticket</h4>
+        <hr />
+        @* Display any validation summary errors *@
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @* Title input field *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.Title, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.Title, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Description text area *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 4 })
+                @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Due Date picker *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.DueDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.DueDate, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                @Html.ValidationMessageFor(m => m.DueDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+  
+
+        @* Status dropdown (based on TicketStatus enum) *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.Status, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.Status, new SelectList(Enum.GetNames(typeof(OmintakProduction.Models.TaskStatuses))), "Select Status", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Status, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Dropdown for assigning the ticket to a user (optional)
+        <div class="form-group">
+            @Html.LabelFor(m => m.AssignedToUserId, "Assigned To", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.AssignedToUserId, ViewBag.AssignedToList as SelectList, "Unassigned", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.AssignedToUserId, "", new { @class = "text-danger" })
+            </div>
+        </div> *@
+
+        @* Dropdown to choose the project the ticket belongs to
+        <div class="form-group">
+            @Html.LabelFor(m => m.Project_Id, "Project", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.Project_Id, ViewBag.ProjectList as SelectList, "Select Project", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Project_Id, "", new { @class = "text-danger" })
+            </div>
+        </div> *@
+
+        @* Submit and Back buttons *@
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+            </div>
+        </div>
+    </div>
+}

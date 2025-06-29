@@ -1,0 +1,38 @@
+﻿@model IEnumerable<OmintakProduction.Models.Ticket>;
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
+*@
+@{
+}
+<p>
+    @Html.ActionLink("Create New Ticket", "Create")
+</p>
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+           
+            <th>Id</th>
+            <th>Title</th>
+            <th>Description</th>
+            
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ticket in Model)
+        {
+            <tr>
+                
+                <td>@ticket.Id</td>
+                <td>@ticket.Title</td>
+                <td>@ticket.Description</td>
+               
+                <td>
+                    <a asp-controller="Ticket" asp-action="Update" asp-route-id="@ticket.Id"  class="btn btn-primary">Update</a>
+                    <a asp-controller="Ticket" asp-action="Delete" asp-route-id="@ticket.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+    </table>

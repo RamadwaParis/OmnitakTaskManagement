@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center display-4 fw-bold mb-2">Your Dashboard</h1>
+    <p class="text-center lead mb-5">Here you can manage your projects, tasks, and notifications.</p>
+
+    <div class="row mt-4 g-4">
+        <div class="col-md-4">
+            <div class="card text-center h-100 shadow-lg">
+                <div class="card-body">
+                    <h5 class="card-title fs-3 mb-3">My Tasks</h5>
+                    <p class="card-text">View and manage your assigned tasks.</p>
+                    <a href="/Ticket/Index" class="btn btn-primary mt-2">Go to Tasks</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-center h-100 shadow-lg">
+                <div class="card-body">
+                    <h5 class="card-title fs-3 mb-3">Projects</h5>
+                    <p class="card-text">Track ongoing projects and progress.</p>
+                    <a href="/Project/Index" class="btn btn-primary mt-2">Go to Projects</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-center h-100 shadow-lg">
+                <div class="card-body">
+                    <h5 class="card-title fs-3 mb-3">Notifications</h5>
+                    <p class="card-text">Stay updated with the latest changes.</p>
+                    <a href="#" class="btn btn-primary mt-2 disabled">View Notifications</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="alert alert-info text-center" role="alert">
+                <strong>Tip:</strong> Click on the cards above to quickly access your tasks and projects!
+            </div>
+        </div>
+    </div>
+</div>
+

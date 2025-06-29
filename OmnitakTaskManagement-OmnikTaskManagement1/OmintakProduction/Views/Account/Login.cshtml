@@ -1,0 +1,53 @@
+﻿@model OmintakProduction.Models.User;
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_Layout";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-header bg-info text-white text-center rounded-0">
+                    <h3 class="mb-0 fw-bold">Login to Your Account</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-controller="Account" asp-action="Login" method="post" class="needs-validation" novalidate>
+
+                        <div class="mb-4">
+                            <label for="email" class="form-label fw-semibold d-block mb-2">Email</label>
+                            <input type="email" id="email" asp-for="@Model.Email" name="email" class="form-control form-control-lg" placeholder="Enter Your Email" required />
+                            <div class="invalid-feedback">
+                                Please enter a valid  email address.
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="password" class="form-label fw-semibold d-block mb-2">Password</label>
+                            <input type="password" id="password" asp-for="@Model.Password" name="password" class="form-control form-control-lg" placeholder="Enter Your Password" required />
+                            <div class="invalid-feedback">
+                                Please enter a password.
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-info btn-lg shadow-sm">
+                                <i class="bi bi-box-arrow-in-right me-2"></i> Login
+                            </button>
+
+                            <a asp-controller="Account" asp-action="Register" class="btn btn-outline-secondary btn-lg">
+                                <i class="bi bi-person-plus-fill me-2"></i> Don’t have an account? Register
+                            </a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
