@@ -4,13 +4,18 @@
 @using Microsoft.AspNetCore.Http
 
 @{
-    var isAuthenticated = User.Identity.IsAuthenticated;
+    var isAuthenticated = User?.Identity != null && User.Identity.IsAuthenticated;
 }
 
 @if (!isAuthenticated)
 {
-    <div class="d-flex justify-content-center align-items-center vh-100">
-        <h1 class="display-4 fw-bold m-0">Welcome to OmniTask</h1>
+    <div class="d-flex justify-content-center align-items-center vh-100 bg-gradient" style="background: linear-gradient(135deg, #007bff 0%, #00c6ff 100%);">
+        <div class="text-center">
+            <h1 class="display-3 fw-bold text-white mb-4">Welcome to OmniTask</h1>
+            <p class="lead text-white-50 mb-4">A modern platform for managing your projects and tasks efficiently.</p>
+            <a href="/Account/Register" class="btn btn-primary btn-lg me-2">Get Started</a>
+            <a href="/Account/Login" class="btn btn-outline-light btn-lg">Login</a>
+        </div>
     </div>
 }
 
