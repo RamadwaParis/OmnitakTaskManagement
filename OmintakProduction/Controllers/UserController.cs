@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OmintakProduction.Data;
 using OmintakProduction.Models;
 
 namespace OmintakProduction.Controllers
 {
+    
     public class UserController : Controller
     {
         private readonly AppDbContext _context;
@@ -15,6 +16,19 @@ namespace OmintakProduction.Controllers
         }
 
         public IActionResult Index()
+        {
+            var users = _context.User.Where(u=> u.isActive==true).ToList();
+
+            return View(users);
+        }
+        public IActionResult GetIndividualUser(int id)
+        {
+            var user = _context.User.Where(u => u.UserId == id).ToList();
+
+            return View(user);
+        }
+
+        public IActionResult GetAllUsers()
         {
             var users = _context.User.ToList();
 
@@ -35,11 +49,9 @@ namespace OmintakProduction.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(int id, [Bind("UserName,Email,Password,CreatedDate")] User updatedUser)
+        public async Task<IActionResult> Update(int id, [Bind("UserId,UserName,Email,Password,CreatedDate,isActive")] User updatedUser) // Make sure UserId is bound
         {
-
             if (id != updatedUser.UserId) return NotFound();
-
 
             var existingUser = await _context.User.FindAsync(id);
             if (existingUser == null) return NotFound();
@@ -48,24 +60,30 @@ namespace OmintakProduction.Controllers
             {
                 try
                 {
+                    // Correctly assign values from updatedUser to existingUser
+                    existingUser.UserName = updatedUser.UserName;
+                    existingUser.Email = updatedUser.Email;
+                    existingUser.Password = updatedUser.Password; // Be careful with password handling in real apps (hashing!)
+                    existingUser.CreatedDate = updatedUser.CreatedDate;
+                    existingUser.isActive = updatedUser.isActive; // Assuming you want to update isActive as well
 
-                    existingUser.UserName = existingUser.UserName;
-                    existingUser.Password = existingUser.Password;
-                    existingUser.Email = existingUser.Email;
-                    existingUser.CreatedDate = existingUser.CreatedDate;
-
-
-                    _context.Update(existingUser);
+                    _context.Update(existingUser); // Or _context.Entry(existingUser).State = EntityState.Modified;
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    Console.WriteLine("No user found");
+                    if (!UsertExists(updatedUser.UserId)) // Check if the user still exists
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw; // Re-throw if it's another concurrency issue
+                    }
                 }
-
                 return RedirectToAction(nameof(Index));
             }
-
+            // If ModelState is not valid, return the view with the invalid model
             return View("~/Views/User/Update.cshtml", updatedUser);
         }
 
@@ -90,16 +108,21 @@ namespace OmintakProduction.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteConfirmed(int? id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var user = await _context.User
-     .FirstOrDefaultAsync(t => t.UserId == id);
-            user.isActive = false; // Set isActive to false instead of deleting
+            var user = await _context.User.FindAsync(id);
+
+            if (user == null) // <-- This is the crucial null check
+            {
+                return NotFound(); // Or RedirectToAction(nameof(Index)); with a message
+            }
+
+            user.isActive = false;
+            _context.Update(user);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
-
 
         private bool UsertExists(int id)
         {
