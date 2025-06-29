@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Molle:ital@1&display=swap');
+
+body {
+    background-color: #f6feff;
+    background: #076585; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #fff, #076585); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #fff, #076585); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+h1 {
+    font-family: 'Molle', cursive;
+    color: CornflowerBlue;
+}
+
+p {
+    color: DimGrey;
+}
+
+.padding {
+    padding: 80px 0;
+}
+
+.about_section .about_img img {
+    max-width: 100%;
+    border-radius: 15px;
+    box-shadow: 0 16px 28px 0 rgba(8,56,103,.5);
+}
+
+@media (min-width:992px) {
+    .about_section .about_img img {
+        width: 60%;
+    }
+
+    .about_section .about_img_2 {
+        margin: -180px 0 0 270px;
+    }
+
+    .about_section .about_img_3 {
+        margin: -260px 0 0 40px;
+    }
+}
+
+@media(max-width:991px) {
+    .about_section .about_img img {
+        margin: 3rem 0;
+    }
+}
+
+.about_section .content {
+    background-color: white;
+    border-radius: 35px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
