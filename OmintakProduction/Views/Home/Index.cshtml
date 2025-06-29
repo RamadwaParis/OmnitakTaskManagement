@@ -1,21 +1,34 @@
-﻿@using Microsoft.AspNetCore.Authentication
-@using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.Http
-
-@{
-    var isAuthenticated = User?.Identity != null && User.Identity.IsAuthenticated;
+﻿@{
+    ViewData["Title"] = "Home Page";
 }
+<head>
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+</head>
 
-@if (!isAuthenticated)
-{
-    <div class="d-flex justify-content-center align-items-center vh-100 bg-gradient" style="background: linear-gradient(135deg, #007bff 0%, #00c6ff 100%);">
-        <div class="text-center">
-            <h1 class="display-3 fw-bold text-white mb-4">Welcome to OmniTask</h1>
-            <p class="lead text-white-50 mb-4">A modern platform for managing your projects and tasks efficiently.</p>
-            <a href="/Account/Register" class="btn btn-primary btn-lg me-2">Get Started</a>
-            <a href="/Account/Login" class="btn btn-outline-light btn-lg">Login</a>
+<section class="about_section padding">
+    <div class="container">
+        <div class="row justify-content-center align-items-center">
+            <div class="content col-12 col-lg-5 p-4 m-3">
+                <div class="text-center">
+                    <h1>Omnitak Task Management</h1>
+                    <p class="mb-5">
+                        Elevate Your Productivity with Omnitak<br>
+                        Tired of juggling tasks and missing deadlines?
+                        Omnitak is your ultimate task management solution, designed to streamline your workflow and boost team collaboration.
+                        From project planning to daily to-dos, Omnitak empowers you to organize, track, and conquer your goals with intuitive ease.
+                        Say goodbye to chaos and hello to clarity – with Omnitak, every task is a step closer to success.
+                    </p>
+
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="about_img">
+                    <img src="~/647776e785c4b8cd26416e6c_h2jvfnoltr.png" alt="idea-images" class="about_img_1 ">
+                    <img src="~/Gemini_Generated_Image_z16jyaz16jyaz16j.png" alt="idea-images" class="about_img_2">
+                    <img src="~/task-management-tool-benefits.png" alt="idea-images" class="about_img_3">
+                </div>
+            </div>
+
         </div>
     </div>
-}
-
+</section>

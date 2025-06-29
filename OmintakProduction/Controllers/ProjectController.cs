@@ -22,7 +22,7 @@ namespace OmintakProduction.Controllers
             return View("~/Views/Project/Index.cshtml", Project);
         }
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ProjectName,Description,DueDate,Status")] Project project)
@@ -105,7 +105,7 @@ namespace OmintakProduction.Controllers
         }
 
         [HttpGet]
-        
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -125,7 +125,7 @@ namespace OmintakProduction.Controllers
             return RedirectToAction("Index");
         }
 
-        
+
         private bool ProjectExists(int id)
         {
             return _context.Project.Any(e => e.ProjectId == id);

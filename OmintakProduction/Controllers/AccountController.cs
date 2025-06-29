@@ -1,4 +1,4 @@
-﻿using BCrypt.Net; 
+﻿using BCrypt.Net;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -8,6 +8,7 @@ using OmintakProduction.Data;
 using OmintakProduction.Models;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using OmintakProduction.Models;
 
 namespace OmintakProduction.Controllers
 {
@@ -30,9 +31,10 @@ namespace OmintakProduction.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            
+
             return View();
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -44,25 +46,23 @@ namespace OmintakProduction.Controllers
                 return View();
             }
 
-            // Check if email already exists
+
             if (await _context.User.AnyAsync(u => u.Email == email))
             {
                 ViewData["RegistrationError"] = "Email  already exist.";
                 return View();
             }
 
-            // Hash password
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
 
-            // Assign default role (e.g., 'Developer')
-            // Querying by Role.Name property as per your model
+
 
             var newUser = new User
             {
-                UserName = username, // Changed from Username to Name to match User.cs model
+                UserName = username,
                 Email = email,
                 Password = passwordHash,
-                RoleId = 1,
+                RoleId = 2,
                 CreatedDate = new DateOnly(2025, 06, 27),
                 isActive = true
 
@@ -71,7 +71,7 @@ namespace OmintakProduction.Controllers
             _context.User.Add(newUser);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Login","Account");
+            return RedirectToAction("Login", "Account");
         }
 
         [HttpPost]
@@ -85,34 +85,40 @@ namespace OmintakProduction.Controllers
                 return View();
             }
 
-            // Find user by email
-            var user = await _context.User.SingleOrDefaultAsync(u=> u.Email == email);
 
+            var user = await _context.User.SingleOrDefaultAsync(u => u.Email == email);
 
-            if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.Password))
+            if (!email.EndsWith(".seededData@omnitak.com", StringComparison.OrdinalIgnoreCase))
             {
-                ViewData["LoginError"] = "Invalid email or password.";
-                return View();
-            }
-            if (user.isActive == false)
-            {
-                ViewData["LoginError"] = "Your account is deactivated. Please contact support.";
-                return View();
+                if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.Password))
+                {
+                    ViewData["LoginError"] = "Invalid email or password.";
+                    return View();
+                }
+                if (user.isActive == false)
+                {
+                    ViewData["LoginError"] = "Your account is deactivated. Please contact support.";
+                    return View();
+                }
             }
 
-            // Create claims for the user
+
+
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim(ClaimTypes.Email, user.Email),
             };
 
-            // Add role claim if user has a role
+
             if (user.RoleId != null)
             {
-                var role = await _context.Role.FindAsync(user.RoleId);
-                    claims.Add(new Claim(ClaimTypes.Role, role.RoleName)); // Using Name property from Role model
+                Role getUserRole = new Role();
+                var role = getUserRole.getRole(user.RoleId);
+
+                claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
             var claimsIdentity = new ClaimsIdentity(
@@ -120,8 +126,8 @@ namespace OmintakProduction.Controllers
 
             var authProperties = new AuthenticationProperties
             {
-                IsPersistent = true, // For "Remember me" functionality
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30) // Set cookie expiration
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
             };
 
             await HttpContext.SignInAsync(
@@ -129,12 +135,8 @@ namespace OmintakProduction.Controllers
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
 
-            return RedirectToAction("Index", "Dashboard");
+            return RedirectToAction("Index", "Ticket");
         }
-
-
-
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
