@@ -22,8 +22,6 @@ namespace OmintakProduction.Controllers
         }
 
 
-
-
         public IActionResult Privacy()
         {
             return View();
