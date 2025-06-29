@@ -22,7 +22,7 @@ namespace OmintakProduction.Controllers
             return View("~/Views/Ticket/Index.cshtml", tickets);
         }
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,Description,DueDate,Status")] Ticket ticket)
@@ -46,7 +46,7 @@ namespace OmintakProduction.Controllers
             return View();
         }
 
-        
+
         public async Task<IActionResult> Update(int? id)
         {
             if (id == null) return NotFound();
@@ -63,10 +63,10 @@ namespace OmintakProduction.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(int id, [Bind("Id,Title,Description,DueDate,Status")] Ticket updatedTicket)
         {
-            
+
             if (id != updatedTicket.Id) return NotFound();
 
-            
+
             var existingTicket = await _context.Ticket.FindAsync(id);
             if (existingTicket == null) return NotFound();
 
@@ -74,12 +74,12 @@ namespace OmintakProduction.Controllers
             {
                 try
                 {
-                   
+
                     existingTicket.Title = updatedTicket.Title;
                     existingTicket.Description = updatedTicket.Description;
                     existingTicket.Status = updatedTicket.Status;
 
-                    
+
                     _context.Update(existingTicket);
                     await _context.SaveChangesAsync();
                 }
@@ -104,7 +104,7 @@ namespace OmintakProduction.Controllers
         }
 
         [HttpGet]
-        
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -124,7 +124,7 @@ namespace OmintakProduction.Controllers
             return RedirectToAction("Index");
         }
 
-        
+
         private bool TicketExists(int id)
         {
             return _context.Ticket.Any(e => e.Id == id);
