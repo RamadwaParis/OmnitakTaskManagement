@@ -1,4 +1,6 @@
-﻿@*
+@using System.Security.Claims;
+
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
@@ -32,7 +34,7 @@
             </div>
         </div>
 
-        @* Ticket Description field *@
+        
         <div class="form-group">
             @Html.LabelFor(m => m.Email, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -41,7 +43,19 @@
             </div>
         </div>
 
-        @* Ticket Description field *@
+        @if (User.FindFirst(ClaimTypes.Role)?.Value == "SystemAdmin")
+        {
+            <div class="form-group">
+                @Html.LabelFor(m => m.RoleId, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextAreaFor(m => m.RoleId, new { @class = "form-control", rows = 4 })
+                    @Html.ValidationMessageFor(m => m.RoleId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+
+
+       
         <div class="form-group">
             @Html.LabelFor(m => m.Password, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -50,32 +64,16 @@
             </div>
         </div>
 
-        @* Due Date field *@
-        <div class="form-group">
+      
+        @* <div class="form-group">
             @Html.LabelFor(m => m.CreatedDate, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(m => m.CreatedDate, new { htmlAttributes = new { @class = "form-control", type = "date" } })
                 @Html.ValidationMessageFor(m => m.CreatedDate, "", new { @class = "text-danger" })
             </div>
-        </div>
-
-        @* Assigned user dropdown from ViewBag *@
-        @* <div class="form-group">
-            @Html.Label("Assigned_To", "Assigned To", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("Assigned_To", ViewBag.AssignedToList as SelectList, "Unassigned", new { @class = "form-control" })
-            </div>
         </div> *@
 
-        @* Project dropdown from ViewBag *@
-        @* <div class="form-group">
-            @Html.Label("Project_Id", "Project", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("Project_Id", ViewBag.ProjectList as SelectList, "Select Project", new { @class = "form-control" })
-            </div>
-        </div> *@
-
-        @* Submit and cancel buttons *@
+       
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Save" class="btn btn-primary" />
