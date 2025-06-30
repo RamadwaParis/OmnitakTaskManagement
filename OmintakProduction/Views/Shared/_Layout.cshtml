@@ -17,7 +17,7 @@
             <div class="container-fluid">
                 <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
                     <i class="bi bi-stack me-2 text-primary" style="font-size: 1.5rem;"></i>
-                    <span class="fw-bold">Omnitak</span>
+                    <span class="fw-bold text-dark">Omnitak</span>
                 </a>
                 @if (User.Identity.IsAuthenticated)
                 {
@@ -37,7 +37,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav flex-grow-1 rounded">
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
@@ -107,7 +107,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-light">
         <div class="container">
             &copy; 2025 - OmintakProduction - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
