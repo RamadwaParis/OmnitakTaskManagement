@@ -62,7 +62,7 @@ namespace OmintakProduction.Controllers
                 {
                     // Correctly assign values from updatedUser to existingUser
                     existingUser.UserName = updatedUser.UserName;
-                    existingUser.Email = updatedUser.Email;
+                    //existingUser.Email = updatedUser.Email;
                     existingUser.Password = updatedUser.Password; // Be careful with password handling in real apps (hashing!)
                     existingUser.CreatedDate = updatedUser.CreatedDate;
                     existingUser.isActive = updatedUser.isActive; // Assuming you want to update isActive as well
