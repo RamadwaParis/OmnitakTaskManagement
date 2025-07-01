@@ -46,7 +46,23 @@ namespace OmintakProduction.Controllers
                 return View();
             }
 
+            // email format validation
+            var emailRegex = new System.Text.RegularExpressions.Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+            if (!emailRegex.IsMatch(email))
+            {
+                ViewData["RegistrationError"] = "Invalid email address format.";
+                return View();
+            }
 
+            // password strength validation. Password must be at least 8 characters, have a letter, a number, and a special character
+            var passwordRegex = new System.Text.RegularExpressions.Regex(@"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$");
+            if (!passwordRegex.IsMatch(password))
+            {
+                ViewData["RegistrationError"] = "Password must be at least 8 characters and include a letter, a number, and a special character.";
+                return View();
+            }
+
+            // check if the email already exists
             if (await _context.User.AnyAsync(u => u.Email == email))
             {
                 ViewData["RegistrationError"] = "Email  already exist.";
@@ -54,8 +70,6 @@ namespace OmintakProduction.Controllers
             }
 
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
-
-
 
             var newUser = new User
             {
