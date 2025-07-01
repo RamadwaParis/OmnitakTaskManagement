@@ -46,16 +46,34 @@ namespace OmintakProduction.Controllers
                 return View();
             }
 
+            // email format validation (RFC-5322 compatible)
+            var emailRegex = new System.Text.RegularExpressions.Regex(@"^(?("")(""[^""]+?""@)|(([0-9a-zA-Z](([\.\-+]?[0-9a-zA-Z]+)*)@)))" +
+                           @"((\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-zA-Z][\w\-]*\.)+[a-zA-Z]{2,}))$");
 
+            // password strength validation. Password must be at least 8 characters, have a letter, a number, and a special character
+            var passwordRegex = new System.Text.RegularExpressions.Regex(@"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$");
+            
+            if (!emailRegex.IsMatch(email))
+            {
+                ModelState.AddModelError("Email", "Please enter a valid email address.");
+            }
+            if (!passwordRegex.IsMatch(password))
+            {
+                ModelState.AddModelError("Password", "Password must be at least 8 characters and include a letter, a number, and a special character.");
+            }
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            // check if the email already exists
             if (await _context.User.AnyAsync(u => u.Email == email))
             {
-                ViewData["RegistrationError"] = "Email  already exist.";
+                ViewData["RegistrationError"] = "Email already exists.";
                 return View();
             }
 
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
-
-
 
             var newUser = new User
             {
