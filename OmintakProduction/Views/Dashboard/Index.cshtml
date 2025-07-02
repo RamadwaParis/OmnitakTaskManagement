@@ -2,6 +2,14 @@
     ViewData["Title"] = "Dashboard";
 }
 
+@if (TempData["WelcomeMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["WelcomeMessage"]
+    </div>
+}
+
+@* Dashboard Index View *@
 <div class="container mt-5">
     <h1 class="text-center display-4 fw-bold mb-2">Your Dashboard</h1>
     <p class="text-center lead mb-5">Here you can manage your projects, tasks, and notifications.</p>
