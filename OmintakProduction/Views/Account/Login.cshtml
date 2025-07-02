@@ -8,6 +8,13 @@
     Layout = "_Layout";
 }
 
+@if (ViewData["LoginError"] != null)
+{
+    <div class="alert alert-warning" role="alert">
+        @ViewData["LoginError"]
+    </div>
+}
+
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
