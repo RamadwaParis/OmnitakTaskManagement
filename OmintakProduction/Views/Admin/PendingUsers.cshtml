@@ -1,0 +1,38 @@
+﻿@model IEnumerable<OmintakProduction.Models.User>
+
+@{
+    ViewData["Title"] = "Pending User Approvals";
+}
+
+<h2>Pending User Approvals</h2>
+@if (!Model.Any())
+{
+    <div class="alert alert-info">There are no pending users to approve.</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Username</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Email</td>
+                    <td>@user.UserName</td>
+                    <td>
+                        <form asp-action="ApproveUser" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@user.UserId" />
+                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

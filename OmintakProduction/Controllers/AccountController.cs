@@ -8,7 +8,7 @@ using OmintakProduction.Data;
 using OmintakProduction.Models;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using OmintakProduction.Models;
+
 
 namespace OmintakProduction.Controllers
 {
@@ -31,7 +31,6 @@ namespace OmintakProduction.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-
             return View();
         }
 
@@ -52,7 +51,7 @@ namespace OmintakProduction.Controllers
 
             // password strength validation. Password must be at least 8 characters, have a letter, a number, and a special character
             var passwordRegex = new System.Text.RegularExpressions.Regex(@"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$");
-            
+
             if (!emailRegex.IsMatch(email))
             {
                 ModelState.AddModelError("Email", "Please enter a valid email address.");
@@ -82,8 +81,8 @@ namespace OmintakProduction.Controllers
                 Password = passwordHash,
                 RoleId = 2,
                 CreatedDate = new DateOnly(2025, 06, 27),
-                isActive = true
-
+                isActive = false, // not approved/active. Default to false on registration, will set to true when user approves account
+                NeedsWelcome = true
             };
 
             _context.User.Add(newUser);
@@ -113,17 +112,28 @@ namespace OmintakProduction.Controllers
                     ViewData["LoginError"] = "Invalid email or password.";
                     return View();
                 }
-                if (user.isActive == false)
+                if (!user.isActive)
                 {
-                    ViewData["LoginError"] = "Your account is deactivated. Please contact support.";
+                    ViewData["LoginError"] = "Your account is pending admin approval. Please wait for approval before logging in.";
                     return View();
                 }
-            }
 
+                // Check if this is the user's first login after approval
+                if (user.NeedsWelcome)
+                {
+                    TempData["WelcomeMessage"] = "Your account is now approved! Welcome.";
+                    user.NeedsWelcome = false; // Reset so it's only shown once
+                    await _context.SaveChangesAsync();
+                    //return View();
+                }
 
+                //if (user.isActive == false)
+                //{
+                //    ViewData["LoginError"] = "Your account is deactivated. Please contact support.";
+                //    return View();
+                //}
 
-
-            var claims = new List<Claim>
+                var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName),
@@ -131,29 +141,96 @@ namespace OmintakProduction.Controllers
             };
 
 
-            if (user.RoleId != null)
-            {
-                Role getUserRole = new Role();
-                var role = getUserRole.getRole(user.RoleId);
+                if (user.RoleId != null)
+                {
+                    Role getUserRole = new Role();
+                    var role = getUserRole.getRole(user.RoleId);
 
-                claims.Add(new Claim(ClaimTypes.Role, role));
+                    claims.Add(new Claim(ClaimTypes.Role, role));
+                }
+
+                var claimsIdentity = new ClaimsIdentity(
+                    claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = true,
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
+                };
+
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity),
+                    authProperties);
+
+                return RedirectToAction("Index", "Dashboard");
             }
-
-            var claimsIdentity = new ClaimsIdentity(
-                claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-            var authProperties = new AuthenticationProperties
+            else
             {
-                IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
-            };
+                // Allow admin to log in without BCrypt
+                bool isAdmin = user != null && user.RoleId == 1; // Adjust RoleId as needed for your admin role
 
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity),
-                authProperties);
+                bool isPasswordValid;
+                if (isAdmin)
+                {
+                    // Plain text check for admin
+                    isPasswordValid = (password == user.Password);
+                }
+                else
+                {
+                    // BCrypt check for all others
+                    isPasswordValid = user != null && BCrypt.Net.BCrypt.Verify(password, user.Password);
+                }
 
-            return RedirectToAction("Index", "Ticket");
+                if (user == null || !isPasswordValid)
+                {
+                    ViewData["LoginError"] = "Invalid email or password.";
+                    return View();
+                }
+                if (!user.isActive)
+                {
+                    ViewData["LoginError"] = "Your account is pending admin approval. Please wait for approval before logging in.";
+                    return View();
+                }
+
+                // Check if this is the user's first login after approval
+                if (user.NeedsWelcome)
+                {
+                    TempData["WelcomeMessage"] = "Your account is now approved! Welcome.";
+                    user.NeedsWelcome = false; // Reset so it's only shown once
+                    await _context.SaveChangesAsync();
+                }
+
+                var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+        new Claim(ClaimTypes.Name, user.UserName),
+        new Claim(ClaimTypes.Email, user.Email),
+    };
+
+                if (user.RoleId != null)
+                {
+                    Role getUserRole = new Role();
+                    var role = getUserRole.getRole(user.RoleId);
+                    claims.Add(new Claim(ClaimTypes.Role, role));
+                }
+
+                var claimsIdentity = new ClaimsIdentity(
+                    claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = true,
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
+                };
+
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity),
+                    authProperties);
+
+                return RedirectToAction("Index", "Dashboard");
+            }
         }
 
         [HttpPost]
@@ -163,7 +240,6 @@ namespace OmintakProduction.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Account");
         }
-
     }
 }
 
