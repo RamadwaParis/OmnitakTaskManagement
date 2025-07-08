@@ -4,6 +4,10 @@ using OmintakProduction.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Added Swagger services
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 
 builder.Services.AddControllersWithViews();
 
@@ -21,7 +25,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.SlidingExpiration = true; 
     });
 
-// Add Authorization services
+// Added AuthorizationÂ services
 builder.Services.AddAuthorization();
 var app = builder.Build();
 
@@ -30,8 +34,14 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+}
+
+// Enabled Swagger middleware
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
