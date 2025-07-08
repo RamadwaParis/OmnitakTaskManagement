@@ -11,7 +11,7 @@ html {
 }
 
 body {
-    background: linear-gradient(135deg, #232526 0%, #414345 100%);
+    background: #0a0f1c;
     color: #f8f9fa;
     font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
     margin: 0;
@@ -99,14 +99,37 @@ body {
     box-shadow: 0 4px 16px rgba(0,123,255,0.18);
 }
 
-footer.footer {
-    background: #181a1b;
-    color: #aaa;
-    border-radius: 1rem 1rem 0 0;
-    margin-top: 2rem;
-    padding: 1rem 0;
+/* Footer */
+.footer {
+    background: #0a0f1c;
+    padding: 2.5rem 2rem 1.5rem;
     text-align: center;
+    border-top: 1px solid rgba(59, 130, 246, 0.2);
 }
+
+    .footer-copyright {
+        color: #64748b;
+        margin-bottom: 1rem;
+        text-align: center;
+        line-height: 1.2;
+    }
+
+    .footer-policy-links {
+        color: #64748b;
+        text-align: center;
+        line-height: 1.2;
+    }
+
+    .footer a {
+        color: #3b82f6;
+        text-decoration: none;
+        transition: color 0.3s ease;
+        text-align: center;
+    }
+
+        .footer a:hover {
+            color: #60a5fa;
+        }
 
 ::-webkit-scrollbar {
     width: 8px;

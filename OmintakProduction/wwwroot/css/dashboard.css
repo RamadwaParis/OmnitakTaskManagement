@@ -1,10 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
 body {
-    background-color: #f6feff;
-    background: #076585; /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #fff, #076585); /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #fff, #076585); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: #0a0f1c;
 }
 
 h1 {
