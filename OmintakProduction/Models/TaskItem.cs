@@ -1,8 +1,8 @@
 ﻿namespace OmintakProduction.Models
 {
-    public class Task
+    public class TaskItem
     {
-        public int TaskId { get; set; }
+        public int TaskItemId { get; set; }
         public string CreatedBy { get; set; }
         public string AssignedToUserId { get; set; }
         public string Title { get; set; }
