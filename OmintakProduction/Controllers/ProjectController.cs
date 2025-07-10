@@ -17,7 +17,7 @@ namespace OmintakProduction.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var Project = await _context.Project.ToListAsync();
+            var Project = await _context.Projects.ToListAsync();
  
             return View("~/Views/Project/Index.cshtml", Project);
         }
@@ -51,7 +51,7 @@ namespace OmintakProduction.Controllers
         {
             if (id == null) return NotFound();
  
-            var project = await _context.Project.FindAsync(id);
+            var project = await _context.Projects.FindAsync(id);
  
             if (project == null) return NotFound();
  
@@ -67,7 +67,7 @@ namespace OmintakProduction.Controllers
             if (id != updatedProject.ProjectId) return NotFound();
  
             // Load the existing ticket from DB (includes Created_By)
-            var existingProject = await _context.Project.FindAsync(id);
+            var existingProject = await _context.Projects.FindAsync(id);
             if (existingProject == null) return NotFound();
  
             if (ModelState.IsValid)
@@ -110,7 +110,7 @@ namespace OmintakProduction.Controllers
         {
             if (id == null) return NotFound();
  
-            var project = await _context.Project
+            var project = await _context.Projects
                 .FirstOrDefaultAsync(t => t.ProjectId == id);
  
             return project == null ? NotFound() : View("~/Views/Project/Delete.cshtml", project);
@@ -119,7 +119,7 @@ namespace OmintakProduction.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(Project obj)
         {
-            _context.Project.Remove(obj);
+            _context.Projects.Remove(obj);
             await _context.SaveChangesAsync();
  
             return RedirectToAction("Index");
@@ -128,7 +128,7 @@ namespace OmintakProduction.Controllers
  
         private bool ProjectExists(int id)
         {
-            return _context.Project.Any(e => e.ProjectId == id);
+            return _context.Projects.Any(e => e.ProjectId == id);
         }
  
  

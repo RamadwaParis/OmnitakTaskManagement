@@ -66,7 +66,7 @@ namespace OmintakProduction.Controllers
             }
 
             // check if the email already exists
-            if (await _context.User.AnyAsync(u => u.Email == email))
+            if (await _context.Users.AnyAsync(u => u.Email == email))
             {
                 ViewData["RegistrationError"] = "Email already exists.";
                 return View();
@@ -85,7 +85,7 @@ namespace OmintakProduction.Controllers
                 NeedsWelcome = true
             };
 
-            _context.User.Add(newUser);
+            _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Login", "Account");
@@ -103,7 +103,7 @@ namespace OmintakProduction.Controllers
             }
 
 
-            var user = await _context.User.SingleOrDefaultAsync(u => u.Email == email);
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == email);
 
             if (!email.EndsWith(".seededData@omnitak.com", StringComparison.OrdinalIgnoreCase))
             {

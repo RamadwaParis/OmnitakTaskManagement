@@ -29,7 +29,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<User>), 200)]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _context.User.ToListAsync());
+            return Ok(await _context.Users.ToListAsync());
         }
  
         /// <summary>
@@ -42,7 +42,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Get(int id)
         {
-            var user = await _context.User.FirstOrDefaultAsync(u => u.UserId == id);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == id);
             if (user == null) return NotFound();
             return Ok(user);
         }
@@ -57,7 +57,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> Create(User user)
         {
-            _context.User.Add(user);
+            _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(Get), new { id = user.UserId }, user);
         }
@@ -101,9 +101,9 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Delete(int id)
         {
-            var user = await _context.User.FindAsync(id);
+            var user = await _context.Users.FindAsync(id);
             if (user == null) return NotFound();
-            _context.User.Remove(user);
+            _context.Users.Remove(user);
             await _context.SaveChangesAsync();
             return NoContent();
         }
@@ -117,7 +117,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<User>), 200)]
         public async Task<IActionResult> GetByRole(int roleId)
         {
-            var users = await _context.User
+            var users = await _context.Users
                 .Where(u => u.RoleId == roleId)
                 .ToListAsync();
             return Ok(users);
@@ -133,8 +133,8 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetWithRole(int id)
         {
-            var userWithRole = await (from u in _context.User
-                                    join r in _context.Role on u.RoleId equals r.RoleId
+            var userWithRole = await (from u in _context.Users
+                                    join r in _context.Roles on u.RoleId equals r.RoleId
                                     where u.UserId == id
                                     select new
                                     {
@@ -157,7 +157,7 @@ namespace OmintakProduction.Controllers
  
         private async Task<bool> UserExists(int id)
         {
-            return await _context.User.AnyAsync(e => e.UserId == id);
+            return await _context.Users.AnyAsync(e => e.UserId == id);
         }
     }
 }

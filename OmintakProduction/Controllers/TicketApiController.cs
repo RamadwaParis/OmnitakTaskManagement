@@ -29,7 +29,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<Ticket>), 200)]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _context.Ticket.ToListAsync());
+            return Ok(await _context.Tickets.ToListAsync());
         }
  
         /// <summary>
@@ -42,7 +42,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Get(int id)
         {
-            var ticket = await _context.Ticket.FirstOrDefaultAsync(t => t.TicketId == id);
+            var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.TicketId == id);
            
             if (ticket == null) return NotFound();
             return Ok(ticket);
@@ -58,7 +58,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> Create(Ticket ticket)
         {
-            _context.Ticket.Add(ticket);
+            _context.Tickets.Add(ticket);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(Get), new { id = ticket.TicketId }, ticket);
         }
@@ -102,9 +102,9 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Delete(int id)
         {
-            var ticket = await _context.Ticket.FindAsync(id);
+            var ticket = await _context.Tickets.FindAsync(id);
             if (ticket == null) return NotFound();
-            _context.Ticket.Remove(ticket);
+            _context.Tickets.Remove(ticket);
             await _context.SaveChangesAsync();
             return NoContent();
         }
@@ -118,7 +118,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<Ticket>), 200)]
         public async Task<IActionResult> GetByProject(int projectId)
         {
-            var tickets = await _context.Ticket
+            var tickets = await _context.Tickets
                 .Where(t => t.ProjectId == projectId)
                 .ToListAsync();
             return Ok(tickets);
@@ -133,7 +133,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<Ticket>), 200)]
         public async Task<IActionResult> GetByStatus(string status)
         {
-            var tickets = await _context.Ticket
+            var tickets = await _context.Tickets
                 .Where(t => t.Status == status)
                 .ToListAsync();
             return Ok(tickets);
@@ -148,7 +148,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<Ticket>), 200)]
         public async Task<IActionResult> GetByUser(int userId)
         {
-            var tickets = await _context.Ticket
+            var tickets = await _context.Tickets
                 .Where(t => t.AssignedToUserId == userId)
                 .ToListAsync();
             return Ok(tickets);
@@ -156,7 +156,7 @@ namespace OmintakProduction.Controllers
  
         private async Task<bool> TicketExists(int id)
         {
-            return await _context.Ticket.AnyAsync(e => e.TicketId == id);
+            return await _context.Tickets.AnyAsync(e => e.TicketId == id);
         }
     }
 }

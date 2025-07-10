@@ -24,7 +24,7 @@ namespace OmintakProduction.Controllers
         [Authorize(Roles = "SystemAdmin")]
         public async Task<IActionResult> PendingUsers()
         {
-            var pendingUsers = await _context.User
+            var pendingUsers = await _context.Users
                 .Where(u => !u.isActive)
                 .ToListAsync();
 
@@ -35,7 +35,7 @@ namespace OmintakProduction.Controllers
         [Authorize(Roles = "SystemAdmin")]
         public async Task<IActionResult> ApproveUser(int id)
         {
-            var user = await _context.User.FindAsync(id);
+            var user = await _context.Users.FindAsync(id);
             if (user == null) return NotFound();
 
             user.isActive = true;

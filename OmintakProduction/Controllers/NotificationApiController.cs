@@ -29,7 +29,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<Notification>), 200)]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _context.Notification.OrderByDescending(n => n.CreatedAt).ToListAsync());
+            return Ok(await _context.Notifications.OrderByDescending(n => n.CreatedAt).ToListAsync());
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Get(int id)
         {
-            var notification = await _context.Notification.FindAsync(id);
+            var notification = await _context.Notifications.FindAsync(id);
             if (notification == null) return NotFound();
             return Ok(notification);
         }
@@ -58,7 +58,7 @@ namespace OmintakProduction.Controllers
         public async Task<IActionResult> Create(Notification notification)
         {
             notification.CreatedAt = DateTime.Now;
-            _context.Notification.Add(notification);
+            _context.Notifications.Add(notification);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(Get), new { id = notification.NotificationId }, notification);
         }
@@ -102,9 +102,9 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Delete(int id)
         {
-            var notification = await _context.Notification.FindAsync(id);
+            var notification = await _context.Notifications.FindAsync(id);
             if (notification == null) return NotFound();
-            _context.Notification.Remove(notification);
+            _context.Notifications.Remove(notification);
             await _context.SaveChangesAsync();
             return NoContent();
         }
@@ -118,7 +118,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<Notification>), 200)]
         public async Task<IActionResult> GetByUser(int userId)
         {
-            var notifications = await _context.Notification
+            var notifications = await _context.Notifications
                 .Where(n => n.UserId == userId)
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync();
@@ -134,7 +134,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<Notification>), 200)]
         public async Task<IActionResult> GetUnreadByUser(int userId)
         {
-            var notifications = await _context.Notification
+            var notifications = await _context.Notifications
                 .Where(n => n.UserId == userId && !n.IsRead)
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync();
@@ -150,7 +150,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<Notification>), 200)]
         public async Task<IActionResult> GetByType(NotificationType type)
         {
-            var notifications = await _context.Notification
+            var notifications = await _context.Notifications
                 .Where(n => n.Type == type)
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync();
@@ -167,7 +167,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> MarkAsRead(int id)
         {
-            var notification = await _context.Notification.FindAsync(id);
+            var notification = await _context.Notifications.FindAsync(id);
             if (notification == null) return NotFound();
 
             notification.IsRead = true;
@@ -185,7 +185,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(object), 200)]
         public async Task<IActionResult> MarkAllAsRead(int userId)
         {
-            var unreadNotifications = await _context.Notification
+            var unreadNotifications = await _context.Notifications
                 .Where(n => n.UserId == userId && !n.IsRead)
                 .ToListAsync();
 
@@ -208,8 +208,8 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(object), 200)]
         public async Task<IActionResult> GetNotificationCount(int userId)
         {
-            var totalCount = await _context.Notification.CountAsync(n => n.UserId == userId);
-            var unreadCount = await _context.Notification.CountAsync(n => n.UserId == userId && !n.IsRead);
+            var totalCount = await _context.Notifications.CountAsync(n => n.UserId == userId);
+            var unreadCount = await _context.Notifications.CountAsync(n => n.UserId == userId && !n.IsRead);
 
             return Ok(new
             {
@@ -247,7 +247,7 @@ namespace OmintakProduction.Controllers
                 });
             }
 
-            _context.Notification.AddRange(notifications);
+            _context.Notifications.AddRange(notifications);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetAll), new { CreatedCount = notifications.Count });
@@ -262,11 +262,11 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(object), 200)]
         public async Task<IActionResult> ClearReadNotifications(int userId)
         {
-            var readNotifications = await _context.Notification
+            var readNotifications = await _context.Notifications
                 .Where(n => n.UserId == userId && n.IsRead)
                 .ToListAsync();
 
-            _context.Notification.RemoveRange(readNotifications);
+            _context.Notifications.RemoveRange(readNotifications);
             await _context.SaveChangesAsync();
 
             return Ok(new { DeletedCount = readNotifications.Count });
@@ -274,7 +274,7 @@ namespace OmintakProduction.Controllers
 
         private async Task<bool> NotificationExists(int id)
         {
-            return await _context.Notification.AnyAsync(e => e.NotificationId == id);
+            return await _context.Notifications.AnyAsync(e => e.NotificationId == id);
         }
     }
 

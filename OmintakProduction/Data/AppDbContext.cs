@@ -11,19 +11,19 @@ namespace OmintakProduction.Data
         {
         }
 
-        public DbSet<User> User { get; set; }
-        public DbSet<Role> Role { get; set; }
-        public DbSet<Ticket> Ticket { get; set; }
-        public DbSet<Project> Project { get; set; }
-        public DbSet<ProjectReport> ProjectReport { get; set; }
-        public DbSet<TestReport> TestReport { get; set; }
-        public DbSet<Notification> Notification { get; set; }
-        public DbSet<TaskItem> TaskItem { get; set; }
-        public DbSet<TaskAssignment> TaskAssignment { get; set; }
-        public DbSet<TaskComment> TaskComment { get; set; }
-        public DbSet<TaskHistory> TaskHistory { get; set; }
-        public DbSet<BugReport> BugReport { get; set; }
-        public DbSet<Attachment> Attachment { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<ProjectReport> ProjectReports { get; set; }
+        public DbSet<TestReport> TestReports { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<TaskItem> TaskItems { get; set; }
+        public DbSet<TaskAssignment> TaskAssignments { get; set; }
+        public DbSet<TaskComment> TaskComments { get; set; }
+        public DbSet<TaskHistory> TaskHistories { get; set; }
+        public DbSet<BugReport> BugReports { get; set; }
+        public DbSet<Attachment> Attachments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

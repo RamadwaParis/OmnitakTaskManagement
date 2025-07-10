@@ -55,8 +55,8 @@ namespace OmintakProduction.Controllers
         // GET: Task/Create
         public IActionResult Create()
         {
-            ViewBag.Projects = _context.Project.ToList();
-            ViewBag.Users = _context.User.ToList();
+            ViewBag.Projects = _context.Projects.ToList();
+            ViewBag.Users = _context.Users.ToList();
             return View();
         }
 
@@ -76,8 +76,8 @@ namespace OmintakProduction.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Projects = _context.Project.ToList();
-            ViewBag.Users = _context.User.ToList();
+            ViewBag.Projects = _context.Projects.ToList();
+            ViewBag.Users = _context.Users.ToList();
             return View(task);
         }
 
@@ -95,15 +95,15 @@ namespace OmintakProduction.Controllers
                 return NotFound();
             }
 
-            ViewBag.Projects = _context.Project.ToList();
-            ViewBag.Users = _context.User.ToList();
+            ViewBag.Projects = _context.Projects.ToList();
+            ViewBag.Users = _context.Users.ToList();
             return View(task);
         }
 
         // POST: Task/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,ProjectId,AssignedToUserId,Priority,Status,DueDate,CreatedAt,CreatedByUserId")] Models.TaskItem task)
+        public async Task<IActionResult> Edit(int id, [Bind("TaskItemId,Title,Description,ProjectId,AssignedToUserId,Priority,Status,DueDate,CreatedAt,CreatedByUserId")] Models.TaskItem task)
         {
             if (id != task.TaskItemId)
             {
@@ -132,8 +132,8 @@ namespace OmintakProduction.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Projects = _context.Project.ToList();
-            ViewBag.Users = _context.User.ToList();
+            ViewBag.Projects = _context.Projects.ToList();
+            ViewBag.Users = _context.Users.ToList();
             return View(task);
         }
 

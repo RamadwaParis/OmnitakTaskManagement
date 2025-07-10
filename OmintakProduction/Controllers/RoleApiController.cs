@@ -29,7 +29,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<Role>), 200)]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _context.Role.ToListAsync());
+            return Ok(await _context.Roles.ToListAsync());
         }
  
         /// <summary>
@@ -42,7 +42,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Get(int id)
         {
-            var role = await _context.Role.FindAsync(id);
+            var role = await _context.Roles.FindAsync(id);
             if (role == null) return NotFound();
             return Ok(role);
         }
@@ -57,7 +57,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> Create(Role role)
         {
-            _context.Role.Add(role);
+            _context.Roles.Add(role);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(Get), new { id = role.RoleId }, role);
         }
@@ -101,16 +101,16 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Delete(int id)
         {
-            var role = await _context.Role.FindAsync(id);
+            var role = await _context.Roles.FindAsync(id);
             if (role == null) return NotFound();
-            _context.Role.Remove(role);
+            _context.Roles.Remove(role);
             await _context.SaveChangesAsync();
             return NoContent();
         }
  
         private async Task<bool> RoleExists(int id)
         {
-            return await _context.Role.AnyAsync(e => e.RoleId == id);
+            return await _context.Roles.AnyAsync(e => e.RoleId == id);
         }
     }
 }

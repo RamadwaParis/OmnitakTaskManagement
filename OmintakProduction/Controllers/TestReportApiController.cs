@@ -29,7 +29,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<TestReport>), 200)]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _context.TestReport.ToListAsync());
+            return Ok(await _context.TestReports.ToListAsync());
         }
  
         /// <summary>
@@ -42,7 +42,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Get(int id)
         {
-            var report = await _context.TestReport.FindAsync(id);
+            var report = await _context.TestReports.FindAsync(id);
             if (report == null) return NotFound();
             return Ok(report);
         }
@@ -57,7 +57,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> Create(TestReport report)
         {
-            _context.TestReport.Add(report);
+            _context.TestReports.Add(report);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(Get), new { id = report.TestReportId }, report);
         }
@@ -101,9 +101,9 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Delete(int id)
         {
-            var report = await _context.TestReport.FindAsync(id);
+            var report = await _context.TestReports.FindAsync(id);
             if (report == null) return NotFound();
-            _context.TestReport.Remove(report);
+            _context.TestReports.Remove(report);
             await _context.SaveChangesAsync();
             return NoContent();
         }
@@ -117,7 +117,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<TestReport>), 200)]
         public async Task<IActionResult> GetByProject(int projectId)
         {
-            var reports = await _context.TestReport
+            var reports = await _context.TestReports
                 .Where(r => r.ProjectId == projectId)
                 .ToListAsync();
             return Ok(reports);
@@ -125,7 +125,7 @@ namespace OmintakProduction.Controllers
  
         private async Task<bool> TestReportExists(int id)
         {
-            return await _context.TestReport.AnyAsync(e => e.TestReportId == id);
+            return await _context.TestReports.AnyAsync(e => e.TestReportId == id);
         }
     }
 }
