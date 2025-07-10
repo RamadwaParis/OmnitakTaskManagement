@@ -10,9 +10,7 @@
 
     public class Ticket
     {
-
-
-        public int Id { get; set; }
+        public int TicketId { get; set; }
         public int? ProjectId { get; set; } = null;
         public int? AssignedToUserId { get; set; } = null;
         public string Title { get; set; } 
