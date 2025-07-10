@@ -16,14 +16,14 @@ namespace OmintakProduction.Data
         public DbSet<Ticket> Ticket { get; set; }
         public DbSet<Project> Project { get; set; }
         public DbSet<ProjectReport> ProjectReport { get; set; }
-        public DbSet<BugReport> BugReport { get; set; }
+        public DbSet<TestReport> TestReport { get; set; }
+        public DbSet<Notification> Notification { get; set; }
         public DbSet<TaskItem> TaskItem { get; set; }
         public DbSet<TaskAssignment> TaskAssignment { get; set; }
         public DbSet<TaskComment> TaskComment { get; set; }
         public DbSet<TaskHistory> TaskHistory { get; set; }
-        public DbSet<TestReport> TestReport { get; set; }
+        public DbSet<BugReport> BugReport { get; set; }
         public DbSet<Attachment> Attachment { get; set; }
-        public DbSet<Notification> Notification { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -117,7 +117,7 @@ namespace OmintakProduction.Data
             modelBuilder.Entity<Ticket>().HasData(
                 new Ticket
                 {
-                    Id = 1,
+                    TicketId = 1,
                     Title = "Sample Ticket",
                     Description = "This is a sample ticket description.",
                     Status = "ToDo",
@@ -129,7 +129,7 @@ namespace OmintakProduction.Data
             modelBuilder.Entity<Ticket>().HasData(
                new Ticket
                {
-                   Id = 2,
+                   TicketId = 2,
                    Title = "Sample Ticket",
                    Description = "This is a sample ticket description.",
                    Status = "In_Progress",
@@ -141,7 +141,7 @@ namespace OmintakProduction.Data
             modelBuilder.Entity<Ticket>().HasData(
    new Ticket
    {
-       Id = 3,
+       TicketId = 3,
        Title = "Sample Ticket",
        Description = "This is a sample ticket description.",
        Status = "In_Review",
@@ -153,7 +153,7 @@ namespace OmintakProduction.Data
             modelBuilder.Entity<Ticket>().HasData(
            new Ticket
            {
-               Id = 4,
+               TicketId = 4,
                Title = "Sample Ticket",
                Description = "This is a sample ticket description.",
                Status = "Done",
