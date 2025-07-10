@@ -4,8 +4,9 @@
     {
         public int ProjectReportId { get; set; }
         public int ProjectId { get; set; }
-        public string GeneratedBy { get; set; }
-        public DateTime ReportDate { get; set; }
-        public string Details { get; set; }
+        public string? ReportDetails { get; set; }
+        public DateTime CreatedAt { get; set; }
+        // Navigation property
+        public Project? Project { get; set; }
     }
 }
