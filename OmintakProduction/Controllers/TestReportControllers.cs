@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using OmintakProduction.Data;
 using OmintakProduction.Models;
 using System.Threading.Tasks;
- 
+
 namespace OmintakProduction.Controllers
 {
     [ApiController]
@@ -15,13 +15,13 @@ namespace OmintakProduction.Controllers
         {
             _context = context;
         }
- 
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await _context.TestReport.ToListAsync());
         }
- 
+
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -29,24 +29,24 @@ namespace OmintakProduction.Controllers
             if (report == null) return NotFound();
             return Ok(report);
         }
- 
+
         [HttpPost]
         public async Task<IActionResult> Create(TestReport report)
         {
             _context.TestReport.Add(report);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = report.Id }, report);
+            return CreatedAtAction(nameof(Get), new { id = report.TestReportId }, report);
         }
- 
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, TestReport report)
         {
-            if (id != report.Id) return BadRequest();
+            if (id != report.TestReportId) return BadRequest();
             _context.Entry(report).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return NoContent();
         }
- 
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
