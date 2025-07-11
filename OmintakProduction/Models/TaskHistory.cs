@@ -25,7 +25,7 @@
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Navigation properties
-        public Task? Task { get; set; }
+        public TaskItem? TaskItem { get; set; }
         public User? User { get; set; }
     }
 }

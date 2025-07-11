@@ -5,122 +5,529 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - OmintakProduction</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <title>@ViewData["Title"] - Omnitak Task Management</title>
+
+    <!-- Microsoft Fluent UI and Teams styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --teams-purple: #6264A7;
+            --teams-blue: #5B5FC7;
+            --teams-light-blue: #E8F3FF;
+            --teams-gray: #F3F2F1;
+            --teams-dark-gray: #484644;
+            --teams-border: #E1DFDD;
+            --teams-hover: #F5F5F5;
+            --teams-text: #323130;
+            --teams-success: #107C10;
+            --teams-warning: #FF8C00;
+            --teams-error: #D13438;
+        }
+
+        * {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--teams-gray);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .teams-header {
+            background: linear-gradient(135deg, var(--teams-purple) 0%, var(--teams-blue) 100%);
+            color: white;
+            padding: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 64px;
+        }
+
+        .teams-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 24px;
+            max-width: 100%;
+        }
+
+        .teams-brand {
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+            .teams-brand:hover {
+                color: white;
+                text-decoration: none;
+            }
+
+            .teams-brand i {
+                margin-right: 12px;
+                font-size: 1.8rem;
+            }
+
+        .teams-nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .teams-nav-item {
+            position: relative;
+        }
+
+        .teams-nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .teams-nav-link:hover {
+                background-color: rgba(255,255,255,0.1);
+                color: white;
+                text-decoration: none;
+            }
+
+            .teams-nav-link.active {
+                background-color: rgba(255,255,255,0.2);
+            }
+
+        .teams-user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+        }
+
+        .teams-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .teams-main-container {
+            display: flex;
+            height: calc(100vh - 64px);
+            margin-top: 64px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .teams-sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid var(--teams-border);
+            padding: 24px 0;
+            overflow-y: auto;
+            height: 100%;
+            flex-shrink: 0;
+        }
+
+        .teams-sidebar-section {
+            margin-bottom: 32px;
+        }
+
+        .teams-sidebar-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--teams-dark-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 24px 12px;
+        }
+
+        .teams-sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: var(--teams-text);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+            .teams-sidebar-link:hover {
+                background-color: var(--teams-hover);
+                color: var(--teams-text);
+                text-decoration: none;
+            }
+
+            .teams-sidebar-link.active {
+                background-color: var(--teams-light-blue);
+                border-left-color: var(--teams-blue);
+                color: var(--teams-blue);
+                font-weight: 600;
+            }
+
+        .teams-content {
+            flex: 1;
+            padding: 24px;
+            background: white;
+            margin: 16px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            height: calc(100% - 32px);
+            max-height: calc(100% - 32px);
+        }
+
+        .teams-page-header {
+            margin-bottom: 32px;
+            border-bottom: 1px solid var(--teams-border);
+            padding-bottom: 16px;
+        }
+
+        .teams-page-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--teams-text);
+            margin: 0;
+        }
+
+        .teams-page-subtitle {
+            font-size: 1rem;
+            color: #666;
+            margin: 8px 0 0;
+        }
+
+        .teams-card {
+            background: white;
+            border: 1px solid var(--teams-border);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+        }
+
+            .teams-card:hover {
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                transform: translateY(-1px);
+            }
+
+        .teams-btn {
+            background: var(--teams-purple);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .teams-btn:hover {
+                background: var(--teams-blue);
+                color: white;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(98, 100, 167, 0.3);
+            }
+
+        .teams-btn-secondary {
+            background: white;
+            color: var(--teams-purple);
+            border: 1px solid var(--teams-purple);
+        }
+
+            .teams-btn-secondary:hover {
+                background: var(--teams-purple);
+                color: white;
+            }
+
+        .teams-status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-todo {
+            background: #FFF4E6;
+            color: #FF8C00;
+        }
+
+        .status-progress {
+            background: #E8F3FF;
+            color: var(--teams-blue);
+        }
+
+        .status-review {
+            background: #F3E6FF;
+            color: var(--teams-purple);
+        }
+
+        .status-completed {
+            background: #E6F7E6;
+            color: var(--teams-success);
+        }
+
+        @@media (max-width: 768px) {
+            .teams-sidebar {
+                display: none;
+            }
+
+            .teams-content {
+                margin: 8px;
+                padding: 16px;
+            }
+
+            .teams-nav {
+                padding: 12px 16px;
+            }
+
+            .teams-nav-links {
+                gap: 4px;
+            }
+
+            .teams-nav-link span {
+                display: none;
+            }
+        }
+    </style>
+
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/OmintakProduction.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="bi bi-stack me-2 text-primary" style="font-size: 1.5rem;"></i>
-                    <span class="fw-bold text-dark">Omnitak</span>
-                </a>
-                @if (User.Identity.IsAuthenticated)
-                {
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                            @if (User.IsInRole("SystemAdmin"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link" href="/Admin/PendingUsers">Approve Users</a>
-                                </li>
-                            }
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Ticket" asp-action="Index">Tickets</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Project" asp-action="Index">Projects</a>
-                        </li>
-                    </ul>
-                </div>
-                }
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1 rounded">
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item">
-                                <span class="nav-link text-white text-bg-primary">
-                                    <i class="bi bi-grid-fill me-1"></i> @User.FindFirst(ClaimTypes.Role)?.Value
-                                </span>
-                            </li>
-                        }
-                    </ul>
-                    <ul class="navbar-nav">
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-person-circle me-1"></i> Hello, @User.Identity.Name!
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <li class="nav-item">
-                                        @if (User.FindFirst(ClaimTypes.Role)?.Value == "SystemAdmin")
-                                        {
-                                            
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">
-                                                    <i class="bi bi-grid-fill me-1"></i>Accounts
-                                        </a>
-                                        }
-                                        else
-                                        {
-                                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-route-id="@User.FindFirst(ClaimTypes.NameIdentifier)?.Value" asp-action="GetIndividualUser">
-                                                    <i class="bi bi-grid-fill me-1"></i>Accounts
-                                            </a>
-                                            
-                                        }
-                                    </li>
+    <header class="teams-header">
+        <nav class="teams-nav">
+            <a class="teams-brand" asp-controller="Home" asp-action="Index">
+                <i class="fas fa-tasks"></i>
+                <span>Omnitak Task Management</span>
+            </a>
 
-                                    <li>
-                                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                            <button type="submit" class="dropdown-item">
-                                                <i class="bi bi-box-arrow-right me-1"></i>Logout
-                                            </button>
-                                        </form>
-                                    </li>
-                                </ul>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">
-                                    <i class="bi bi-person-add me-1"></i> Register
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">
-                                    <i class="bi bi-box-arrow-in-right me-1"></i> Login
-                                </a>
-                            </li>
-                        }
-                    </ul>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <ul class="teams-nav-links">
+                    @if (User.IsInRole("SystemAdmin"))
+                    {
+                        <li class="teams-nav-item">
+                            <a class="teams-nav-link" href="/Admin/PendingUsers">
+                                <i class="fas fa-user-check"></i>
+                                <span>Approve Users</span>
+                            </a>
+                        </li>
+                    }
+                    <li class="teams-nav-item">
+                        <a class="teams-nav-link" asp-controller="Dashboard" asp-action="Index">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="teams-nav-item">
+                        <a class="teams-nav-link" href="/swagger" target="_blank">
+                            <i class="fas fa-code"></i>
+                            <span>API</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="teams-user-profile">
+                    <div class="teams-avatar">
+                        @(User.Identity.Name?.Substring(0, 1).ToUpper() ?? "U")
+                    </div>
+                    <span>@User.Identity.Name</span>
+                    <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline;">
+                        <button type="submit" class="teams-nav-link" style="background:none;border:none;padding:0;margin:0;cursor:pointer;">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                        @Html.AntiForgeryToken()
+                    </form>
                 </div>
-            </div>
+            }
+            else
+            {
+                <ul class="teams-nav-links">
+                    <li class="teams-nav-item">
+                        <a class="teams-nav-link" asp-controller="Account" asp-action="Login">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Login</span>
+                        </a>
+                    </li>
+                    <li class="teams-nav-item">
+                        <a class="teams-nav-link" asp-controller="Account" asp-action="Register">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Register</span>
+                        </a>
+                    </li>
+                </ul>
+            }
         </nav>
     </header>
 
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <div class="teams-main-container">
+            <aside class="teams-sidebar">
+                <div class="teams-sidebar-section">
+                    <h6 class="teams-sidebar-title">Main</h6>
+                    <a class="teams-sidebar-link" asp-controller="Home" asp-action="Index">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a class="teams-sidebar-link" asp-controller="Dashboard" asp-action="Index">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
 
-    <footer class="border-top footer text-light">
-        <div class="container">
-            &copy; 2025 - OmintakProduction - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                <div class="teams-sidebar-section">
+                    <h6 class="teams-sidebar-title">Work Items</h6>
+                    <a class="teams-sidebar-link" asp-controller="Ticket" asp-action="Index">
+                        <i class="fas fa-ticket-alt"></i>
+                        <span>Tickets</span>
+                    </a>
+                    <a class="teams-sidebar-link" asp-controller="Project" asp-action="Index">
+                        <i class="fas fa-project-diagram"></i>
+                        <span>Projects</span>
+                    </a>
+                    <a class="teams-sidebar-link" asp-controller="Task" asp-action="Index">
+                        <i class="fas fa-tasks"></i>
+                        <span>Tasks</span>
+                    </a>
+                </div>
+
+                <div class="teams-sidebar-section">
+                    <h6 class="teams-sidebar-title">Reports</h6>
+                    <a class="teams-sidebar-link" asp-controller="ProjectReport" asp-action="Index">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Project Reports</span>
+                    </a>
+                    <a class="teams-sidebar-link" asp-controller="TestReport" asp-action="Index">
+                        <i class="fas fa-flask"></i>
+                        <span>Test Reports</span>
+                    </a>
+                </div>
+
+                <div class="teams-sidebar-section">
+                    <h6 class="teams-sidebar-title">Team</h6>
+                    <a class="teams-sidebar-link" asp-controller="User" asp-action="Index">
+                        <i class="fas fa-users"></i>
+                        <span>Team Members</span>
+                    </a>
+                    <a class="teams-sidebar-link" asp-controller="Notification" asp-action="Index">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                        <span class="badge bg-danger ms-auto" id="notification-badge">3</span>
+                    </a>
+                </div>
+
+                <div class="teams-sidebar-section">
+                    <h6 class="teams-sidebar-title">Tools</h6>
+                    <a class="teams-sidebar-link" href="/swagger" target="_blank">
+                        <i class="fas fa-code"></i>
+                        <span>API Documentation</span>
+                    </a>
+                    <a class="teams-sidebar-link" href="#settings">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+            </aside>
+
+            <main class="teams-content">
+                @RenderBody()
+            </main>
         </div>
-    </footer>
+    }
+    else
+    {
+        <div class="teams-main-container" style="justify-content: center; align-items: flex-start; padding-top: 40px;">
+            <main class="teams-content" style="max-width: 600px; margin: 20px auto; height: auto; max-height: none; overflow: visible;">
+                @RenderBody()
+            </main>
+        </div>
+    }
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        // Modern Teams-like interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add active class to current nav item
+            const currentPath = window.location.pathname;
+            const sidebarLinks = document.querySelectorAll('.teams-sidebar-link');
+
+            sidebarLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Add smooth transitions
+            const cards = document.querySelectorAll('.teams-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Load notification count if user is authenticated
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                    <text>
+                    loadNotificationCount();
+
+                    function loadNotificationCount() {
+                        fetch('/Notification/GetUnreadCount')
+                            .then(response => response.json())
+                            .then(data => {
+                                const badge = document.getElementById('notification-badge');
+                                if (badge) {
+                                    if (data.count > 0) {
+                                        badge.textContent = data.count;
+                                        badge.style.display = 'inline';
+                                    } else {
+                                        badge.style.display = 'none';
+                                    }
+                                }
+                            })
+                            .catch(error => console.error('Error loading notification count:', error));
+                    }
+                    </text>
+            }
+        });
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

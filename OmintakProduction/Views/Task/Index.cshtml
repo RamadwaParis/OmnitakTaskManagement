@@ -1,0 +1,36 @@
+﻿@model IEnumerable<OmintakProduction.Models.TaskAssignment>
+@{
+    ViewData["Title"] = "Task List";
+}
+<h2>Task List</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Task ID</th>
+            <th>Project</th>
+            <th>Assigned User</th>
+            <th>Status</th>
+            <th>Due Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.TaskAssignmentId</td>
+                <td>@item.Project?.ProjectName</td>
+                <td>@item.User?.UserName</td>
+                <td>@item.Status</td>
+                <td>@item.DueDate.ToShortDateString()</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.TaskAssignmentId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.TaskAssignmentId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.TaskAssignmentId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-action="Create" class="btn btn-primary">Create New Task</a>
+
