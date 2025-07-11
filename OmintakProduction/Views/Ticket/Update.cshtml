@@ -15,7 +15,7 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken() @* Helps prevent CSRF attacks *@
-    @Html.HiddenFor(model => model.Id) @* Keeps track of which ticket is being edited *@
+    @Html.HiddenFor(model => model.TicketId) @* Keeps track of which ticket is being edited *@
 
     <div class="form-horizontal">
         <h4>Ticket</h4>

@@ -17,20 +17,20 @@ namespace OmintakProduction.Controllers
 
         public IActionResult Index()
         {
-            var users = _context.User.Where(u=> u.isActive==true).ToList();
+            var users = _context.Users.Where(u=> u.isActive==true).ToList();
 
             return View(users);
         }
         public IActionResult GetIndividualUser(int id)
         {
-            var user = _context.User.Where(u => u.UserId == id).ToList();
+            var user = _context.Users.Where(u => u.UserId == id).ToList();
 
             return View(user);
         }
 
         public IActionResult GetAllUsers()
         {
-            var users = _context.User.ToList();
+            var users = _context.Users.ToList();
 
             return View(users);
         }
@@ -39,7 +39,7 @@ namespace OmintakProduction.Controllers
         {
             if (id == null) return NotFound();
 
-            var user = await _context.User.FindAsync(id);
+            var user = await _context.Users.FindAsync(id);
 
             if (user == null) return NotFound();
 
@@ -53,7 +53,7 @@ namespace OmintakProduction.Controllers
         {
             if (id != updatedUser.UserId) return NotFound();
 
-            var existingUser = await _context.User.FindAsync(id);
+            var existingUser = await _context.Users.FindAsync(id);
             if (existingUser == null) return NotFound();
 
             if (ModelState.IsValid)
@@ -101,7 +101,7 @@ namespace OmintakProduction.Controllers
         {
             if (id == null) return NotFound();
 
-            var user = await _context.User
+            var user = await _context.Users
                 .FirstOrDefaultAsync(t => t.UserId == id);
 
             return user == null ? NotFound() : View("~/Views/User/Delete.cshtml", user);
@@ -110,7 +110,7 @@ namespace OmintakProduction.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var user = await _context.User.FindAsync(id);
+            var user = await _context.Users.FindAsync(id);
 
             if (user == null) // <-- This is the crucial null check
             {
@@ -126,7 +126,7 @@ namespace OmintakProduction.Controllers
 
         private bool UsertExists(int id)
         {
-            return _context.User.Any(e => e.UserId == id);
+            return _context.Users.Any(e => e.UserId == id);
         }
 
     }

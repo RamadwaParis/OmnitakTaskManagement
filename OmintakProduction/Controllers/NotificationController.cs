@@ -20,7 +20,7 @@ namespace OmintakProduction.Controllers
         public async Task<IActionResult> Index()
         {
             var currentUserId = GetCurrentUserId();
-            var notifications = await _context.Notification
+            var notifications = await _context.Notifications
                 .Include(n => n.UserId)
                 .Where(n => n.UserId == currentUserId)
                 //.OrderByDescending(n => n.CreatedAt)
@@ -37,7 +37,7 @@ namespace OmintakProduction.Controllers
                 return NotFound();
             }
  
-            var notification = await _context.Notification
+            var notification = await _context.Notifications
                 .Include(n => n.UserId)
                 .FirstOrDefaultAsync(m => m.NotificationId == id);
  
@@ -61,7 +61,7 @@ namespace OmintakProduction.Controllers
         [HttpPost]
         public async Task<IActionResult> MarkAsRead(int id)
         {
-            var notification = await _context.Notification.FindAsync(id);
+            var notification = await _context.Notifications.FindAsync(id);
             if (notification != null && !notification.IsRead)
             {
                 notification.IsRead = true;
@@ -77,7 +77,7 @@ namespace OmintakProduction.Controllers
         public async Task<IActionResult> MarkAllAsRead()
         {
             var currentUserId = GetCurrentUserId();
-            var unreadNotifications = await _context.Notification
+            var unreadNotifications = await _context.Notifications
                 .Where(n => n.UserId == currentUserId && !n.IsRead)
                 .ToListAsync();
  
@@ -99,7 +99,7 @@ namespace OmintakProduction.Controllers
                 return NotFound();
             }
  
-            var notification = await _context.Notification
+            var notification = await _context.Notifications
                 .Include(n => n.UserId)
                 .FirstOrDefaultAsync(m => m.NotificationId == id);
  
@@ -116,10 +116,10 @@ namespace OmintakProduction.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var notification = await _context.Notification.FindAsync(id);
+            var notification = await _context.Notifications.FindAsync(id);
             if (notification != null)
             {
-                _context.Notification.Remove(notification);
+                _context.Notifications.Remove(notification);
                 await _context.SaveChangesAsync();
             }
  
@@ -131,7 +131,7 @@ namespace OmintakProduction.Controllers
         public async Task<IActionResult> GetUnreadCount()
         {
             var currentUserId = GetCurrentUserId();
-            var count = await _context.Notification
+            var count = await _context.Notifications
                 .CountAsync(n => n.UserId == currentUserId && !n.IsRead);
  
             return Json(new { count });

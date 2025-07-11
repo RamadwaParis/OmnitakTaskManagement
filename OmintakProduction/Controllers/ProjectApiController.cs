@@ -28,7 +28,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<Project>), 200)]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _context.Project.ToListAsync());
+            return Ok(await _context.Projects.ToListAsync());
         }
  
         /// <summary>
@@ -41,7 +41,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Get(int id)
         {
-            var project = await _context.Project.FindAsync(id);
+            var project = await _context.Projects.FindAsync(id);
             if (project == null) return NotFound();
             return Ok(project);
         }
@@ -56,7 +56,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> Create(Project project)
         {
-            _context.Project.Add(project);
+            _context.Projects.Add(project);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(Get), new { id = project.ProjectId }, project);
         }
@@ -100,16 +100,16 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Delete(int id)
         {
-            var project = await _context.Project.FindAsync(id);
+            var project = await _context.Projects.FindAsync(id);
             if (project == null) return NotFound();
-            _context.Project.Remove(project);
+            _context.Projects.Remove(project);
             await _context.SaveChangesAsync();
             return NoContent();
         }
  
         private async Task<bool> ProjectExists(int id)
         {
-            return await _context.Project.AnyAsync(e => e.ProjectId == id);
+            return await _context.Projects.AnyAsync(e => e.ProjectId == id);
         }
     }
 }

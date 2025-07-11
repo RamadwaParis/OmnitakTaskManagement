@@ -257,7 +257,7 @@ namespace OmintakProduction.Controllers
                 CreatedAt = DateTime.Now
             };
 
-            _context.TaskHistory.Add(history);
+            _context.TaskHistories.Add(history);
             await _context.SaveChangesAsync();
         }
     }

@@ -32,15 +32,15 @@
         {
             <tr>
 
-                <td>@ticket.Id</td>
+                <td>@ticket.TicketId</td>
                 <td>@ticket.Title</td>
                 <td>@ticket.Description</td>
 
                 <td>
-                    <a asp-controller="Ticket" asp-action="Update" asp-route-id="@ticket.Id" class="btn btn-primary">Update</a>
+                    <a asp-controller="Ticket" asp-action="Update" asp-route-id="@ticket.TicketId" class="btn btn-primary">Update</a>
                     @if (User.FindFirst(ClaimTypes.Role)?.Value == "SystemAdmin")
                     {
-                        <a asp-controller="Ticket" asp-action="Delete" asp-route-id="@ticket.Id" class="btn btn-danger">Delete</a>
+                        <a asp-controller="Ticket" asp-action="Delete" asp-route-id="@ticket.TicketId" class="btn btn-danger">Delete</a>
                     }
 
                 </td>

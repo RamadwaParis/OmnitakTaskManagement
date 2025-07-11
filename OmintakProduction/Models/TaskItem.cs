@@ -1,4 +1,6 @@
-﻿namespace OmintakProduction.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace OmintakProduction.Models
 {
     public enum TaskStatus
     {
@@ -21,6 +23,7 @@
 
     public class TaskItem
     {
+        [Key]
         public int TaskItemId { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;

@@ -2,56 +2,257 @@
     ViewData["Title"] = "Dashboard";
 }
 
+<div class="teams-page-header">
+    <h1 class="teams-page-title">
+        <i class="fas fa-chart-line me-3"></i>
+        Dashboard
+    </h1>
+    <p class="teams-page-subtitle">Overview of your tasks, projects, and team activity</p>
+</div>
+
 @if (TempData["WelcomeMessage"] != null)
 {
-    <div class="alert alert-success" role="alert">
+    <div class="alert alert-success d-flex align-items-center" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
         @TempData["WelcomeMessage"]
     </div>
 }
 
-@* Dashboard Index View *@
-<div class="container mt-5">
-    <h1 class="text-center display-4 fw-bold mb-2">Your Dashboard</h1>
-    <p class="text-center lead mb-5">Here you can manage your projects, tasks, and notifications.</p>
-
-    <div class="row mt-4 g-4">
-        <div class="col-md-4">
-            <div class="card text-center h-100 shadow-lg">
-                <div class="card-body">
-                    <h5 class="card-title fs-3 mb-3">My Tasks</h5>
-                    <p class="card-text">View and manage your assigned tasks.</p>
-                    <a href="/Ticket/Index" class="btn btn-primary mt-2">Go to Tasks</a>
+<!-- Quick Stats Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="teams-card text-center">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h3 class="mb-1" style="color: var(--teams-blue);">24</h3>
+                    <p class="mb-0 text-muted">Active Tasks</p>
                 </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card text-center h-100 shadow-lg">
-                <div class="card-body">
-                    <h5 class="card-title fs-3 mb-3">Projects</h5>
-                    <p class="card-text">Track ongoing projects and progress.</p>
-                    <a href="/Project/Index" class="btn btn-primary mt-2">Go to Projects</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card text-center h-100 shadow-lg">
-                <div class="card-body">
-                    <h5 class="card-title fs-3 mb-3">Notifications</h5>
-                    <p class="card-text">Stay updated with the latest changes.</p>
-                    <a href="#" class="btn btn-primary mt-2 disabled">View Notifications</a>
-                </div>
+                <i class="fas fa-tasks fa-2x" style="color: var(--teams-blue); opacity: 0.3;"></i>
             </div>
         </div>
     </div>
-
-    <div class="row mt-5">
-        <div class="col-12">
-            <div class="alert alert-info text-center" role="alert">
-                <strong>Tip:</strong> Click on the cards above to quickly access your tasks and projects!
+    <div class="col-md-3 mb-3">
+        <div class="teams-card text-center">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h3 class="mb-1" style="color: var(--teams-success);">8</h3>
+                    <p class="mb-0 text-muted">Completed</p>
+                </div>
+                <i class="fas fa-check-circle fa-2x" style="color: var(--teams-success); opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="teams-card text-center">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h3 class="mb-1" style="color: var(--teams-warning);">5</h3>
+                    <p class="mb-0 text-muted">Overdue</p>
+                </div>
+                <i class="fas fa-exclamation-triangle fa-2x" style="color: var(--teams-warning); opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="teams-card text-center">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h3 class="mb-1" style="color: var(--teams-purple);">12</h3>
+                    <p class="mb-0 text-muted">Projects</p>
+                </div>
+                <i class="fas fa-project-diagram fa-2x" style="color: var(--teams-purple); opacity: 0.3;"></i>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Main Content Row -->
+<div class="row">
+    <!-- Recent Tasks -->
+    <div class="col-lg-8 mb-4">
+        <div class="teams-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">
+                    <i class="fas fa-clock me-2"></i>
+                    Recent Tasks
+                </h5>
+                <a href="/Ticket/Index" class="teams-btn teams-btn-secondary">View All</a>
+            </div>
+
+            <div class="list-group list-group-flush">
+                <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                    <div class="d-flex align-items-center">
+                        <div class="teams-avatar bg-primary me-3">JD</div>
+                        <div>
+                            <h6 class="mb-1">Fix login authentication bug</h6>
+                            <small class="text-muted">Assigned to John Doe • Due today</small>
+                        </div>
+                    </div>
+                    <span class="teams-status-badge status-progress">In Progress</span>
+                </div>
+
+                <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                    <div class="d-flex align-items-center">
+                        <div class="teams-avatar bg-success me-3">SM</div>
+                        <div>
+                            <h6 class="mb-1">Update user dashboard design</h6>
+                            <small class="text-muted">Assigned to Sarah Miller • Due tomorrow</small>
+                        </div>
+                    </div>
+                    <span class="teams-status-badge status-review">In Review</span>
+                </div>
+
+                <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                    <div class="d-flex align-items-center">
+                        <div class="teams-avatar bg-warning me-3">MJ</div>
+                        <div>
+                            <h6 class="mb-1">Implement API documentation</h6>
+                            <small class="text-muted">Assigned to Mike Johnson • Due in 3 days</small>
+                        </div>
+                    </div>
+                    <span class="teams-status-badge status-todo">To Do</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions & Notifications -->
+    <div class="col-lg-4">
+        <!-- Quick Actions -->
+        <div class="teams-card mb-4">
+            <h5 class="mb-3">
+                <i class="fas fa-bolt me-2"></i>
+                Quick Actions
+            </h5>
+            <div class="d-grid gap-2">
+                <button class="teams-btn" onclick="window.open('/swagger', '_blank')">
+                    <i class="fas fa-code me-2"></i>
+                    Open API Docs
+                </button>
+                <button class="teams-btn teams-btn-secondary" onclick="location.href='/Ticket/Create'">
+                    <i class="fas fa-plus me-2"></i>
+                    Create Ticket
+                </button>
+                <button class="teams-btn teams-btn-secondary" onclick="location.href='/Project/Create'">
+                    <i class="fas fa-folder-plus me-2"></i>
+                    New Project
+                </button>
+            </div>
+        </div>
+
+        <!-- Recent Notifications -->
+        <div class="teams-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">
+                    <i class="fas fa-bell me-2"></i>
+                    Notifications
+                </h5>
+                <span class="badge bg-danger">3</span>
+            </div>
+
+            <div class="list-group list-group-flush">
+                <div class="list-group-item border-0 px-0 py-2">
+                    <div class="d-flex align-items-start">
+                        <i class="fas fa-comment text-primary me-3 mt-1"></i>
+                        <div class="flex-grow-1">
+                            <p class="mb-1 small">New comment on "Login Bug Fix"</p>
+                            <small class="text-muted">2 minutes ago</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="list-group-item border-0 px-0 py-2">
+                    <div class="d-flex align-items-start">
+                        <i class="fas fa-user-plus text-success me-3 mt-1"></i>
+                        <div class="flex-grow-1">
+                            <p class="mb-1 small">You were assigned to "API Documentation"</p>
+                            <small class="text-muted">15 minutes ago</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="list-group-item border-0 px-0 py-2">
+                    <div class="d-flex align-items-start">
+                        <i class="fas fa-exclamation-triangle text-warning me-3 mt-1"></i>
+                        <div class="flex-grow-1">
+                            <p class="mb-1 small">Task deadline approaching</p>
+                            <small class="text-muted">1 hour ago</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- API Integration Demo -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="teams-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">
+                    <i class="fas fa-database me-2"></i>
+                    API Integration Status
+                </h5>
+                <span class="teams-status-badge status-completed">Connected</span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-2 text-center mb-3">
+                    <div class="teams-api-status">
+                        <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                        <p class="small mb-0">Projects API</p>
+                    </div>
+                </div>
+                <div class="col-md-2 text-center mb-3">
+                    <div class="teams-api-status">
+                        <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                        <p class="small mb-0">Users API</p>
+                    </div>
+                </div>
+                <div class="col-md-2 text-center mb-3">
+                    <div class="teams-api-status">
+                        <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                        <p class="small mb-0">Tasks API</p>
+                    </div>
+                </div>
+                <div class="col-md-2 text-center mb-3">
+                    <div class="teams-api-status">
+                        <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                        <p class="small mb-0">Notifications API</p>
+                    </div>
+                </div>
+                <div class="col-md-2 text-center mb-3">
+                    <div class="teams-api-status">
+                        <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                        <p class="small mb-0">Reports API</p>
+                    </div>
+                </div>
+                <div class="col-md-2 text-center mb-3">
+                    <div class="teams-api-status">
+                        <i class="fas fa-external-link-alt fa-2x text-primary mb-2"></i>
+                        <p class="small mb-0">
+                            <a href="/swagger" target="_blank" class="text-decoration-none">
+                                Swagger UI
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .teams-api-status {
+        padding: 12px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+        .teams-api-status:hover {
+            background-color: var(--teams-hover);
+            transform: translateY(-2px);
+        }
+</style>
 

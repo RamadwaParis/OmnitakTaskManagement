@@ -29,7 +29,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<TaskComment>), 200)]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _context.TaskComment.OrderByDescending(tc => tc.CreatedAt).ToListAsync());
+            return Ok(await _context.TaskComments.OrderByDescending(tc => tc.CreatedAt).ToListAsync());
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Get(int id)
         {
-            var comment = await _context.TaskComment.FindAsync(id);
+            var comment = await _context.TaskComments.FindAsync(id);
             if (comment == null) return NotFound();
             return Ok(comment);
         }
@@ -58,7 +58,7 @@ namespace OmintakProduction.Controllers
         public async Task<IActionResult> Create(TaskComment comment)
         {
             comment.CreatedAt = DateTime.UtcNow;
-            _context.TaskComment.Add(comment);
+            _context.TaskComments.Add(comment);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(Get), new { id = comment.TaskCommentId }, comment);
         }
@@ -104,9 +104,9 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Delete(int id)
         {
-            var comment = await _context.TaskComment.FindAsync(id);
+            var comment = await _context.TaskComments.FindAsync(id);
             if (comment == null) return NotFound();
-            _context.TaskComment.Remove(comment);
+            _context.TaskComments.Remove(comment);
             await _context.SaveChangesAsync();
             return NoContent();
         }
@@ -120,7 +120,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<TaskComment>), 200)]
         public async Task<IActionResult> GetByTask(int taskId)
         {
-            var comments = await _context.TaskComment
+            var comments = await _context.TaskComments
                 .Where(tc => tc.TaskId == taskId)
                 .OrderBy(tc => tc.CreatedAt)
                 .ToListAsync();
@@ -136,7 +136,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<TaskComment>), 200)]
         public async Task<IActionResult> GetByUser(int userId)
         {
-            var comments = await _context.TaskComment
+            var comments = await _context.TaskComments
                 .Where(tc => tc.UserId == userId)
                 .OrderByDescending(tc => tc.CreatedAt)
                 .ToListAsync();
@@ -152,7 +152,7 @@ namespace OmintakProduction.Controllers
         public async Task<IActionResult> GetRecent()
         {
             var yesterday = DateTime.UtcNow.AddDays(-1);
-            var comments = await _context.TaskComment
+            var comments = await _context.TaskComments
                 .Where(tc => tc.CreatedAt >= yesterday)
                 .OrderByDescending(tc => tc.CreatedAt)
                 .ToListAsync();
@@ -168,13 +168,13 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(object), 200)]
         public async Task<IActionResult> GetCommentCount(int taskId)
         {
-            var count = await _context.TaskComment.CountAsync(tc => tc.TaskId == taskId);
+            var count = await _context.TaskComments.CountAsync(tc => tc.TaskId == taskId);
             return Ok(new { TaskId = taskId, CommentCount = count });
         }
 
         private async Task<bool> TaskCommentExists(int id)
         {
-            return await _context.TaskComment.AnyAsync(e => e.TaskCommentId == id);
+            return await _context.TaskComments.AnyAsync(e => e.TaskCommentId == id);
         }
     }
 }

@@ -19,13 +19,13 @@ namespace OmintakProduction.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _context.ProjectReport.ToListAsync());
+            return Ok(await _context.ProjectReports.ToListAsync());
         }
  
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var report = await _context.ProjectReport.FindAsync(id);
+            var report = await _context.ProjectReports.FindAsync(id);
             if (report == null) return NotFound();
             return Ok(report);
         }
@@ -33,7 +33,7 @@ namespace OmintakProduction.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ProjectReport report)
         {
-            _context.ProjectReport.Add(report);
+            _context.ProjectReports.Add(report);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(Get), new { id = report.ProjectReportId }, report);
         }
@@ -50,9 +50,9 @@ namespace OmintakProduction.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var report = await _context.ProjectReport.FindAsync(id);
+            var report = await _context.ProjectReports.FindAsync(id);
             if (report == null) return NotFound();
-            _context.ProjectReport.Remove(report);
+            _context.ProjectReports.Remove(report);
             await _context.SaveChangesAsync();
             return NoContent();
         }

@@ -17,7 +17,7 @@ namespace OmintakProduction.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var tickets = await _context.Ticket.ToListAsync();
+            var tickets = await _context.Tickets.ToListAsync();
 
             return View("~/Views/Ticket/Index.cshtml", tickets);
         }
@@ -51,7 +51,7 @@ namespace OmintakProduction.Controllers
         {
             if (id == null) return NotFound();
 
-            var ticket = await _context.Ticket.FindAsync(id);
+            var ticket = await _context.Tickets.FindAsync(id);
 
             if (ticket == null) return NotFound();
 
@@ -67,7 +67,7 @@ namespace OmintakProduction.Controllers
             if (id != updatedTicket.TicketId) return NotFound();
 
 
-            var existingTicket = await _context.Ticket.FindAsync(id);
+            var existingTicket = await _context.Tickets.FindAsync(id);
             if (existingTicket == null) return NotFound();
 
             if (ModelState.IsValid)
@@ -109,7 +109,7 @@ namespace OmintakProduction.Controllers
         {
             if (id == null) return NotFound();
 
-            var ticket = await _context.Ticket
+            var ticket = await _context.Tickets
                 .FirstOrDefaultAsync(t => t.TicketId == id);
 
             return ticket == null ? NotFound() : View("~/Views/Ticket/Delete.cshtml", ticket);
@@ -118,7 +118,7 @@ namespace OmintakProduction.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(Ticket obj)
         {
-            _context.Ticket.Remove(obj);
+            _context.Tickets.Remove(obj);
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
@@ -127,7 +127,7 @@ namespace OmintakProduction.Controllers
 
         private bool TicketExists(int id)
         {
-            return _context.Ticket.Any(e => e.TicketId == id);
+            return _context.Tickets.Any(e => e.TicketId == id);
         }
 
 
