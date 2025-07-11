@@ -59,7 +59,7 @@ namespace OmintakProduction.Controllers
         {
             _context.TestReport.Add(report);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = report.Id }, report);
+            return CreatedAtAction(nameof(Get), new { id = report.TestReportId }, report);
         }
  
         /// <summary>
@@ -74,7 +74,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Update(int id, TestReport report)
         {
-            if (id != report.Id) return BadRequest();
+            if (id != report.TestReportId) return BadRequest();
             _context.Entry(report).State = EntityState.Modified;
            
             try
@@ -125,7 +125,7 @@ namespace OmintakProduction.Controllers
  
         private async Task<bool> TestReportExists(int id)
         {
-            return await _context.TestReport.AnyAsync(e => e.Id == id);
+            return await _context.TestReport.AnyAsync(e => e.TestReportId == id);
         }
     }
 }

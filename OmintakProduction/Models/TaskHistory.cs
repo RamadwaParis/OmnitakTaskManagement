@@ -1,14 +1,31 @@
 ﻿namespace OmintakProduction.Models
 {
+    public enum TaskHistoryAction
+    {
+        Created,
+        Updated,
+        StatusChanged,
+        AssigneeChanged,
+        PriorityChanged,
+        DueDateChanged,
+        CommentAdded,
+        Deleted,
+        Restored
+    }
+
     public class TaskHistory
     {
         public int TaskHistoryId { get; set; }
-        public int TaskId { get; set; }
-        public int ChangedByUserId { get; set; }
-        public string FieldChanged { get; set; }
-        public string OldValue { get; set; }
-        public int NewValue { get; set; }
-        public DateTime ChangeDate { get; set; } = DateTime.Now;
-        public string ChangeType { get; set; }
+        public int TaskItemId { get; set; }
+        public int UserId { get; set; }
+        public TaskHistoryAction Action { get; set; }
+        public string? OldValue { get; set; }
+        public string? NewValue { get; set; }
+        public string? Description { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        // Navigation properties
+        public Task? Task { get; set; }
+        public User? User { get; set; }
     }
 }

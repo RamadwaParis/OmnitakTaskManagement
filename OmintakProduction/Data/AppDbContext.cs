@@ -15,13 +15,22 @@ namespace OmintakProduction.Data
         public DbSet<Role> Role { get; set; }
         public DbSet<Ticket> Ticket { get; set; }
         public DbSet<Project> Project { get; set; }
+        public DbSet<ProjectReport> ProjectReport { get; set; }
+        public DbSet<TestReport> TestReport { get; set; }
+        public DbSet<Notification> Notification { get; set; }
+        public DbSet<TaskItem> TaskItem { get; set; }
+        public DbSet<TaskAssignment> TaskAssignment { get; set; }
+        public DbSet<TaskComment> TaskComment { get; set; }
+        public DbSet<TaskHistory> TaskHistory { get; set; }
+        public DbSet<BugReport> BugReport { get; set; }
+        public DbSet<Attachment> Attachment { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<User>().HasData(
-                
+
                 new User
                 {
                     UserId = 1,
@@ -53,7 +62,7 @@ namespace OmintakProduction.Data
                 new User
                 {
                     UserId = 3,
-                    RoleId =2,
+                    RoleId = 2,
                     UserName = "EngineerUser1",
                     Email = "Engineer1.seededData@omnitak.com",
                     Password = "Engineer@123",
@@ -82,7 +91,7 @@ namespace OmintakProduction.Data
                 new User
                 {
                     UserId = 5,
-                    RoleId =3,
+                    RoleId = 3,
                     UserName = "TesterUser1",
                     Email = "Tester1.seededData@omnitak.com",
                     Password = "Tester@123",
@@ -108,19 +117,19 @@ namespace OmintakProduction.Data
             modelBuilder.Entity<Ticket>().HasData(
                 new Ticket
                 {
-                Id = 1,
-                Title = "Sample Ticket",
-                Description = "This is a sample ticket description.",
-                Status = "ToDo",
-                DueDate = new DateOnly(2025, 06, 26),
-                CreatedAt = new DateOnly(2025, 06, 26),
-                CompletedAt = new DateOnly(2025, 06, 26),
-            });
+                    TicketId = 1,
+                    Title = "Sample Ticket",
+                    Description = "This is a sample ticket description.",
+                    Status = "ToDo",
+                    DueDate = new DateOnly(2025, 06, 26),
+                    CreatedAt = new DateOnly(2025, 06, 26),
+                    CompletedAt = new DateOnly(2025, 06, 26),
+                });
 
             modelBuilder.Entity<Ticket>().HasData(
                new Ticket
                {
-                   Id = 2,
+                   TicketId = 2,
                    Title = "Sample Ticket",
                    Description = "This is a sample ticket description.",
                    Status = "In_Progress",
@@ -129,22 +138,22 @@ namespace OmintakProduction.Data
                    CompletedAt = new DateOnly(2025, 06, 26),
                });
 
-                    modelBuilder.Entity<Ticket>().HasData(
-           new Ticket
-           {
-               Id = 3,
-               Title = "Sample Ticket",
-               Description = "This is a sample ticket description.",
-               Status = "In_Review",
-               DueDate = new DateOnly(2025, 06, 26),
-               CreatedAt = new DateOnly(2025, 06, 26),
-               CompletedAt = new DateOnly(2025, 06, 26),
-           });
+            modelBuilder.Entity<Ticket>().HasData(
+   new Ticket
+   {
+       TicketId = 3,
+       Title = "Sample Ticket",
+       Description = "This is a sample ticket description.",
+       Status = "In_Review",
+       DueDate = new DateOnly(2025, 06, 26),
+       CreatedAt = new DateOnly(2025, 06, 26),
+       CompletedAt = new DateOnly(2025, 06, 26),
+   });
 
             modelBuilder.Entity<Ticket>().HasData(
            new Ticket
            {
-               Id = 4,  
+               TicketId = 4,
                Title = "Sample Ticket",
                Description = "This is a sample ticket description.",
                Status = "Done",
@@ -161,7 +170,7 @@ namespace OmintakProduction.Data
                Description = "This is a sample ticket description.",
                Status = "Done",
                DueDate = new DateOnly(2025, 06, 26),
-               
+
            });
 
             modelBuilder.Entity<Role>().HasData(
@@ -180,14 +189,14 @@ namespace OmintakProduction.Data
                 RoleName = "Engineer"
 
             });
-                        modelBuilder.Entity<Role>().HasData(
-            new Role
-            {
-                RoleId = 3,
-                UserId = 3,
-                RoleName = "Software Tester"
+            modelBuilder.Entity<Role>().HasData(
+new Role
+{
+    RoleId = 3,
+    UserId = 3,
+    RoleName = "Software Tester"
 
-            });
+});
 
         }
     }

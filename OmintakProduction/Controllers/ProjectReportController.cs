@@ -35,13 +35,13 @@ namespace OmintakProduction.Controllers
         {
             _context.ProjectReport.Add(report);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = report.Id }, report);
+            return CreatedAtAction(nameof(Get), new { id = report.ProjectReportId }, report);
         }
  
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, ProjectReport report)
         {
-            if (id != report.Id) return BadRequest();
+            if (id != report.ProjectReportId) return BadRequest();
             _context.Entry(report).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return NoContent();

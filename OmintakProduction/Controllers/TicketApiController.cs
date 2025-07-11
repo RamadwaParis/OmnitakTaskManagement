@@ -42,7 +42,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Get(int id)
         {
-            var ticket = await _context.Ticket.FirstOrDefaultAsync(t => t.Id == id);
+            var ticket = await _context.Ticket.FirstOrDefaultAsync(t => t.TicketId == id);
            
             if (ticket == null) return NotFound();
             return Ok(ticket);
@@ -60,7 +60,7 @@ namespace OmintakProduction.Controllers
         {
             _context.Ticket.Add(ticket);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = ticket.Id }, ticket);
+            return CreatedAtAction(nameof(Get), new { id = ticket.TicketId }, ticket);
         }
  
         /// <summary>
@@ -75,7 +75,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Update(int id, Ticket ticket)
         {
-            if (id != ticket.Id) return BadRequest();
+            if (id != ticket.TicketId) return BadRequest();
             _context.Entry(ticket).State = EntityState.Modified;
            
             try
@@ -156,7 +156,7 @@ namespace OmintakProduction.Controllers
  
         private async Task<bool> TicketExists(int id)
         {
-            return await _context.Ticket.AnyAsync(e => e.Id == id);
+            return await _context.Ticket.AnyAsync(e => e.TicketId == id);
         }
     }
 }

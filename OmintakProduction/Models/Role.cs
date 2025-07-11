@@ -2,7 +2,7 @@
 {
     enum RoleNames
     {
-        SystemAdmin=1,
+        SystemAdmin = 1,
         Engineer,
         SoftwareTester
     }
@@ -18,6 +18,4 @@
             return ((RoleNames)id).ToString();
         }
     }
-
-
 }

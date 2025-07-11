@@ -64,7 +64,7 @@ namespace OmintakProduction.Controllers
         public async Task<IActionResult> Update(int id, [Bind("Id,Title,Description,DueDate,Status")] Ticket updatedTicket)
         {
 
-            if (id != updatedTicket.Id) return NotFound();
+            if (id != updatedTicket.TicketId) return NotFound();
 
 
             var existingTicket = await _context.Ticket.FindAsync(id);
@@ -85,7 +85,7 @@ namespace OmintakProduction.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TicketExists(updatedTicket.Id)) return NotFound();
+                    if (!TicketExists(updatedTicket.TicketId)) return NotFound();
                     throw;
                 }
 
@@ -110,7 +110,7 @@ namespace OmintakProduction.Controllers
             if (id == null) return NotFound();
 
             var ticket = await _context.Ticket
-                .FirstOrDefaultAsync(t => t.Id == id);
+                .FirstOrDefaultAsync(t => t.TicketId == id);
 
             return ticket == null ? NotFound() : View("~/Views/Ticket/Delete.cshtml", ticket);
         }
@@ -127,7 +127,7 @@ namespace OmintakProduction.Controllers
 
         private bool TicketExists(int id)
         {
-            return _context.Ticket.Any(e => e.Id == id);
+            return _context.Ticket.Any(e => e.TicketId == id);
         }
 
 

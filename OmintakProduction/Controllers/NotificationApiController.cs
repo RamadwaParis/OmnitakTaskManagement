@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using OmintakProduction.Data;
 using OmintakProduction.Models;
 using System.Threading.Tasks;
- 
+
 namespace OmintakProduction.Controllers
 {
     /// <summary>
@@ -15,12 +15,12 @@ namespace OmintakProduction.Controllers
     public class NotificationApiController : ControllerBase
     {
         private readonly AppDbContext _context;
- 
+
         public NotificationApiController(AppDbContext context)
         {
             _context = context;
         }
- 
+
         /// <summary>
         /// Get all notifications
         /// </summary>
@@ -31,7 +31,7 @@ namespace OmintakProduction.Controllers
         {
             return Ok(await _context.Notification.OrderByDescending(n => n.CreatedAt).ToListAsync());
         }
- 
+
         /// <summary>
         /// Get a specific notification by ID
         /// </summary>
@@ -46,7 +46,7 @@ namespace OmintakProduction.Controllers
             if (notification == null) return NotFound();
             return Ok(notification);
         }
- 
+
         /// <summary>
         /// Create a new notification
         /// </summary>
@@ -60,9 +60,9 @@ namespace OmintakProduction.Controllers
             notification.CreatedAt = DateTime.Now;
             _context.Notification.Add(notification);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = notification.Id }, notification);
+            return CreatedAtAction(nameof(Get), new { id = notification.NotificationId }, notification);
         }
- 
+
         /// <summary>
         /// Update an existing notification
         /// </summary>
@@ -75,9 +75,9 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Update(int id, Notification notification)
         {
-            if (id != notification.Id) return BadRequest();
+            if (id != notification.NotificationId) return BadRequest();
             _context.Entry(notification).State = EntityState.Modified;
-           
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -88,10 +88,10 @@ namespace OmintakProduction.Controllers
                     return NotFound();
                 throw;
             }
-           
+
             return NoContent();
         }
- 
+
         /// <summary>
         /// Delete a notification
         /// </summary>
@@ -108,7 +108,7 @@ namespace OmintakProduction.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
- 
+
         /// <summary>
         /// Get notifications for a specific user
         /// </summary>
@@ -124,7 +124,7 @@ namespace OmintakProduction.Controllers
                 .ToListAsync();
             return Ok(notifications);
         }
- 
+
         /// <summary>
         /// Get unread notifications for a specific user
         /// </summary>
@@ -140,7 +140,7 @@ namespace OmintakProduction.Controllers
                 .ToListAsync();
             return Ok(notifications);
         }
- 
+
         /// <summary>
         /// Get notifications by type
         /// </summary>
@@ -156,7 +156,7 @@ namespace OmintakProduction.Controllers
                 .ToListAsync();
             return Ok(notifications);
         }
- 
+
         /// <summary>
         /// Mark a notification as read
         /// </summary>
@@ -169,13 +169,13 @@ namespace OmintakProduction.Controllers
         {
             var notification = await _context.Notification.FindAsync(id);
             if (notification == null) return NotFound();
- 
+
             notification.IsRead = true;
             notification.ReadAt = DateTime.Now;
             await _context.SaveChangesAsync();
             return NoContent();
         }
- 
+
         /// <summary>
         /// Mark all notifications as read for a specific user
         /// </summary>
@@ -188,17 +188,17 @@ namespace OmintakProduction.Controllers
             var unreadNotifications = await _context.Notification
                 .Where(n => n.UserId == userId && !n.IsRead)
                 .ToListAsync();
- 
+
             foreach (var notification in unreadNotifications)
             {
                 notification.IsRead = true;
                 notification.ReadAt = DateTime.Now;
             }
- 
+
             await _context.SaveChangesAsync();
             return Ok(new { MarkedCount = unreadNotifications.Count });
         }
- 
+
         /// <summary>
         /// Get notification count for a specific user
         /// </summary>
@@ -210,13 +210,14 @@ namespace OmintakProduction.Controllers
         {
             var totalCount = await _context.Notification.CountAsync(n => n.UserId == userId);
             var unreadCount = await _context.Notification.CountAsync(n => n.UserId == userId && !n.IsRead);
- 
-            return Ok(new {
+
+            return Ok(new
+            {
                 TotalCount = totalCount,
                 UnreadCount = unreadCount
             });
         }
- 
+
         /// <summary>
         /// Create a bulk notification for multiple users
         /// </summary>
@@ -229,7 +230,7 @@ namespace OmintakProduction.Controllers
         {
             if (request.UserIds == null || !request.UserIds.Any())
                 return BadRequest("UserIds cannot be empty");
- 
+
             var notifications = new List<Notification>();
             foreach (var userId in request.UserIds)
             {
@@ -245,13 +246,13 @@ namespace OmintakProduction.Controllers
                     CreatedAt = DateTime.Now
                 });
             }
- 
+
             _context.Notification.AddRange(notifications);
             await _context.SaveChangesAsync();
- 
+
             return CreatedAtAction(nameof(GetAll), new { CreatedCount = notifications.Count });
         }
- 
+
         /// <summary>
         /// Delete all read notifications for a user
         /// </summary>
@@ -264,19 +265,19 @@ namespace OmintakProduction.Controllers
             var readNotifications = await _context.Notification
                 .Where(n => n.UserId == userId && n.IsRead)
                 .ToListAsync();
- 
+
             _context.Notification.RemoveRange(readNotifications);
             await _context.SaveChangesAsync();
- 
+
             return Ok(new { DeletedCount = readNotifications.Count });
         }
- 
+
         private async Task<bool> NotificationExists(int id)
         {
-            return await _context.Notification.AnyAsync(e => e.Id == id);
+            return await _context.Notification.AnyAsync(e => e.NotificationId == id);
         }
     }
- 
+
     /// <summary>
     /// Request model for bulk notification creation
     /// </summary>

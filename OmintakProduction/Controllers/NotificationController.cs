@@ -21,9 +21,9 @@ namespace OmintakProduction.Controllers
         {
             var currentUserId = GetCurrentUserId();
             var notifications = await _context.Notification
-                .Include(n => n.User)
+                .Include(n => n.UserId)
                 .Where(n => n.UserId == currentUserId)
-                .OrderByDescending(n => n.CreatedAt)
+                //.OrderByDescending(n => n.CreatedAt)
                 .ToListAsync();
  
             return View(notifications);
@@ -38,8 +38,8 @@ namespace OmintakProduction.Controllers
             }
  
             var notification = await _context.Notification
-                .Include(n => n.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(n => n.UserId)
+                .FirstOrDefaultAsync(m => m.NotificationId == id);
  
             if (notification == null)
             {
@@ -50,7 +50,7 @@ namespace OmintakProduction.Controllers
             if (!notification.IsRead)
             {
                 notification.IsRead = true;
-                notification.ReadAt = DateTime.Now;
+                //notification.ReadAt = DateTime.Now;
                 await _context.SaveChangesAsync();
             }
  
@@ -65,7 +65,7 @@ namespace OmintakProduction.Controllers
             if (notification != null && !notification.IsRead)
             {
                 notification.IsRead = true;
-                notification.ReadAt = DateTime.Now;
+                //notification.ReadAt = DateTime.Now;
                 await _context.SaveChangesAsync();
             }
  
@@ -84,7 +84,7 @@ namespace OmintakProduction.Controllers
             foreach (var notification in unreadNotifications)
             {
                 notification.IsRead = true;
-                notification.ReadAt = DateTime.Now;
+                //notification.ReadAt = DateTime.Now;
             }
  
             await _context.SaveChangesAsync();
@@ -100,8 +100,8 @@ namespace OmintakProduction.Controllers
             }
  
             var notification = await _context.Notification
-                .Include(n => n.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(n => n.UserId)
+                .FirstOrDefaultAsync(m => m.NotificationId == id);
  
             if (notification == null)
             {
