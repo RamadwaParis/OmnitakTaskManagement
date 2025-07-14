@@ -60,3 +60,9 @@ To ensure clarity and consistency when collaborating, we follow this branch nami
 ✅ Use hyphens `-` instead of spaces or underscores.  
 ✅ Avoid very long branch names.  
 ✅ Always use lowercase letters.
+
+### ✅ Commenting Guidelines
+- Use clear, concise comments to explain complex logic or decisions.
+
+### ✅ Code Review Process
+- All code must be reviewed by all team members before merging.
