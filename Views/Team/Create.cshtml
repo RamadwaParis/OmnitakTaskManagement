@@ -1,0 +1,73 @@
+@model OmintakProduction.Models.Team
+@{
+    ViewData["Title"] = "Create Team";
+}
+<div class="container py-5" style="background: #f8f5f0; min-height: 100vh;">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg" style="border-radius: 18px; background: #f3e6d6;">
+                <div class="card-header" style="background: #7c3aed; color: #fff; border-radius: 18px 18px 0 0;">
+                    <h3 class="mb-0">Create a New Team</h3>
+                </div>
+                <div class="card-body" style="background: #fff8f3;">
+                    <form asp-action="Create" method="post">
+                        <div class="mb-3">
+                            <label asp-for="TeamName" class="form-label" style="color: #7c3aed;">Team Name</label>
+                            <input asp-for="TeamName" class="form-control" style="border-radius: 8px;" />
+                            <span asp-validation-for="TeamName" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" style="color: #7c3aed;">Select Team Members (max 5)</label>
+                            <div class="border rounded p-2" style="background: #fff; max-height: 260px; overflow-y: auto;">
+                                @using Microsoft.Extensions.Primitives;
+                                @{
+                                    var selectedIds = Context.Request.Method == "POST" ? Context.Request.Form["SelectedUserIds"] : StringValues.Empty;
+                                    var activeUsers = ViewBag.ActiveUsers as List<OmintakProduction.Models.User>;
+                                    if (activeUsers != null)
+                                    {
+                                        foreach (var user in activeUsers)
+                                        {
+                                            bool isSelected = !StringValues.IsNullOrEmpty(selectedIds) && selectedIds.Contains(user.UserId.ToString());
+                                            <div class="form-check mb-1" style="background:@(isSelected ? "#ede9fe" : "#fff"); border-radius:6px;">
+                                                <input class="form-check-input" type="checkbox" name="SelectedUserIds" id="user_@user.UserId" value="@user.UserId" @(isSelected ? "checked" : "") @(selectedIds.Count >= 5 && !isSelected ? "disabled" : "") />
+                                                <label class="form-check-label" for="user_@user.UserId" style="color:@(isSelected ? "#7c3aed" : "#333"); font-weight:@(isSelected ? "bold" : "normal");">
+                                                    @user.UserName (@user.Email)
+                                                </label>
+                                            </div>
+                                        }
+                                    }
+                                }
+                            </div>
+                            <small class="form-text text-muted">Tick up to 5 users. At least one must be selected. Selected users are highlighted.</small>
+                            @{
+                                var teamMembersState = ViewData.ModelState.ContainsKey("TeamMembers") ? ViewData.ModelState["TeamMembers"] : null;
+                            }
+                            @if (teamMembersState != null && teamMembersState.Errors.Count > 0)
+                            {
+                                <span class="text-danger">@teamMembersState.Errors[0].ErrorMessage</span>
+                            }
+                        </div>
+                        <button type="submit" class="btn btn-success" style="background: #7c3aed; color: #fff; border-radius: 8px;">Create Team</button>
+                        <a href="/Team/Index" class="btn btn-secondary ms-2" style="border-radius: 8px;">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function() {
+            // Limit selection to 5 checkboxes
+            $(document).on('change', 'input[name="SelectedUserIds"]', function() {
+                var checked = $('input[name="SelectedUserIds"]:checked').length;
+                if (checked >= 5) {
+                    $('input[name="SelectedUserIds"]').not(':checked').prop('disabled', true);
+                } else {
+                    $('input[name="SelectedUserIds"]').prop('disabled', false);
+                }
+            });
+        });
+    </script>
+}

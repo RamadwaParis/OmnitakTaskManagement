@@ -1,0 +1,93 @@
+﻿@using System.Security.Claims;
+@model IEnumerable<OmintakProduction.Models.Project>;
+@{
+    ViewData["Title"] = "Projects";
+    var phases = new[] { "Active", "OnHold", "Done", "Planning" };
+}
+<style>
+.kanban-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    padding-bottom: 1rem;
+    width: 100%;
+    overflow-x: visible;
+}
+.kanban-column {
+    background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.18), 0 1.5px 8px 0 rgba(124, 58, 237, 0.10);
+    min-width: 0;
+    flex: 1 1 0%;
+    padding: 1.5rem 1rem;
+    color: #fff;
+}
+.kanban-column-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(124, 58, 237, 0.10);
+}
+.kanban-card {
+    background: #fff;
+    color: #7c3aed;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px 0 rgba(124, 58, 237, 0.10);
+    margin-bottom: 1.2rem;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s, transform 0.2s;
+    border: none;
+}
+.kanban-card:hover {
+    box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.18);
+    transform: translateY(-2px) scale(1.01);
+}
+.kanban-card .project-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #7c3aed;
+}
+.kanban-card .project-desc {
+    color: #6b21a8;
+    font-size: 0.98rem;
+}
+.kanban-card .kanban-actions .btn {
+    border-radius: 8px;
+    font-size: 0.95rem;
+    margin-right: 0.5rem;
+}
+</style>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="work-item-title">
+        <i class="fas fa-project-diagram text-primary me-2"></i>Projects
+    </h2>
+    @if (User.FindFirst(ClaimTypes.Role)?.Value == "SystemAdmin")
+    {
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Create New Project
+        </a>
+    }
+</div>
+<div class="kanban-board">
+    @foreach (var phase in phases)
+    {
+        <div class="kanban-column">
+            <div class="kanban-column-title">@phase</div>
+            @foreach (var project in Model?.Where(p => (p.Status ?? "Planning") == phase) ?? Enumerable.Empty<OmintakProduction.Models.Project>())
+            {
+                <div class="kanban-card mb-3">
+                    <div class="project-title">@project.ProjectName</div>
+                    <div class="project-desc mb-2">@project.Description</div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-light text-purple">#@project.ProjectId</span>
+                        <div class="kanban-actions">
+                            <a asp-controller="Project" asp-action="Update" asp-route-id="@project.ProjectId" class="btn btn-sm btn-primary"><i class="fas fa-edit me-1"></i>Update</a>
+                            <a asp-controller="Project" asp-action="Delete" asp-route-id="@project.ProjectId" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash me-1"></i>Delete</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

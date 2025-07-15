@@ -1,0 +1,50 @@
+@model IEnumerable<OmintakProduction.Models.Project>
+@{
+    ViewData["Title"] = "Project Management Dashboard";
+    var statusGroups = Model.GroupBy(p => p.Status ?? "To Do");
+}
+<div class="teams-card" style="background: var(--bg-primary);">
+    <div class="work-item-header mb-4">
+        <h2 class="work-item-title mb-0">
+            <i class="fas fa-project-diagram me-2"></i>Project Management
+        </h2>
+    </div>
+    <div class="kanban-board d-flex gap-4">
+        @foreach (var group in statusGroups)
+        {
+            <div class="kanban-column" style="background: var(--project-bg); border-radius: 12px; min-width: 320px; box-shadow: 0 2px 8px rgba(0,0,0,0.07);">
+                <div class="kanban-column-header p-3" style="background: var(--teams-nude-accent); border-bottom: 1px solid var(--teams-border);">
+                    <h5 class="mb-1">@group.Key</h5>
+                </div>
+                <div class="kanban-column-body p-3">
+                    @foreach (var project in group)
+                    {
+                        <div class="kanban-card mb-3 p-2 rounded" style="background: linear-gradient(135deg, #f9fafc 60%, #e3e6f3 100%); color: #444;">
+                            <div class="kanban-card-title" style="font-size: 1.1rem; font-weight: 600; color: #0078d4; margin-bottom: 0.5rem;">@project.ProjectName</div>
+                            <div class="kanban-card-details">
+                                <span><b>Team:</b> @project.Team?.TeamName</span><br />
+                                <span><b>Due:</b> @(project.DueDate == default(DateOnly) ? "N/A" : project.DueDate.ToString("yyyy-MM-dd"))</span><br />
+                                <span><b>Status:</b> <span class="badge bg-info">@project.Status</span></span><br />
+                                <span><b>Active Users:</b></span>
+                                <ul class="list-unstyled mb-0">
+                                    @foreach (var user in project.Team?.TeamMembers ?? new List<OmintakProduction.Models.User>())
+                                    {
+                                        <li><i class="fas fa-user"></i> @user.UserName</li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<style>
+.kanban-board { background: #f6f7fb; padding: 2rem; border-radius: 16px; }
+.kanban-column { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #dbeafe; flex: 1; padding: 1rem; }
+.kanban-column-header { font-weight: bold; color: #2b2e4a; margin-bottom: 1rem; border-bottom: 2px solid #6ec1e4; padding-bottom: 0.5rem; }
+.kanban-card { background: linear-gradient(135deg, #f9fafc 60%, #e3e6f3 100%); border-radius: 8px; margin-bottom: 1rem; padding: 1rem; box-shadow: 0 1px 4px #e0e7ef; }
+.kanban-card-title { font-size: 1.1rem; font-weight: 600; color: #0078d4; margin-bottom: 0.5rem; }
+.kanban-card-details { font-size: 0.95rem; color: #444; }
+</style>

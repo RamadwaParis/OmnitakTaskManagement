@@ -1,0 +1,240 @@
+﻿@model OmintakProduction.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+<style>
+body, .teams-page-header, .teams-card, .form-control, .btn, .alert, .list-group-item {
+    background-color: var(--bg-primary) !important;
+}
+.teams-card {
+    border-radius: 18px;
+    background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%) !important;
+    box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.25), 0 1.5px 8px 0 rgba(124, 58, 237, 0.10);
+    color: #fff;
+    border: none;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.teams-card .d-flex, .teams-card .card-header, .teams-card .card-body {
+    color: #fff !important;
+}
+.teams-card:hover {
+    box-shadow: 0 16px 48px 0 rgba(124, 58, 237, 0.35), 0 3px 16px 0 rgba(124, 58, 237, 0.15);
+    transform: translateY(-2px) scale(1.01);
+}
+.teams-page-title, .teams-page-subtitle {
+    color: #fff !important;
+    text-shadow: 0 2px 8px rgba(124, 58, 237, 0.15);
+}
+.teams-page-header {
+    background: linear-gradient(90deg, #7c3aed 60%, #a78bfa 100%);
+    border-radius: 18px;
+    padding: 2rem 2rem 1rem 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 24px 0 rgba(124, 58, 237, 0.18);
+}
+.teams-card .badge, .teams-card .mb-0, .teams-card .mb-1 {
+    color: #fff !important;
+}
+.teams-card .fa-2x {
+    color: #ede9fe !important;
+    opacity: 0.7;
+}
+.teams-card .text-muted {
+    color: #ede9fe !important;
+    opacity: 0.8;
+}
+</style>
+<div class="teams-page-header">
+    <h1 class="teams-page-title">
+        <i class="fas fa-chart-line me-3"></i>
+        Dashboard
+    </h1>
+    <p class="teams-page-subtitle">Overview of your tasks, projects, and team activity</p>
+</div>
+<!-- Quick Stats Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="teams-card text-center">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h3 class="mb-1" style="color: var(--teams-purple);">@Model.ActiveTasks</h3>
+                    <p class="mb-0 text-muted">Active Tasks</p>
+                </div>
+                <i class="fas fa-tasks fa-2x" style="color: var(--teams-purple); opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="teams-card text-center">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h3 class="mb-1" style="color: var(--teams-success);">@Model.CompletedTasks</h3>
+                    <p class="mb-0 text-muted">Completed</p>
+                </div>
+                <i class="fas fa-check fa-2x" style="color: var(--teams-success); opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="teams-card text-center">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h3 class="mb-1" style="color: var(--teams-purple);">@Model.ActiveProjects</h3>
+                    <p class="mb-0 text-muted">Active Projects</p>
+                </div>
+                <i class="fas fa-project-diagram fa-2x" style="color: var(--teams-purple); opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="teams-card text-center">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h3 class="mb-1" style="color: var(--teams-warning);">@Model.ActiveTickets</h3>
+                    <p class="mb-0 text-muted">Active Tickets</p>
+                </div>
+                <i class="fas fa-ticket-alt fa-2x" style="color: var(--teams-warning); opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="teams-card text-center">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h3 class="mb-1" style="color: var(--teams-purple);">@Model.TeamCount</h3>
+                    <p class="mb-0 text-muted">Teams</p>
+                </div>
+                <i class="fas fa-users fa-2x" style="color: var(--teams-purple); opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="teams-card text-center">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h3 class="mb-1" style="color: var(--teams-error);">@Model.UnreadNotificationCount</h3>
+                    <p class="mb-0 text-muted">Unread Notifications</p>
+                </div>
+                <i class="fas fa-bell fa-2x" style="color: var(--teams-error); opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Kanban/Boards Section (if present) -->
+<!-- Add similar nude/Teams color polish to any Kanban/board sections here -->
+
+<!-- API Integration Demo -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="teams-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">
+                    <i class="fas fa-database me-2"></i>
+                    API Integration Status
+                </h5>
+                <span class="teams-status-badge status-completed">Connected</span>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-2 text-center mb-3">
+                    <div class="teams-api-status">
+                        <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                        <p class="small mb-0">Projects API</p>
+                    </div>
+                </div>
+                <div class="col-md-2 text-center mb-3">
+                    <div class="teams-api-status">
+                        <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                        <p class="small mb-0">Users API</p>
+                    </div>
+                </div>
+                <div class="col-md-2 text-center mb-3">
+                    <div class="teams-api-status">
+                        <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                        <p class="small mb-0">Tasks API</p>
+                    </div>
+                </div>
+                <div class="col-md-2 text-center mb-3">
+                    <div class="teams-api-status">
+                        <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                        <p class="small mb-0">Notifications API</p>
+                    </div>
+                </div>
+                <div class="col-md-2 text-center mb-3">
+                    <div class="teams-api-status">
+                        <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                        <p class="small mb-0">Reports API</p>
+                    </div>
+                </div>
+                <div class="col-md-2 text-center mb-3">
+                    <div class="teams-api-status">
+                        <i class="fas fa-external-link-alt fa-2x text-primary mb-2"></i>
+                        <p class="small mb-0">
+                            <a href="/swagger" target="_blank" class="text-decoration-none">
+                                Swagger UI
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .teams-api-status {
+        padding: 12px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+    
+    .teams-api-status:hover {
+        background-color: var(--teams-hover);
+        transform: translateY(-2px);
+    }
+</style>
+
+@functions {
+    private string GetNotificationIcon(OmintakProduction.Models.NotificationType type)
+    {
+        return type switch
+        {
+            OmintakProduction.Models.NotificationType.Task => "tasks",
+            OmintakProduction.Models.NotificationType.Project => "project-diagram",
+            OmintakProduction.Models.NotificationType.User => "user-plus",
+            OmintakProduction.Models.NotificationType.Warning => "exclamation-triangle",
+            OmintakProduction.Models.NotificationType.Error => "exclamation-circle",
+            OmintakProduction.Models.NotificationType.Success => "check-circle",
+            _ => "bell"
+        };
+    }
+
+    private string GetTimeAgo(DateTime dateTime)
+    {
+        var timeSpan = DateTime.Now - dateTime;
+        
+        if (timeSpan.TotalMinutes < 1)
+            return "Just now";
+        if (timeSpan.TotalMinutes < 60)
+            return $"{(int)timeSpan.TotalMinutes} minutes ago";
+        if (timeSpan.TotalHours < 24)
+            return $"{(int)timeSpan.TotalHours} hours ago";
+        if (timeSpan.TotalDays < 7)
+            return $"{(int)timeSpan.TotalDays} days ago";
+        
+        return dateTime.ToString("MMM dd, yyyy");
+    }
+}
+
+@using System.Security.Claims;
+@{
+    string firstName = null;
+    string lastName = null;
+    if (User.Identity?.IsAuthenticated == true)
+    {
+        firstName = ((ClaimsIdentity)User.Identity).Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname")?.Value ?? string.Empty;
+        lastName = ((ClaimsIdentity)User.Identity).Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname")?.Value ?? string.Empty;
+    }
+    string displayName = (!string.IsNullOrEmpty(firstName) && !string.IsNullOrEmpty(lastName)) ? $"{firstName} {lastName}" : (User.Identity?.Name ?? "User");
+}
+

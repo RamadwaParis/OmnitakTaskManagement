@@ -1,0 +1,78 @@
+@model OmintakProduction.Models.Notification
+
+@{
+    ViewData["Title"] = "Delete Notification";
+}
+
+<div class="teams-page-header">
+    <h1 class="teams-page-title">Delete Notification</h1>
+    <p class="teams-page-subtitle">Are you sure you want to delete this notification?</p>
+</div>
+
+<div class="teams-card">
+    <div class="alert alert-warning" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <strong>Warning!</strong> This action cannot be undone.
+    </div>
+
+    <div class="d-flex align-items-center mb-4">
+        <div class="notification-icon me-3">
+            @switch (Model.Type)
+            {
+                case OmintakProduction.Models.NotificationType.Task:
+                    <i class="fas fa-tasks text-primary"></i>
+                    break;
+                case OmintakProduction.Models.NotificationType.Success:
+                    <i class="fas fa-check-circle text-success"></i>
+                    break;
+                case OmintakProduction.Models.NotificationType.Project:
+                    <i class="fas fa-project-diagram text-info"></i>
+                    break;
+                case OmintakProduction.Models.NotificationType.Warning:
+                    <i class="fas fa-exclamation-triangle text-warning"></i>
+                    break;
+                case OmintakProduction.Models.NotificationType.Error:
+                    <i class="fas fa-exclamation-circle text-danger"></i>
+                    break;
+                default:
+                    <i class="fas fa-bell text-secondary"></i>
+                    break;
+            }
+        </div>
+        <div>
+            <h5 class="mb-1">@Model.Title</h5>
+            <small class="text-muted">@Model.CreatedAt.ToString("MMM dd, yyyy 'at' h:mm tt")</small>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <p>@Model.Message</p>
+    </div>
+
+    <div class="d-flex justify-content-between">
+        <a asp-action="Index" class="teams-btn teams-btn-secondary">
+            <i class="fas fa-arrow-left"></i>
+            Cancel
+        </a>
+        <form asp-action="Delete" method="post" class="d-inline">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="teams-btn" style="background: var(--teams-error);">
+                <i class="fas fa-trash"></i>
+                Delete Notification
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .notification-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: var(--teams-light-blue);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+</style>

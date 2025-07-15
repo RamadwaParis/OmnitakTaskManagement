@@ -1,0 +1,61 @@
+@model List<OmintakProduction.Models.User>
+@{
+    ViewData["Title"] = "Approve Users";
+}
+<div class="container py-5" style="background: #f8f5f0; min-height: 100vh;">
+    <h2 class="mb-4" style="color: #7c3aed;">Approve Pending Users</h2>
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    <table class="table table-bordered table-striped" style="background: #fff8f3;">
+        <thead style="background: #7c3aed; color: #fff;">
+            <tr>
+                <th>Email</th>
+                <th>Current Username</th>
+                <th>Set Username</th>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@user.UserName</td>
+                <td>
+                    <form asp-action="ApproveUser" method="post" class="d-flex">
+                        <input type="hidden" name="userId" value="@user.UserId" />
+                        <input type="text" name="newUsername" class="form-control me-2" placeholder="Enter username" required style="border-radius: 8px;" />
+                        <input type="text" name="firstName" class="form-control me-2" placeholder="First name" value="@user.FirstName" required style="border-radius: 8px;" />
+                        <input type="text" name="lastName" class="form-control me-2" placeholder="Surname" value="@user.LastName" required style="border-radius: 8px;" />
+                        <select name="teamId" class="form-select me-2" required style="border-radius: 8px;">
+                            <option value="">Select Team</option>
+                            @if (ViewBag.Teams is List<OmintakProduction.Models.Team> teams && teams != null)
+                            {
+                                foreach (var team in teams)
+                                {
+                                    <option value="@team.TeamId">@team.TeamName</option>
+                                }
+                            }
+                        </select>
+                        <button type="submit" class="btn btn-success" style="background: #7c3aed; color: #fff; border-radius: 8px;">Approve</button>
+                    </form>
+                </td>
+                <td>
+                    @if (user.isActive)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning">Pending</span>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
