@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using OmintakProduction.Data;
 using OmintakProduction.Models;
 using System.Threading.Tasks;
- 
+
 namespace OmintakProduction.Controllers
 {
     [ApiController]
@@ -15,44 +15,44 @@ namespace OmintakProduction.Controllers
         {
             _context = context;
         }
- 
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _context.ProjectReports.ToListAsync());
+            return Ok(await _context.ProjectReport.ToListAsync());
         }
- 
+
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var report = await _context.ProjectReports.FindAsync(id);
+            var report = await _context.ProjectReport.FindAsync(id);
             if (report == null) return NotFound();
             return Ok(report);
         }
- 
+
         [HttpPost]
         public async Task<IActionResult> Create(ProjectReport report)
         {
-            _context.ProjectReports.Add(report);
+            _context.ProjectReport.Add(report);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = report.ProjectReportId }, report);
+            return CreatedAtAction(nameof(Get), new { id = report.Id }, report);
         }
- 
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, ProjectReport report)
         {
-            if (id != report.ProjectReportId) return BadRequest();
+            if (id != report.Id) return BadRequest();
             _context.Entry(report).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return NoContent();
         }
- 
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var report = await _context.ProjectReports.FindAsync(id);
+            var report = await _context.ProjectReport.FindAsync(id);
             if (report == null) return NotFound();
-            _context.ProjectReports.Remove(report);
+            _context.ProjectReport.Remove(report);
             await _context.SaveChangesAsync();
             return NoContent();
         }

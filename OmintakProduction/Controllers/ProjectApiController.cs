@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using OmintakProduction.Data;
 using OmintakProduction.Models;
 using System.Threading.Tasks;
- 
+
 namespace OmintakProduction.Controllers
 {
     /// <summary>
@@ -19,7 +19,7 @@ namespace OmintakProduction.Controllers
         {
             _context = context;
         }
- 
+
         /// <summary>
         /// Get all projects
         /// </summary>
@@ -28,9 +28,9 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<Project>), 200)]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _context.Projects.ToListAsync());
+            return Ok(await _context.Project.ToListAsync());
         }
- 
+
         /// <summary>
         /// Get a specific project by ID
         /// </summary>
@@ -41,11 +41,11 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Get(int id)
         {
-            var project = await _context.Projects.FindAsync(id);
+            var project = await _context.Project.FindAsync(id);
             if (project == null) return NotFound();
             return Ok(project);
         }
- 
+
         /// <summary>
         /// Create a new project
         /// </summary>
@@ -56,11 +56,11 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> Create(Project project)
         {
-            _context.Projects.Add(project);
+            _context.Project.Add(project);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(Get), new { id = project.ProjectId }, project);
         }
- 
+
         /// <summary>
         /// Update an existing project
         /// </summary>
@@ -75,7 +75,7 @@ namespace OmintakProduction.Controllers
         {
             if (id != project.ProjectId) return BadRequest();
             _context.Entry(project).State = EntityState.Modified;
-           
+            
             try
             {
                 await _context.SaveChangesAsync();
@@ -86,10 +86,10 @@ namespace OmintakProduction.Controllers
                     return NotFound();
                 throw;
             }
-           
+            
             return NoContent();
         }
- 
+
         /// <summary>
         /// Delete a project
         /// </summary>
@@ -100,17 +100,16 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Delete(int id)
         {
-            var project = await _context.Projects.FindAsync(id);
+            var project = await _context.Project.FindAsync(id);
             if (project == null) return NotFound();
-            _context.Projects.Remove(project);
+            _context.Project.Remove(project);
             await _context.SaveChangesAsync();
             return NoContent();
         }
- 
+
         private async Task<bool> ProjectExists(int id)
         {
-            return await _context.Projects.AnyAsync(e => e.ProjectId == id);
+            return await _context.Project.AnyAsync(e => e.ProjectId == id);
         }
     }
 }
- 

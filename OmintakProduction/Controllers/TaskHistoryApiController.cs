@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OmintakProduction.Data;
 using OmintakProduction.Models;
@@ -29,7 +29,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<TaskHistory>), 200)]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _context.TaskHistories.OrderByDescending(th => th.CreatedAt).ToListAsync());
+            return Ok(await _context.TaskHistory.OrderByDescending(th => th.CreatedAt).ToListAsync());
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Get(int id)
         {
-            var history = await _context.TaskHistories.FindAsync(id);
+            var history = await _context.TaskHistory.FindAsync(id);
             if (history == null) return NotFound();
             return Ok(history);
         }
@@ -56,8 +56,8 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<TaskHistory>), 200)]
         public async Task<IActionResult> GetByTask(int taskId)
         {
-            var history = await _context.TaskHistories
-                .Where(th => th.TaskItemId == taskId)
+            var history = await _context.TaskHistory
+                .Where(th => th.TaskId == taskId)
                 .OrderByDescending(th => th.CreatedAt)
                 .ToListAsync();
             return Ok(history);
@@ -72,7 +72,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<TaskHistory>), 200)]
         public async Task<IActionResult> GetByUser(int userId)
         {
-            var history = await _context.TaskHistories
+            var history = await _context.TaskHistory
                 .Where(th => th.UserId == userId)
                 .OrderByDescending(th => th.CreatedAt)
                 .ToListAsync();
@@ -88,7 +88,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<TaskHistory>), 200)]
         public async Task<IActionResult> GetByAction(TaskHistoryAction action)
         {
-            var history = await _context.TaskHistories
+            var history = await _context.TaskHistory
                 .Where(th => th.Action == action)
                 .OrderByDescending(th => th.CreatedAt)
                 .ToListAsync();
@@ -104,7 +104,7 @@ namespace OmintakProduction.Controllers
         public async Task<IActionResult> GetRecent()
         {
             var weekAgo = DateTime.Now.AddDays(-7);
-            var history = await _context.TaskHistories
+            var history = await _context.TaskHistory
                 .Where(th => th.CreatedAt >= weekAgo)
                 .OrderByDescending(th => th.CreatedAt)
                 .ToListAsync();
@@ -121,7 +121,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<TaskHistory>), 200)]
         public async Task<IActionResult> GetByDateRange([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
         {
-            var history = await _context.TaskHistories
+            var history = await _context.TaskHistory
                 .Where(th => th.CreatedAt >= startDate && th.CreatedAt <= endDate)
                 .OrderByDescending(th => th.CreatedAt)
                 .ToListAsync();
@@ -137,8 +137,8 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(object), 200)]
         public async Task<IActionResult> GetTaskSummary(int taskId)
         {
-            var history = await _context.TaskHistories
-                .Where(th => th.TaskItemId == taskId)
+            var history = await _context.TaskHistory
+                .Where(th => th.TaskId == taskId)
                 .ToListAsync();
 
             var summary = new
@@ -164,7 +164,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(object), 200)]
         public async Task<IActionResult> GetUserSummary(int userId)
         {
-            var history = await _context.TaskHistories
+            var history = await _context.TaskHistory
                 .Where(th => th.UserId == userId)
                 .ToListAsync();
 
@@ -176,7 +176,7 @@ namespace OmintakProduction.Controllers
                 ActionCounts = history.GroupBy(h => h.Action)
                     .Select(g => new { Action = g.Key.ToString(), Count = g.Count() })
                     .ToList(),
-                TasksWorkedOn = history.Select(h => h.TaskHistoryId).Distinct().Count(),
+                TasksWorkedOn = history.Select(h => h.TaskId).Distinct().Count(),
                 ActivitiesThisWeek = history.Count(h => h.CreatedAt >= DateTime.Now.AddDays(-7))
             };
 
@@ -194,9 +194,9 @@ namespace OmintakProduction.Controllers
         public async Task<IActionResult> Create(TaskHistory history)
         {
             history.CreatedAt = DateTime.Now;
-            _context.TaskHistories.Add(history);
+            _context.TaskHistory.Add(history);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = history.TaskHistoryId }, history);
+            return CreatedAtAction(nameof(Get), new { id = history.Id }, history);
         }
 
         /// <summary>
@@ -209,16 +209,16 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Delete(int id)
         {
-            var history = await _context.TaskHistories.FindAsync(id);
+            var history = await _context.TaskHistory.FindAsync(id);
             if (history == null) return NotFound();
-            _context.TaskHistories.Remove(history);
+            _context.TaskHistory.Remove(history);
             await _context.SaveChangesAsync();
             return NoContent();
         }
 
         private async Task<bool> TaskHistoryExists(int id)
         {
-            return await _context.TaskHistories.AnyAsync(e => e.TaskHistoryId == id);
+            return await _context.TaskHistory.AnyAsync(e => e.Id == id);
         }
     }
 }

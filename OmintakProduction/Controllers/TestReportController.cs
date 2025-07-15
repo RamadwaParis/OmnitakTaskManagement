@@ -19,13 +19,13 @@ namespace OmintakProduction.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _context.TestReports.ToListAsync());
+            return Ok(await _context.TestReport.ToListAsync());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var report = await _context.TestReports.FindAsync(id);
+            var report = await _context.TestReport.FindAsync(id);
             if (report == null) return NotFound();
             return Ok(report);
         }
@@ -33,15 +33,15 @@ namespace OmintakProduction.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(TestReport report)
         {
-            _context.TestReports.Add(report);
+            _context.TestReport.Add(report);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = report.TestReportId }, report);
+            return CreatedAtAction(nameof(Get), new { id = report.Id }, report);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, TestReport report)
         {
-            if (id != report.TestReportId) return BadRequest();
+            if (id != report.Id) return BadRequest();
             _context.Entry(report).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return NoContent();
@@ -50,9 +50,9 @@ namespace OmintakProduction.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var report = await _context.TestReports.FindAsync(id);
+            var report = await _context.TestReport.FindAsync(id);
             if (report == null) return NotFound();
-            _context.TestReports.Remove(report);
+            _context.TestReport.Remove(report);
             await _context.SaveChangesAsync();
             return NoContent();
         }
