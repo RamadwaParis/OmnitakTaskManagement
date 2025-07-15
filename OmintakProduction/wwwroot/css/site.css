@@ -10,6 +10,11 @@ html {
   }
 }
 
+body, html, .container, .row, .col {
+    max-width: 100vw;
+    overflow-x: hidden;
+}
+
 body {
     background: linear-gradient(135deg, #232526 0%, #414345 100%);
     color: #f8f9fa;
@@ -54,6 +59,12 @@ body {
 }
 .nav-link:hover, .nav-link.active {
     color: #00c6ff;
+}
+
+.card, .alert, .table, .form-control, .form-select, .navbar, footer.footer {
+    background: #23272b !important;
+    color: #fff !important;
+    border: none;
 }
 
 .card {
@@ -186,4 +197,106 @@ footer.footer {
         margin-bottom: 1.5rem;
         padding: 1.5rem 1rem;
     }
+}
+
+/* Loader overlay fills the screen */
+.screen-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Kanban/Teams purple theme for all boards and cards */
+.kanban-board, .kanban-column, .kanban-card, .task-card, .tickets-table, .tickets-table th, .tickets-table td {
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+}
+.kanban-board {
+    display: flex;
+    gap: 2rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+}
+.kanban-column {
+    background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.18), 0 1.5px 8px 0 rgba(124, 58, 237, 0.10);
+    min-width: 320px;
+    flex: 1 1 320px;
+    padding: 1.5rem 1rem;
+    color: #fff;
+}
+.kanban-column-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(124, 58, 237, 0.10);
+}
+.kanban-card, .task-card {
+    background: #fff;
+    color: #7c3aed;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px 0 rgba(124, 58, 237, 0.10);
+    margin-bottom: 1.2rem;
+    padding: 1.2rem 1rem;
+    transition: box-shadow 0.2s, transform 0.2s;
+    border: none;
+}
+.kanban-card:hover, .task-card:hover {
+    box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.18);
+    transform: translateY(-2px) scale(1.01);
+}
+.status-badge {
+    border-radius: 8px;
+    padding: 0.2rem 0.7rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    background: #ede9fe;
+    color: #7c3aed;
+}
+.status-critical {
+    background: #d946ef;
+    color: #fff;
+}
+.status-in-progress {
+    background: #a78bfa;
+    color: #fff;
+}
+.status-new {
+    background: #c7d2fe;
+    color: #7c3aed;
+}
+.tickets-table {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.18), 0 1.5px 8px 0 rgba(124, 58, 237, 0.10);
+    overflow: hidden;
+}
+.tickets-table th, .tickets-table td {
+    color: #7c3aed;
+    background: #ede9fe;
+    border: none;
+    padding: 1rem 0.75rem;
+}
+.tickets-table th {
+    background: #a78bfa;
+    color: #fff;
+    font-weight: 600;
+}
+.tickets-table tr {
+    border-radius: 12px;
+    box-shadow: 0 2px 8px 0 rgba(124, 58, 237, 0.10);
+    margin-bottom: 0.5rem;
+}
+.tickets-table .btn {
+    border-radius: 8px;
+    font-size: 0.95rem;
+    margin-right: 0.5rem;
 }

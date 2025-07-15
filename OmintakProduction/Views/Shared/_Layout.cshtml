@@ -1,4 +1,21 @@
 @using System.Security.Claims;
+@{
+    var hideNavbar = false;
+    if (ViewContext.RouteData.Values["controller"]?.ToString()?.Equals("Account", StringComparison.OrdinalIgnoreCase) == true &&
+        (ViewContext.RouteData.Values["action"]?.ToString()?.Equals("Login", StringComparison.OrdinalIgnoreCase) == true ||
+         ViewContext.RouteData.Values["action"]?.ToString()?.Equals("Register", StringComparison.OrdinalIgnoreCase) == true))
+    {
+        hideNavbar = true;
+    }
+    string firstName = null;
+    string lastName = null;
+    if (User.Identity?.IsAuthenticated == true)
+    {
+        firstName = ((ClaimsIdentity)User.Identity).Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname")?.Value;
+        lastName = ((ClaimsIdentity)User.Identity).Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname")?.Value;
+    }
+    string displayName = (firstName != null && lastName != null) ? $"{firstName} {lastName}" : User.Identity?.Name ?? "User";
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -6,25 +23,78 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Omnitak Task Management</title>
-
+    
     <!-- Microsoft Fluent UI and Teams styling -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+    
     <style>
         :root {
+            /* Vibrant Teams Nude + Edge Theme */
             --teams-purple: #6264A7;
             --teams-blue: #5B5FC7;
             --teams-light-blue: #E8F3FF;
+            --teams-nude: #F5EBDD;
+            --teams-nude-dark: #E2CFC3;
+            --teams-nude-accent: #F7D9C4;
+            --edge-green: #3AB795;
+            --edge-blue: #00A4EF;
+            --edge-violet: #7C4DFF;
+            --edge-pink: #FF6F91;
+            --edge-orange: #FFB86F;
             --teams-gray: #F3F2F1;
             --teams-dark-gray: #484644;
             --teams-border: #E1DFDD;
             --teams-hover: #F5F5F5;
-            --teams-text: #323130;
             --teams-success: #107C10;
             --teams-warning: #FF8C00;
             --teams-error: #D13438;
+            --text-on-light: #1A1A1A;
+            --text-on-dark: #F5F5F5;
+            --text-primary: #202020;
+            --text-secondary: #4A4A4A;
+            --text-subtle: #6B6B6B;
+            --text-disabled: #999999;
+            --bg-primary: var(--teams-nude);
+            --bg-secondary: var(--teams-nude-accent);
+            --bg-accent: var(--edge-blue);
+            --bg-dark: var(--teams-nude-dark);
+            --bg-card: #FFFFFF;
+            --input-bg: #FFFFFF;
+            --input-border: #BEBEBE;
+            --input-border-focus: var(--edge-blue);
+            --input-text: #1F1F1F;
+            --input-placeholder: #757575;
+            --input-label: #2D2D2D;
+            --link-color: var(--edge-blue);
+            --link-hover: var(--edge-violet);
+            --button-primary-bg: var(--edge-blue);
+            --button-primary-text: #FFFFFF;
+            --button-secondary-bg: var(--teams-nude-accent);
+            --button-secondary-text: #1F1F1F;
+            --success-bg: #E8F5E8;
+            --success-text: #0D4F0D;
+            --success-border: #4CAF50;
+            --warning-bg: #FFF8E1;
+            --warning-text: #B8860B;
+            --warning-border: #FF9800;
+            --error-bg: #FFEBEE;
+            --error-text: #B71C1C;
+            --error-border: #F44336;
+            --sidebar-bg: var(--teams-nude-dark);
+            --sidebar-text: var(--text-primary);
+            --sidebar-link-hover: var(--teams-nude-accent);
+            --sidebar-active-bg: var(--edge-blue);
+            --sidebar-active-text: #FFFFFF;
+            --task-bg: var(--teams-nude);
+            --task-text: #1F1F1F;
+            --task-border: #DDDDDD;
+            --task-hover-bg: var(--teams-nude-accent);
+            --project-bg: var(--teams-nude-accent);
+            --project-text: #2D2D2D;
+            --bug-bg: var(--edge-pink);
+            --bug-text: #2D1B1B;
         }
 
         * {
@@ -32,7 +102,8 @@
         }
 
         body {
-            background-color: var(--teams-gray);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
             margin: 0;
             padding: 0;
             height: 100vh;
@@ -41,7 +112,7 @@
 
         .teams-header {
             background: linear-gradient(135deg, var(--teams-purple) 0%, var(--teams-blue) 100%);
-            color: white;
+            color: var(--text-on-dark);
             padding: 0;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             position: fixed;
@@ -63,21 +134,21 @@
         .teams-brand {
             display: flex;
             align-items: center;
-            color: white;
+            color: var(--text-on-dark);
             text-decoration: none;
             font-weight: 600;
             font-size: 1.2rem;
         }
 
-            .teams-brand:hover {
-                color: white;
-                text-decoration: none;
-            }
+        .teams-brand:hover {
+            color: var(--text-on-dark);
+            text-decoration: none;
+        }
 
-            .teams-brand i {
-                margin-right: 12px;
-                font-size: 1.8rem;
-            }
+        .teams-brand i {
+            margin-right: 12px;
+            font-size: 1.8rem;
+        }
 
         .teams-nav-links {
             display: flex;
@@ -93,7 +164,7 @@
         }
 
         .teams-nav-link {
-            color: white;
+            color: var(--text-on-dark);
             text-decoration: none;
             padding: 8px 16px;
             border-radius: 4px;
@@ -104,21 +175,21 @@
             gap: 8px;
         }
 
-            .teams-nav-link:hover {
-                background-color: rgba(255,255,255,0.1);
-                color: white;
-                text-decoration: none;
-            }
+        .teams-nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: var(--text-on-dark);
+            text-decoration: none;
+        }
 
-            .teams-nav-link.active {
-                background-color: rgba(255,255,255,0.2);
-            }
+        .teams-nav-link.active {
+            background-color: rgba(255,255,255,0.2);
+        }
 
         .teams-user-profile {
             display: flex;
             align-items: center;
             gap: 12px;
-            color: white;
+            color: var(--text-on-dark);
         }
 
         .teams-avatar {
@@ -130,6 +201,7 @@
             align-items: center;
             justify-content: center;
             font-weight: 600;
+            color: var(--text-on-dark);
         }
 
         .teams-main-container {
@@ -145,7 +217,7 @@
 
         .teams-sidebar {
             width: 280px;
-            background: white;
+            background: var(--sidebar-bg);
             border-right: 1px solid var(--teams-border);
             padding: 24px 0;
             overflow-y: auto;
@@ -160,7 +232,7 @@
         .teams-sidebar-title {
             font-size: 0.875rem;
             font-weight: 600;
-            color: var(--teams-dark-gray);
+            color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin: 0 24px 12px;
@@ -171,35 +243,36 @@
             align-items: center;
             gap: 12px;
             padding: 12px 24px;
-            color: var(--teams-text);
+            color: var(--sidebar-text);
             text-decoration: none;
             transition: all 0.2s ease;
             border-left: 3px solid transparent;
         }
 
-            .teams-sidebar-link:hover {
-                background-color: var(--teams-hover);
-                color: var(--teams-text);
-                text-decoration: none;
-            }
+        .teams-sidebar-link:hover {
+            background-color: var(--sidebar-link-hover);
+            color: var(--sidebar-text);
+            text-decoration: none;
+        }
 
-            .teams-sidebar-link.active {
-                background-color: var(--teams-light-blue);
-                border-left-color: var(--teams-blue);
-                color: var(--teams-blue);
-                font-weight: 600;
-            }
+        .teams-sidebar-link.active {
+            background-color: var(--sidebar-active-bg);
+            border-left-color: var(--sidebar-active-text);
+            color: var(--sidebar-active-text);
+            font-weight: 600;
+        }
 
         .teams-content {
             flex: 1;
             padding: 24px;
-            background: white;
+            background: var(--input-bg);
             margin: 16px;
             border-radius: 8px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             overflow-y: auto;
             height: calc(100% - 32px);
             max-height: calc(100% - 32px);
+            color: var(--text-primary);
         }
 
         .teams-page-header {
@@ -211,34 +284,35 @@
         .teams-page-title {
             font-size: 2rem;
             font-weight: 600;
-            color: var(--teams-text);
+            color: var(--text-primary);
             margin: 0;
         }
 
         .teams-page-subtitle {
             font-size: 1rem;
-            color: #666;
+            color: var(--text-secondary);
             margin: 8px 0 0;
         }
 
         .teams-card {
-            background: white;
+            background: var(--input-bg);
             border: 1px solid var(--teams-border);
             border-radius: 8px;
             padding: 24px;
             margin-bottom: 16px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             transition: all 0.2s ease;
+            color: var(--text-primary);
         }
 
-            .teams-card:hover {
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-                transform: translateY(-1px);
-            }
+        .teams-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-1px);
+        }
 
         .teams-btn {
-            background: var(--teams-purple);
-            color: white;
+            background: var(--button-primary-bg);
+            color: var(--button-primary-text);
             border: none;
             padding: 10px 20px;
             border-radius: 4px;
@@ -249,23 +323,23 @@
             gap: 8px;
         }
 
-            .teams-btn:hover {
-                background: var(--teams-blue);
-                color: white;
-                transform: translateY(-1px);
-                box-shadow: 0 4px 12px rgba(98, 100, 167, 0.3);
-            }
-
-        .teams-btn-secondary {
-            background: white;
-            color: var(--teams-purple);
-            border: 1px solid var(--teams-purple);
+        .teams-btn:hover {
+            background: var(--link-hover);
+            color: var(--button-primary-text);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 120, 212, 0.3);
         }
 
-            .teams-btn-secondary:hover {
-                background: var(--teams-purple);
-                color: white;
-            }
+        .teams-btn-secondary {
+            background: var(--button-secondary-bg);
+            color: var(--button-secondary-text);
+            border: 1px solid var(--input-border);
+        }
+
+        .teams-btn-secondary:hover {
+            background: var(--bg-secondary);
+            color: var(--button-secondary-text);
+        }
 
         .teams-status-badge {
             padding: 4px 12px;
@@ -276,129 +350,696 @@
             letter-spacing: 0.5px;
         }
 
-        .status-todo {
-            background: #FFF4E6;
-            color: #FF8C00;
+        .status-todo { 
+            background: var(--warning-bg); 
+            color: var(--warning-text); 
+        }
+        .status-progress { 
+            background: var(--bg-accent); 
+            color: var(--link-color); 
+        }
+        .status-review { 
+            background: #F3E6FF; 
+            color: #6B46C1; 
+        }
+        .status-completed { 
+            background: var(--success-bg); 
+            color: var(--success-text); 
         }
 
-        .status-progress {
-            background: #E8F3FF;
+        /* Form and Input Styling - High Contrast */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label,
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--input-label);
+            font-size: 0.875rem;
+        }
+
+        .form-control,
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        input[type="date"],
+        input[type="datetime-local"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--input-border);
+            border-radius: 4px;
+            background-color: var(--input-bg);
+            color: var(--input-text);
+            font-size: 0.875rem;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .form-control::placeholder,
+        input::placeholder,
+        textarea::placeholder {
+            color: var(--input-placeholder);
+            opacity: 1;
+        }
+
+        .form-control:focus,
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--input-border-focus);
+            box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.1);
+            background-color: var(--input-bg);
+            color: var(--input-text);
+        }
+
+        .form-control:disabled,
+        input:disabled,
+        textarea:disabled,
+        select:disabled {
+            background-color: var(--bg-secondary);
+            color: var(--text-subtle);
+            border-color: var(--input-border);
+            cursor: not-allowed;
+        }
+
+        /* Select dropdown styling */
+        select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+
+        /* Button Styling */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            line-height: 1;
+        }
+
+        .btn-primary {
+            background-color: var(--button-primary-bg);
+            color: var(--button-primary-text);
+            border-color: var(--button-primary-bg);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--link-hover);
+            border-color: var(--link-hover);
+            color: var(--button-primary-text);
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background-color: var(--button-secondary-bg);
+            color: var(--button-secondary-text);
+            border-color: var(--input-border);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--bg-secondary);
+            color: var(--button-secondary-text);
+            text-decoration: none;
+        }
+
+        .btn-success {
+            background-color: var(--teams-success);
+            color: var(--text-on-dark);
+            border-color: var(--teams-success);
+        }
+
+        .btn-warning {
+            background-color: var(--teams-warning);
+            color: var(--text-on-dark);
+            border-color: var(--teams-warning);
+        }
+
+        .btn-danger {
+            background-color: var(--teams-error);
+            color: var(--text-on-dark);
+            border-color: var(--teams-error);
+        }
+
+        /* Link Styling */
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: var(--link-hover);
+            text-decoration: underline;
+        }
+
+        /* Table Styling */
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            vertical-align: top;
+            border-top: 1px solid var(--teams-border);
+        }
+
+        .table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid var(--teams-border);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .table tbody tr:hover {
+            background-color: var(--bg-accent);
+        }
+
+        /* Card Styling */
+        .card {
+            background-color: var(--input-bg);
+            border: 1px solid var(--teams-border);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            padding: 1rem 1.25rem;
+            margin-bottom: 0;
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--teams-border);
+            border-radius: 8px 8px 0 0;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        /* Alert/Status Styling */
+        .alert {
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .alert-success {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+            border-color: var(--success-text);
+        }
+
+        .alert-warning {
+            background-color: var(--warning-bg);
+            color: var(--warning-text);
+            border-color: var(--warning-text);
+        }
+
+        .alert-danger {
+            background-color: var(--error-bg);
+            color: var(--error-text);
+            border-color: var(--error-text);
+        }
+
+        /* Badge Styling */
+        .badge {
+            display: inline-block;
+            padding: 0.35em 0.65em;
+            font-size: 0.75em;
+            font-weight: 600;
+            line-height: 1;
+            text-align: center;
+            border-radius: 0.375rem;
+        }
+
+        .badge-success {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+        }
+
+        .badge-warning {
+            background-color: var(--warning-bg);
+            color: var(--warning-text);
+        }
+
+        .badge-danger {
+            background-color: var(--error-bg);
+            color: var(--error-text);
+        }
+
+        .badge-info {
+            background-color: var(--bg-accent);
+            color: var(--link-color);
+        }
+
+        /* Page Title Styling */
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title {
+            color: var(--text-primary);
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        /* Validation Error Styling */
+        .field-validation-error {
+            color: var(--error-text);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .input-validation-error {
+            border-color: var(--teams-error);
+        }
+
+        .validation-summary-errors {
+            background-color: var(--error-bg);
+            color: var(--error-text);
+            padding: 0.75rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        /* Search and Filter Styling */
+        .search-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            background-color: var(--input-bg);
+            color: var(--input-text);
+            border: 2px solid var(--input-border);
+        }
+
+        .search-input:focus {
+            border-color: var(--input-border-focus);
+            background-color: var(--input-bg);
+        }
+
+        /* Ensure proper contrast for all text elements */
+        p, span, div, li {
+            color: var(--text-primary);
+        }
+
+        .text-muted {
+            color: var(--text-secondary);
+        }
+
+        .text-subtle {
+            color: var(--text-subtle);
+        }
+
+        /* Fix any Bootstrap overrides */
+        .form-control:focus {
+            color: var(--input-text) !important;
+            background-color: var(--input-bg) !important;
+        }
+
+        /* Dark theme support for modals and dropdowns */
+        .modal-content {
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+        }
+
+        .dropdown-menu {
+            background-color: var(--input-bg);
+            border: 1px solid var(--teams-border);
+        }
+
+        .dropdown-item {
+            color: var(--text-primary);
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--bg-accent);
+            color: var(--text-primary);
+        }
+
+        /* Enhanced Work Item Styles */
+        .work-item-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--teams-border);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .work-item-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-1px);
+        }
+
+        .work-item-header {
+            background-color: var(--bg-accent);
+            color: var(--text-primary);
+            padding: 16px;
+            border-bottom: 1px solid var(--teams-border);
+            border-radius: 8px 8px 0 0;
+        }
+
+        .work-item-body {
+            padding: 20px;
+            color: var(--text-primary);
+        }
+
+        .work-item-title {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .work-item-description {
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .work-item-meta {
+            color: var(--text-subtle);
+            font-size: 0.875rem;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge.status-open,
+        .status-badge.status-new {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+            border: 1px solid var(--success-border);
+        }
+
+        .status-badge.status-in-progress {
+            background-color: var(--warning-bg);
+            color: var(--warning-text);
+            border: 1px solid var(--warning-border);
+        }
+
+        .status-badge.status-closed,
+        .status-badge.status-completed {
+            background-color: var(--teams-gray);
+            color: var(--text-primary);
+            border: 1px solid var(--teams-border);
+        }
+
+        .status-badge.status-critical,
+        .status-badge.status-high {
+            background-color: var(--error-bg);
+            color: var(--error-text);
+            border: 1px solid var(--error-border);
+        }
+
+        /* Enhanced Form Styles for Work Items */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            color: var(--input-label);
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control {
+            background-color: var(--input-bg);
+            color: var(--input-text);
+            border: 2px solid var(--input-border);
+            border-radius: 6px;
+            padding: 12px 16px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--input-border-focus);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+            background-color: var(--input-bg);
+            color: var(--input-text);
+        }
+
+        .form-control::placeholder {
+            color: var(--input-placeholder);
+        }
+
+        .btn-primary {
+            background-color: var(--button-primary-bg);
+            border-color: var(--button-primary-bg);
+            color: var(--button-primary-text);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--link-hover);
+            border-color: var(--link-hover);
+            color: var(--button-primary-text);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn-secondary {
+            background-color: var(--button-secondary-bg);
+            border-color: var(--teams-border);
+            color: var(--button-secondary-text);
+            font-weight: 500;
+            padding: 12px 24px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--teams-hover);
+            color: var(--button-secondary-text);
+            border-color: var(--input-border-focus);
+        }
+
+        /* Login/Register Page Styles */
+        .auth-page-body {
+            background: var(--auth-bg);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background-color: var(--auth-card-bg);
+            color: var(--auth-card-text);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+            max-width: 480px;
+            width: 100%;
+        }
+
+        .auth-card .card-header {
+            background: linear-gradient(135deg, var(--teams-purple) 0%, var(--teams-blue) 100%);
+            color: var(--text-on-dark);
+            border: none;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .auth-card .card-body {
+            padding: 40px 30px;
+        }
+
+        .auth-card .form-control {
+            background-color: var(--auth-input-bg);
+            color: var(--auth-input-text);
+            border: 2px solid var(--auth-input-border);
+            border-radius: 8px;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .auth-card .form-control:focus {
+            border-color: var(--auth-input-focus);
+            box-shadow: 0 0 0 4px rgba(91, 95, 199, 0.15);
+            background-color: var(--auth-input-bg);
+            color: var(--auth-input-text);
+        }
+
+        .auth-card .form-label {
+            color: var(--auth-card-text);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .auth-card .btn {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .auth-card .btn-info {
+            background: linear-gradient(135deg, var(--teams-purple) 0%, var(--teams-blue) 100%);
+            border: none;
+            color: var(--text-on-dark);
+        }
+
+        .auth-card .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(91, 95, 199, 0.3);
+        }
+
+        .auth-card .btn-outline-secondary {
+            border: 2px solid var(--teams-border);
+            color: var(--text-secondary);
+            background-color: transparent;
+        }
+
+        .auth-card .btn-outline-secondary:hover {
+            background-color: var(--bg-accent);
+            border-color: var(--teams-blue);
             color: var(--teams-blue);
         }
 
-        .status-review {
-            background: #F3E6FF;
-            color: var(--teams-purple);
+        /* Postman Button Styling */
+        .postman-run-button {
+            background: linear-gradient(135deg, #FF6C37 0%, #FF8660 100%) !important;
+            color: white !important;
+            border-radius: 6px;
+            transition: all 0.3s ease;
         }
 
-        .status-completed {
-            background: #E6F7E6;
-            color: var(--teams-success);
+        .postman-run-button:hover {
+            background: linear-gradient(135deg, #FF5722 0%, #FF6C37 100%) !important;
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 108, 55, 0.3);
+        }
+
+        .postman-run-button i {
+            color: white !important;
         }
 
         @@media (max-width: 768px) {
             .teams-sidebar {
                 display: none;
             }
-
             .teams-content {
                 margin: 8px;
                 padding: 16px;
             }
-
             .teams-nav {
                 padding: 12px 16px;
             }
-
             .teams-nav-links {
                 gap: 4px;
             }
-
             .teams-nav-link span {
                 display: none;
             }
         }
     </style>
-
+    
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
-<body>
-    <header class="teams-header">
-        <nav class="teams-nav">
-            <a class="teams-brand" asp-controller="Home" asp-action="Index">
-                <i class="fas fa-tasks"></i>
-                <span>Omnitak Task Management</span>
-            </a>
-
-            @if (User.Identity?.IsAuthenticated == true)
-            {
-                <ul class="teams-nav-links">
-                    @if (User.IsInRole("SystemAdmin"))
-                    {
+<body class="@(hideNavbar ? "auth-page-body" : "")">
+    @if (!hideNavbar)
+    {
+        <header class="teams-header">
+            <nav class="teams-nav">
+                <!-- Home tab removed -->
+                <span class="teams-brand-text"><i class="fas fa-tasks"></i> Omnitak Task Management</span>
+                
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <ul class="teams-nav-links">
+                        @if (User.IsInRole("SystemAdmin"))
+                        {
+                            <!-- Approve Users moved to Tools -->
+                        }
+                        <!-- API removed from top nav -->
+                    </ul>
+                    <div class="teams-user-profile">
+                        <div class="teams-avatar">
+                            @(displayName.Substring(0, 1).ToUpper())
+                        </div>
+                        <span>@displayName</span>
+                        <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline;">
+                            <button type="submit" class="teams-nav-link" style="background:none;border:none;padding:0;margin:0;cursor:pointer;">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </button>
+                            @Html.AntiForgeryToken()
+                        </form>
+                    </div>
+                }
+                else
+                {
+                    <ul class="teams-nav-links">
                         <li class="teams-nav-item">
-                            <a class="teams-nav-link" href="/Admin/PendingUsers">
-                                <i class="fas fa-user-check"></i>
-                                <span>Approve Users</span>
+                            <a class="teams-nav-link" asp-controller="Account" asp-action="Login">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span>Login</span>
                             </a>
                         </li>
-                    }
-                    <li class="teams-nav-item">
-                        <a class="teams-nav-link" asp-controller="Dashboard" asp-action="Index">
-                            <i class="fas fa-chart-line"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="teams-nav-item">
-                        <a class="teams-nav-link" href="/swagger" target="_blank">
-                            <i class="fas fa-code"></i>
-                            <span>API</span>
-                        </a>
-                    </li>
-                </ul>
+                        <li class="teams-nav-item">
+                            <a class="teams-nav-link" asp-controller="Account" asp-action="Register">
+                                <i class="fas fa-user-plus"></i>
+                                <span>Register</span>
+                            </a>
+                        </li>
+                    </ul>
+                }
+            </nav>
+        </header>
+    }
 
-                <div class="teams-user-profile">
-                    <div class="teams-avatar">
-                        @(User.Identity.Name?.Substring(0, 1).ToUpper() ?? "U")
-                    </div>
-                    <span>@User.Identity.Name</span>
-                    <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline;">
-                        <button type="submit" class="teams-nav-link" style="background:none;border:none;padding:0;margin:0;cursor:pointer;">
-                            <i class="fas fa-sign-out-alt"></i>
-                        </button>
-                        @Html.AntiForgeryToken()
-                    </form>
-                </div>
-            }
-            else
-            {
-                <ul class="teams-nav-links">
-                    <li class="teams-nav-item">
-                        <a class="teams-nav-link" asp-controller="Account" asp-action="Login">
-                            <i class="fas fa-sign-in-alt"></i>
-                            <span>Login</span>
-                        </a>
-                    </li>
-                    <li class="teams-nav-item">
-                        <a class="teams-nav-link" asp-controller="Account" asp-action="Register">
-                            <i class="fas fa-user-plus"></i>
-                            <span>Register</span>
-                        </a>
-                    </li>
-                </ul>
-            }
-        </nav>
-    </header>
-
-    @if (User.Identity?.IsAuthenticated == true)
+    @if (hideNavbar)
+    {
+        <!-- Login/Register pages without navbar -->
+        <main style="display: contents;">
+            @RenderBody()
+        </main>
+    }
+    else if (User.Identity?.IsAuthenticated == true)
     {
         <div class="teams-main-container">
             <aside class="teams-sidebar">
                 <div class="teams-sidebar-section">
                     <h6 class="teams-sidebar-title">Main</h6>
-                    <a class="teams-sidebar-link" asp-controller="Home" asp-action="Index">
-                        <i class="fas fa-home"></i>
-                        <span>Home</span>
-                    </a>
+                    <!-- Home tab removed -->
                     <a class="teams-sidebar-link" asp-controller="Dashboard" asp-action="Index">
                         <i class="fas fa-chart-line"></i>
                         <span>Dashboard</span>
@@ -407,7 +1048,7 @@
 
                 <div class="teams-sidebar-section">
                     <h6 class="teams-sidebar-title">Work Items</h6>
-                    <a class="teams-sidebar-link" asp-controller="Ticket" asp-action="Index">
+                    <a class="teams-sidebar-link" asp-controller="Ticket" asp-action="Dashboard">
                         <i class="fas fa-ticket-alt"></i>
                         <span>Tickets</span>
                     </a>
@@ -421,15 +1062,17 @@
                     </a>
                 </div>
 
+                <!-- REPORTS Section -->
                 <div class="teams-sidebar-section">
-                    <h6 class="teams-sidebar-title">Reports</h6>
+                    <div class="teams-sidebar-title">REPORTS</div>
+                    <a class="teams-sidebar-link" asp-controller="BugReport" asp-action="Index">
+                        <i class="fas fa-bug"></i> Bug Reports
+                    </a>
                     <a class="teams-sidebar-link" asp-controller="ProjectReport" asp-action="Index">
-                        <i class="fas fa-chart-bar"></i>
-                        <span>Project Reports</span>
+                        <i class="fas fa-file-alt"></i> Project Reports
                     </a>
                     <a class="teams-sidebar-link" asp-controller="TestReport" asp-action="Index">
-                        <i class="fas fa-flask"></i>
-                        <span>Test Reports</span>
+                        <i class="fas fa-vial"></i> Test Reports
                     </a>
                 </div>
 
@@ -448,9 +1091,24 @@
 
                 <div class="teams-sidebar-section">
                     <h6 class="teams-sidebar-title">Tools</h6>
+                    @if (User.IsInRole("SystemAdmin"))
+                    {
+                        <a class="teams-sidebar-link" href="/Admin/PendingUsers">
+                            <i class="fas fa-user-check"></i>
+                            <span>Approve Users</span>
+                        </a>
+                    }
                     <a class="teams-sidebar-link" href="/swagger" target="_blank">
                         <i class="fas fa-code"></i>
                         <span>API Documentation</span>
+                    </a>
+                    <a class="teams-sidebar-link" href="/postman/Omnitak-Task-Management-API.postman_collection.json" download>
+                        <i class="fas fa-download"></i>
+                        <span>Download Postman Collection</span>
+                    </a>
+                    <a class="teams-sidebar-link postman-run-button" href="#" onclick="openPostmanCollection()">
+                        <i class="fas fa-play"></i>
+                        <span>Run in Postman</span>
                     </a>
                     <a class="teams-sidebar-link" href="#settings">
                         <i class="fas fa-cog"></i>
@@ -476,14 +1134,14 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
+    
     <script>
-        // Modern Teams-like interactions
+        // Enhanced Teams-like interactions with auto-adjusting font colors
         document.addEventListener('DOMContentLoaded', function() {
             // Add active class to current nav item
             const currentPath = window.location.pathname;
             const sidebarLinks = document.querySelectorAll('.teams-sidebar-link');
-
+            
             sidebarLinks.forEach(link => {
                 if (link.getAttribute('href') === currentPath) {
                     link.classList.add('active');
@@ -491,7 +1149,7 @@
             });
 
             // Add smooth transitions
-            const cards = document.querySelectorAll('.teams-card');
+            const cards = document.querySelectorAll('.teams-card, .work-item-card');
             cards.forEach(card => {
                 card.addEventListener('mouseenter', function() {
                     this.style.transform = 'translateY(-2px)';
@@ -501,33 +1159,197 @@
                 });
             });
 
+            // Auto-adjusting font color function
+            function getContrastColor(backgroundColor) {
+                // Convert hex to RGB
+                let r, g, b;
+                if (backgroundColor.startsWith('#')) {
+                    const hex = backgroundColor.slice(1);
+                    r = parseInt(hex.substr(0, 2), 16);
+                    g = parseInt(hex.substr(2, 2), 16);
+                    b = parseInt(hex.substr(4, 2), 16);
+                } else if (backgroundColor.startsWith('rgb')) {
+                    const matches = backgroundColor.match(/\d+/g);
+                    r = parseInt(matches[0]);
+                    g = parseInt(matches[1]);
+                    b = parseInt(matches[2]);
+                } else {
+                    // Default to dark text for unknown formats
+                    return '#1F1F1F';
+                }
+
+                // Calculate luminance
+                const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                
+                // Return high contrast color based on luminance
+                if (luminance > 0.7) {
+                    return '#1F1F1F'; // Very dark text for light backgrounds
+                } else if (luminance > 0.5) {
+                    return '#2D2D2D'; // Dark text for medium-light backgrounds
+                } else if (luminance > 0.3) {
+                    return '#4A4A4A'; // Medium-dark text for medium backgrounds
+                } else {
+                    return '#EFEFEF'; // Light text for dark backgrounds
+                }
+            }
+
+            // Apply auto-contrast to elements with the class
+            function applyAutoContrast() {
+                const autoContrastElements = document.querySelectorAll('.auto-contrast-text');
+                autoContrastElements.forEach(element => {
+                    const computedStyle = window.getComputedStyle(element);
+                    const backgroundColor = computedStyle.backgroundColor;
+                    const contrastColor = getContrastColor(backgroundColor);
+                    element.style.color = contrastColor;
+                });
+            }
+
+            // Run auto-contrast on load and when needed
+            applyAutoContrast();
+
+            // Re-apply when content changes (useful for dynamic content)
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'childList') {
+                        applyAutoContrast();
+                    }
+                });
+            });
+
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+
             // Load notification count if user is authenticated
             @if (User.Identity?.IsAuthenticated == true)
             {
-                    <text>
-                    loadNotificationCount();
-
-                    function loadNotificationCount() {
-                        fetch('/Notification/GetUnreadCount')
-                            .then(response => response.json())
-                            .then(data => {
-                                const badge = document.getElementById('notification-badge');
-                                if (badge) {
-                                    if (data.count > 0) {
-                                        badge.textContent = data.count;
-                                        badge.style.display = 'inline';
-                                    } else {
-                                        badge.style.display = 'none';
-                                    }
+                <text>
+                loadNotificationCount();
+                
+                function loadNotificationCount() {
+                    fetch('/Notification/GetUnreadCount')
+                        .then(response => response.json())
+                        .then(data => {
+                            const badge = document.getElementById('notification-badge');
+                            if (badge) {
+                                if (data.count > 0) {
+                                    badge.textContent = data.count;
+                                    badge.style.display = 'inline';
+                                } else {
+                                    badge.style.display = 'none';
                                 }
-                            })
-                            .catch(error => console.error('Error loading notification count:', error));
-                    }
-                    </text>
+                            }
+                        })
+                        .catch(error => console.error('Error loading notification count:', error));
+                }
+                </text>
+            }
+
+            // Enhanced form validation for auth pages
+            @if (hideNavbar)
+            {
+                <text>
+                const forms = document.querySelectorAll('.needs-validation');
+                forms.forEach(form => {
+                    form.addEventListener('submit', function(event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    });
+                });
+
+                // Add floating label effect
+                const inputs = document.querySelectorAll('.form-control');
+                inputs.forEach(input => {
+                    input.addEventListener('focus', function() {
+                        this.parentElement.classList.add('input-focused');
+                    });
+                    input.addEventListener('blur', function() {
+                        if (!this.value) {
+                            this.parentElement.classList.remove('input-focused');
+                        }
+                    });
+                });
+                </text>
             }
         });
-    </script>
 
+        // Global function to apply auto-contrast to specific elements
+        window.applyAutoContrastToElement = function(element, backgroundColor) {
+            if (backgroundColor) {
+                const contrastColor = getContrastColor(backgroundColor);
+                element.style.color = contrastColor;
+            }
+        };
+
+        // Function to open Postman with collection
+        window.openPostmanCollection = function() {
+            // Get the base URL
+            const baseUrl = window.location.origin;
+            const collectionUrl = `${baseUrl}/postman/Omnitak-Task-Management-API.postman_collection.json`;
+            
+            // Try to open in Postman app first, fallback to download
+            const postmanUrl = `https://app.getpostman.com/run-collection/${encodeURIComponent(collectionUrl)}`;
+            
+            // Show instructions modal
+            showPostmanInstructions(collectionUrl);
+        };
+
+        // Function to show Postman instructions
+        window.showPostmanInstructions = function(collectionUrl) {
+            // Create modal HTML
+            const modalHtml = `
+                <div id="postmanModal" style="
+                    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                    background: rgba(0,0,0,0.5); z-index: 9999; display: flex; 
+                    align-items: center; justify-content: center;">
+                    <div style="
+                        background: white; padding: 30px; border-radius: 12px; 
+                        max-width: 600px; width: 90%; box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
+                        <h3 style="margin: 0 0 20px 0; color: #333;">
+                            <i class="fas fa-rocket" style="color: #FF6C37; margin-right: 10px;"></i>
+                            Import Postman Collection
+                        </h3>
+                        <p style="margin-bottom: 20px; color: #666;">
+                            Follow these steps to import the Omnitak API collection into Postman:
+                        </p>
+                        <ol style="color: #666; line-height: 1.6;">
+                            <li><strong>Download the collection:</strong> 
+                                <a href="${collectionUrl}" download style="color: #0066CC;">Click here to download</a>
+                            </li>
+                            <li><strong>Open Postman:</strong> Launch the Postman desktop app</li>
+                            <li><strong>Import:</strong> Click "Import" in the top-left corner</li>
+                            <li><strong>Select file:</strong> Choose the downloaded JSON file</li>
+                            <li><strong>Start testing:</strong> All API endpoints will be ready to use!</li>
+                        </ol>
+                        <div style="margin-top: 25px; text-align: center;">
+                            <button onclick="window.open('${collectionUrl}', '_blank')" 
+                                style="background: #FF6C37; color: white; border: none; 
+                                       padding: 12px 24px; border-radius: 6px; margin-right: 10px;
+                                       cursor: pointer; font-weight: 500;">
+                                <i class="fas fa-download"></i> Download Collection
+                            </button>
+                            <button onclick="document.getElementById('postmanModal').remove()" 
+                                style="background: #6c757d; color: white; border: none; 
+                                       padding: 12px 24px; border-radius: 6px; cursor: pointer;">
+                                Close
+                            </button>
+                        </div>
+                        <p style="margin-top: 20px; font-size: 14px; color: #999; text-align: center;">
+                            Don't have Postman? <a href="https://www.postman.com/downloads/" target="_blank" style="color: #0066CC;">Download it here</a>
+                        </p>
+                    </div>
+                </div>
+            `;
+            
+            // Add modal to page
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        };
+    </script>
+    
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

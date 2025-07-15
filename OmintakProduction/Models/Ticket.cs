@@ -10,15 +10,20 @@
 
     public class Ticket
     {
-        public int TicketId { get; set; }
+
+
+        public int Id { get; set; }
         public int? ProjectId { get; set; } = null;
         public int? AssignedToUserId { get; set; } = null;
-        public string Title { get; set; } 
-        public string Description { get; set; }
+        public User? AssignedToUser { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public DateOnly DueDate { get; set; }
         public DateOnly CreatedAt { get; set; }
         public DateOnly? CompletedAt { get; set; }
-        public string Status { get; set; } 
+        public string Status { get; set; } = string.Empty; 
+        public List<Task> Tasks { get; set; } = new List<Task>();
+        public TaskPriority Priority { get; set; } = TaskPriority.Medium;
+        public Project? Project { get; set; }
     }
 }
- 

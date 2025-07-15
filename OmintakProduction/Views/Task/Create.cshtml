@@ -1,26 +1,95 @@
-﻿@model OmintakProduction.Models.TaskAssignment
+@model OmintakProduction.Models.Task
 @{
     ViewData["Title"] = "Create Task";
 }
-<h2>Create Task</h2>
-<form asp-action="Create">
-    <div class="form-group">
-        <label asp-for="ProjectId"></label>
-        <input asp-for="ProjectId" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="UserId"></label>
-        <input asp-for="UserId" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="Status"></label>
-        <input asp-for="Status" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="DueDate"></label>
-        <input asp-for="DueDate" class="form-control" type="date" />
-    </div>
-    <button type="submit" class="btn btn-primary">Create</button>
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-</form>
 
+<div class="work-item-card" style="background: #f8f5f0; border-radius: 18px;">
+    <div class="work-item-header" style="background: #f3e6d6; border-radius: 18px 18px 0 0;">
+        <h2 class="work-item-title mb-0" style="color: #7c3aed;">
+            <i class="fas fa-plus-circle me-2"></i>Create New Task
+        </h2>
+    </div>
+    <div class="work-item-body">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+        }
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">Task creation failed. Please check the errors below.</div>
+        }
+        <form asp-action="Create" method="post" class="needs-validation" novalidate>
+            @if (ViewBag.TicketId != null)
+            {
+                <input type="hidden" name="ticketId" value="@ViewBag.TicketId" />
+            }
+            <div class="form-group">
+                <label asp-for="Title" class="form-label"></label>
+                <input asp-for="Title" class="form-control" required />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" required></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            @if (ViewBag.TicketId != null)
+            {
+                <div class="form-group">
+                    <label asp-for="Status" class="form-label">Status</label>
+                    <select asp-for="Status" class="form-control">
+                        @foreach (var status in Enum.GetValues(typeof(OmintakProduction.Models.TaskStatus)))
+                        {
+                            <option value="@status">@status</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Priority" class="form-label">Priority</label>
+                    <select asp-for="Priority" class="form-control">
+                        @foreach (var priority in Enum.GetValues(typeof(OmintakProduction.Models.TaskPriority)))
+                        {
+                            <option value="@priority">@priority</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Priority" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Assigned To (Ticket Owner/Assignee)</label>
+                    <input type="text" class="form-control" value="@ViewBag.TicketOwner" readonly />
+                </div>
+                <div class="form-group">
+                    <label asp-for="DueDate" class="form-label">Due Date</label>
+                    <input asp-for="DueDate" class="form-control" type="date" />
+                    <span asp-validation-for="DueDate" class="text-danger"></span>
+                </div>
+            }
+            @if (ViewBag.TicketId == null)
+            {
+                <div class="form-group">
+                    <label for="ProjectId" class="form-label">Project</label>
+                    <select asp-for="ProjectId" class="form-control">
+                        <option value="">Select Project</option>
+                        @foreach (var project in (ViewBag.Projects as List<OmintakProduction.Models.Project>) ?? new List<OmintakProduction.Models.Project>())
+                        {
+                            <option value="@project.ProjectId">@project.ProjectName</option>
+                        }
+                    </select>
+                </div>
+            }
+            <!-- Assign Users field removed: tasks are now only created via Tickets/Manage Tasks, and assignment is handled there. -->
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" style="background: #7c3aed; border: none;" />
+                @if (ViewBag.TicketId != null)
+                {
+                    <a href="@Url.Action("Manage", "Task", new { ticketId = ViewBag.TicketId })" class="btn btn-default" style="background: #f3e6d6; color: #7c3aed;">Back to Ticket Tasks</a>
+                }
+                else
+                {
+                    <a href="@Url.Action("Index", "Task")" class="btn btn-default" style="background: #f3e6d6; color: #7c3aed;">Back to List</a>
+                }
+            </div>
+        </form>
+    </div>
+</div>

@@ -2,7 +2,7 @@
 {
     public class TaskAssignment
     {
-        public int TaskAssignmentId { get; set; } // Primary Key (for views)
+        public int Id { get; set; } // Primary Key (for views)
         public int ProjectId { get; set; }
         public int UserId { get; set; }
         public string? Status { get; set; }

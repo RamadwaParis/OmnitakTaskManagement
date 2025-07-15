@@ -1,4 +1,4 @@
-﻿namespace OmintakProduction.Models
+namespace OmintakProduction.Models
 {
     public enum TaskHistoryAction
     {
@@ -15,8 +15,8 @@
 
     public class TaskHistory
     {
-        public int TaskHistoryId { get; set; }
-        public int TaskItemId { get; set; }
+        public int Id { get; set; }
+        public int TaskId { get; set; }
         public int UserId { get; set; }
         public TaskHistoryAction Action { get; set; }
         public string? OldValue { get; set; }
@@ -25,7 +25,7 @@
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Navigation properties
-        public TaskItem? TaskItem { get; set; }
+        public Task? Task { get; set; }
         public User? User { get; set; }
     }
 }

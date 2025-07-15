@@ -40,7 +40,7 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken() @* Prevents CSRF attacks *@
-    @Html.HiddenFor(model => model.TicketId) @* Hidden field to send ticket ID to the server *@
+    @Html.HiddenFor(model => model.Id) @* Hidden field to send ticket ID to the server *@
 
     <input type="submit" asp-controller="Ticket" asp-action="Delete" value="Delete" class="btn btn-danger" /> @* Submit button to delete ticket *@
     @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" }) @* Link to return to list without deleting *@

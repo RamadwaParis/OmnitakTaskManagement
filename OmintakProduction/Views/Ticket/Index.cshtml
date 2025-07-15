@@ -1,50 +1,73 @@
 ﻿@using System.Security.Claims;
-
 @model IEnumerable<OmintakProduction.Models.Ticket>;
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
-*@
 @{
+    ViewData["Title"] = "Tickets";
 }
-
-@if (User.FindFirst(ClaimTypes.Role)?.Value == "SystemAdmin")
-{
-    <p>
-        @Html.ActionLink("Create New Ticket", "Create")
-    </p>
+<style>
+.tickets-table {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.18), 0 1.5px 8px 0 rgba(124, 58, 237, 0.10);
+    overflow: hidden;
 }
-
-
-<table class="table table-striped table-bordered table-hover">
-    <thead>
-        <tr>
-
-            <th>Id</th>
-            <th>Title</th>
-            <th>Description</th>
-
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var ticket in Model)
-        {
+.tickets-table th, .tickets-table td {
+    color: #7c3aed;
+    background: #ede9fe;
+    border: none;
+    padding: 1rem 0.75rem;
+}
+.tickets-table th {
+    background: #a78bfa;
+    color: #fff;
+    font-weight: 600;
+}
+.tickets-table tr {
+    border-radius: 12px;
+    box-shadow: 0 2px 8px 0 rgba(124, 58, 237, 0.10);
+    margin-bottom: 0.5rem;
+}
+.tickets-table .btn {
+    border-radius: 8px;
+    font-size: 0.95rem;
+    margin-right: 0.5rem;
+}
+</style>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="work-item-title"><i class="fas fa-ticket-alt text-primary me-2"></i>Tickets</h2>
+    @if (User.FindFirst(ClaimTypes.Role)?.Value == "SystemAdmin")
+    {
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Create New Ticket
+        </a>
+    }
+</div>
+<div class="tickets-table-wrapper">
+    <table class="table tickets-table">
+        <thead>
             <tr>
-
-                <td>@ticket.TicketId</td>
-                <td>@ticket.Title</td>
-                <td>@ticket.Description</td>
-
-                <td>
-                    <a asp-controller="Ticket" asp-action="Update" asp-route-id="@ticket.TicketId" class="btn btn-primary">Update</a>
-                    @if (User.FindFirst(ClaimTypes.Role)?.Value == "SystemAdmin")
-                    {
-                        <a asp-controller="Ticket" asp-action="Delete" asp-route-id="@ticket.TicketId" class="btn btn-danger">Delete</a>
-                    }
-
-                </td>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var ticket in Model)
+            {
+                <tr>
+                    <td>@ticket.Id</td>
+                    <td>@ticket.Title</td>
+                    <td>@ticket.Description</td>
+                    <td>
+                        <a asp-controller="Ticket" asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-info">Details</a>
+                        <a asp-controller="Ticket" asp-action="Update" asp-route-id="@ticket.Id" class="btn btn-primary">Update</a>
+                        @if (User.FindFirst(ClaimTypes.Role)?.Value == "SystemAdmin")
+                        {
+                            <a asp-controller="Ticket" asp-action="Delete" asp-route-id="@ticket.Id" class="btn btn-danger">Delete</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

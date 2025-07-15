@@ -1,4 +1,4 @@
-﻿@model IEnumerable<OmintakProduction.Models.Notification>
+@model IEnumerable<OmintakProduction.Models.Notification>
 
 @{
     ViewData["Title"] = "Notifications";
@@ -26,7 +26,7 @@
     {
         @foreach (var notification in Model)
         {
-            <div class="teams-card notification-item @(notification.IsRead ? "read" : "unread")" data-status="@(notification.IsRead ? "read" : "unread")" data-id="@notification.NotificationId">
+            <div class="teams-card notification-item @(notification.IsRead ? "read" : "unread")" data-status="@(notification.IsRead ? "read" : "unread")" data-id="@notification.Id">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="flex-grow-1">
                         <div class="d-flex align-items-center mb-2">
@@ -70,16 +70,16 @@
                     </div>
                     <div class="notification-actions">
                         <div class="btn-group btn-group-sm">
-                            <a asp-action="Details" asp-route-id="@notification.NotificationId" class="btn btn-outline-primary btn-sm" title="View Details">
+                            <a asp-action="Details" asp-route-id="@notification.Id" class="btn btn-outline-primary btn-sm" title="View Details">
                                 <i class="fas fa-eye"></i>
                             </a>
                             @if (!notification.IsRead)
                             {
-                                <button type="button" class="btn btn-outline-success btn-sm mark-read-btn" data-id="@notification.NotificationId" title="Mark as Read">
+                                <button type="button" class="btn btn-outline-success btn-sm mark-read-btn" data-id="@notification.Id" title="Mark as Read">
                                     <i class="fas fa-check"></i>
                                 </button>
                             }
-                            <a asp-action="Delete" asp-route-id="@notification.NotificationId" class="btn btn-outline-danger btn-sm" title="Delete">
+                            <a asp-action="Delete" asp-route-id="@notification.Id" class="btn btn-outline-danger btn-sm" title="Delete">
                                 <i class="fas fa-trash"></i>
                             </a>
                         </div>
@@ -102,16 +102,16 @@
     .notification-item {
         transition: all 0.3s ease;
     }
-
-        .notification-item.unread {
-            border-left: 4px solid var(--teams-blue);
-            background-color: #f8f9ff;
-        }
-
-        .notification-item.read {
-            opacity: 0.7;
-        }
-
+    
+    .notification-item.unread {
+        border-left: 4px solid var(--teams-blue);
+        background-color: #f8f9ff;
+    }
+    
+    .notification-item.read {
+        opacity: 0.7;
+    }
+    
     .notification-icon {
         width: 40px;
         height: 40px;
@@ -122,7 +122,7 @@
         justify-content: center;
         font-size: 1.2rem;
     }
-
+    
     .filter-btn.active {
         background: var(--teams-purple) !important;
         color: white !important;

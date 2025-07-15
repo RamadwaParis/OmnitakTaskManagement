@@ -1,4 +1,4 @@
-﻿namespace OmintakProduction.Models
+namespace OmintakProduction.Models
 {
     public enum NotificationType
     {
@@ -13,7 +13,7 @@
 
     public class Notification
     {
-        public int NotificationId { get; set; }
+        public int Id { get; set; }
         public int? UserId { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Message { get; set; } = string.Empty;
@@ -24,7 +24,7 @@
         public int? RelatedEntityId { get; set; }
         public string? RelatedEntityType { get; set; } // "Project", "Ticket", "User", etc.
         public string? ActionUrl { get; set; }
-
+        
         // Navigation property
         public User? User { get; set; }
     }

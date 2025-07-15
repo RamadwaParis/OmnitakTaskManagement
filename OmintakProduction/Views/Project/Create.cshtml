@@ -43,14 +43,6 @@
 
 
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.Status, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(m => m.Status, new SelectList(Enum.GetNames(typeof(OmintakProduction.Models.TaskStatuses))), "Select Status", new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Status, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
         @* Dropdown for assigning the ticket to a user (optional)
         <div class="form-group">
             @Html.LabelFor(m => m.AssignedToUserId, "Assigned To", htmlAttributes: new { @class = "control-label col-md-2" })
@@ -60,7 +52,7 @@
             </div>
         </div> *@
 
-        @* Dropdown to choose who the project the ticket belongs to
+        @* Dropdown to choose the project the ticket belongs to
         <div class="form-group">
             @Html.LabelFor(m => m.Project_Id, "Project", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -68,6 +60,18 @@
                 @Html.ValidationMessageFor(m => m.Project_Id, "", new { @class = "text-danger" })
             </div>
         </div> *@
+
+        <div class="form-group">
+            <label for="TeamId" class="form-label">Assign Existing Team</label>
+            <select asp-for="TeamId" class="form-control">
+                <option value="">-- Select Team --</option>
+                @foreach (var team in (ViewBag.Teams as List<OmintakProduction.Models.Team>) ?? new List<OmintakProduction.Models.Team>())
+                {
+                    <option value="@team.TeamId">@team.TeamName</option>
+                }
+            </select>
+            <span asp-validation-for="TeamId" class="text-danger"></span>
+        </div>
 
         @* Submit and Back buttons *@
         <div class="form-group">

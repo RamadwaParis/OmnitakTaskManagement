@@ -1,34 +1,44 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model OmintakProduction.Controllers.HomePageViewModel
+@{
+    ViewData["Title"] = "Home";
 }
-<head>
-    <link rel="stylesheet" href="~/css/dashboard.css" />
-</head>
-
-<section class="about_section padding">
-    <div class="container">
-        <div class="row justify-content-center align-items-center">
-            <div class="content col-12 col-lg-5 p-4 m-3">
-                <div class="text-center">
-                    <h1>Omnitak Task Management</h1>
-                    <p class="mb-0">
-                        Elevate Your Productivity with Omnitak<br>
-                        Tired of juggling tasks and missing deadlines?
-                        Omnitak is your ultimate task management solution, designed to streamline your workflow and boost team collaboration.
-                        From project planning to daily to-dos, Omnitak empowers you to organize, track, and conquer your goals with intuitive ease.
-                        Say goodbye to chaos and hello to clarity. With Omnitak, every task is a step closer to success.
-                    </p>
-
+<div class="container py-4" style="background: #f8f5f0; min-height: 100vh;">
+    <h2 class="mb-4" style="color: #7c3aed;">Welcome to Omnitak Task Management</h2>
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Teams</h5>
+                    <p class="card-text">@Model.Teams?.Count ?? 0</p>
                 </div>
             </div>
-            <div class="col-12 col-lg-6">
-                <div class="about_img">
-                    @* <img src="~/647776e785c4b8cd26416e6c_h2jvfnoltr.png" alt="idea-images" class="about_img_1 ">
-                    <img src="~/Gemini_Generated_Image_z16jyaz16jyaz16j.png" alt="idea-images" class="about_img_2"> *@
-                    <img src="~/benefits_of_task_management_tool-NEW.png" alt="idea-images" class="about_img_3">
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Projects</h5>
+                    <p class="card-text">@Model.Projects?.Count ?? 0</p>
                 </div>
             </div>
-
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Tasks</h5>
+                    <p class="card-text">@Model.Tasks?.Count ?? 0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Users</h5>
+                    <p class="card-text">@Model.Users?.Count ?? 0</p>
+                </div>
+            </div>
         </div>
     </div>
-</section>
+    <div class="alert alert-info mt-4">
+        <strong>Tip:</strong> Use the sidebar to navigate between teams, projects, tasks, and more.
+    </div>
+</div>
