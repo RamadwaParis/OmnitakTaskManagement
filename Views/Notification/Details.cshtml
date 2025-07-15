@@ -1,0 +1,154 @@
+@model OmintakProduction.Models.Notification
+
+@{
+    ViewData["Title"] = "Notification Details";
+}
+
+<div class="teams-page-header">
+    <h1 class="teams-page-title">Notification Details</h1>
+    <p class="teams-page-subtitle">@Model.Title</p>
+</div>
+
+<div class="teams-card">
+    <div class="d-flex align-items-center mb-4">
+        <div class="notification-icon me-3">
+            @switch (Model.Type)
+            {
+                case OmintakProduction.Models.NotificationType.Task:
+                    <i class="fas fa-tasks text-primary"></i>
+                    break;
+                case OmintakProduction.Models.NotificationType.Success:
+                    <i class="fas fa-check-circle text-success"></i>
+                    break;
+                case OmintakProduction.Models.NotificationType.Project:
+                    <i class="fas fa-project-diagram text-info"></i>
+                    break;
+                case OmintakProduction.Models.NotificationType.Warning:
+                    <i class="fas fa-exclamation-triangle text-warning"></i>
+                    break;
+                case OmintakProduction.Models.NotificationType.Error:
+                    <i class="fas fa-exclamation-circle text-danger"></i>
+                    break;
+                default:
+                    <i class="fas fa-bell text-secondary"></i>
+                    break;
+            }
+        </div>
+        <div>
+            <h4 class="mb-1">@Model.Title</h4>
+            <span class="badge bg-@(Model.Type == OmintakProduction.Models.NotificationType.Warning ? "warning" : 
+                                  Model.Type == OmintakProduction.Models.NotificationType.Success ? "success" : "primary")">
+                @Model.Type.ToString().Replace("Task", "Task ").Replace("Project", "Project ")
+            </span>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <h6 class="text-muted mb-2">Message</h6>
+        <p class="fs-5">@Model.Message</p>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h6 class="text-muted mb-2">Created</h6>
+            <p>@Model.CreatedAt.ToString("MMMM dd, yyyy 'at' h:mm tt")</p>
+        </div>
+        @if (Model.IsRead && Model.ReadAt.HasValue)
+        {
+            <div class="col-md-6">
+                <h6 class="text-muted mb-2">Read</h6>
+                <p>@Model.ReadAt.Value.ToString("MMMM dd, yyyy 'at' h:mm tt")</p>
+            </div>
+        }
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h6 class="text-muted mb-2">Status</h6>
+            <span class="badge @(Model.IsRead ? "bg-success" : "bg-warning")">
+                @(Model.IsRead ? "Read" : "Unread")
+            </span>
+        </div>
+        <div class="col-md-6">
+            <h6 class="text-muted mb-2">Type</h6>
+            <span class="badge bg-@(Model.Type == OmintakProduction.Models.NotificationType.Warning ? "warning" : 
+                                   Model.Type == OmintakProduction.Models.NotificationType.Error ? "danger" :
+                                   Model.Type == OmintakProduction.Models.NotificationType.Success ? "success" : "primary")">
+                @Model.Type.ToString()
+            </span>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ActionUrl))
+    {
+        <div class="mb-4">
+            <h6 class="text-muted mb-2">Action</h6>
+            <a href="@Model.ActionUrl" class="teams-btn">
+                <i class="fas fa-external-link-alt"></i>
+                Go to Related Item
+            </a>
+        </div>
+    }
+
+    <div class="d-flex justify-content-between">
+        <a asp-action="Index" class="teams-btn teams-btn-secondary">
+            <i class="fas fa-arrow-left"></i>
+            Back to Notifications
+        </a>
+        <div>
+            @if (!Model.IsRead)
+            {
+                <button type="button" class="teams-btn me-2" id="mark-read-btn" data-id="@Model.Id">
+                    <i class="fas fa-check"></i>
+                    Mark as Read
+                </button>
+            }
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="teams-btn" style="background: var(--teams-error);">
+                <i class="fas fa-trash"></i>
+                Delete
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .notification-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: var(--teams-light-blue);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const markReadBtn = document.getElementById('mark-read-btn');
+        if (markReadBtn) {
+            markReadBtn.addEventListener('click', function() {
+                const notificationId = this.getAttribute('data-id');
+                markAsRead(notificationId);
+            });
+        }
+
+        function markAsRead(notificationId) {
+            fetch(`/Notification/MarkAsRead/${notificationId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload(); // Reload to show updated status
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    });
+</script>

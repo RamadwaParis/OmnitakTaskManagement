@@ -1,0 +1,88 @@
+﻿@model OmintakProduction.Models.Project
+
+@{
+    ViewBag.Title = "Edit Project";
+}
+
+<h2 class="mb-4">Edit Project</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ProjectId)
+
+    <div class="form-horizontal">
+        <h4 class="text-primary">Project Details</h4>
+        <hr />
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <!-- Project Name -->
+        <div class="form-group row mb-3">
+            @Html.LabelFor(m => m.ProjectName, htmlAttributes: new { @class = "col-sm-2 col-form-label" })
+            <div class="col-sm-10">
+                @Html.EditorFor(m => m.ProjectName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.ProjectName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group row mb-3">
+            @Html.LabelFor(m => m.Description, htmlAttributes: new { @class = "col-sm-2 col-form-label" })
+            <div class="col-sm-10">
+                @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 4 })
+                @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Due Date -->
+        <div class="form-group row mb-3">
+            @Html.LabelFor(m => m.DueDate, htmlAttributes: new { @class = "col-sm-2 col-form-label" })
+            <div class="col-sm-10">
+                @Html.EditorFor(m => m.DueDate, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                @Html.ValidationMessageFor(m => m.DueDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Status -->
+        <div class="form-group row mb-3">
+            @Html.LabelFor(m => m.Status, htmlAttributes: new { @class = "col-sm-2 col-form-label" })
+            <div class="col-sm-10">
+                @Html.DropDownListFor(
+                m => m.Status,
+                        new SelectList(Enum.GetNames(typeof(OmintakProduction.Models.ProjectStatuses))),
+                        "Select Status",
+                        new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Status, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <!-- Optional: Assigned To Dropdown -->
+    @* 
+        <div class="form-group row mb-3">
+            @Html.Label("Assigned_To", "Assigned To", htmlAttributes: new { @class = "col-sm-2 col-form-label" })
+            <div class="col-sm-10">
+                @Html.DropDownList("Assigned_To", ViewBag.AssignedToList as SelectList, "Unassigned", new { @class = "form-control" })
+            </div>
+        </div> 
+        *@
+
+    <!-- Optional: Project Selection Dropdown -->
+    @* 
+        <div class="form-group row mb-3">
+            @Html.Label("Project_Id", "Project", htmlAttributes: new { @class = "col-sm-2 col-form-label" })
+            <div class="col-sm-10">
+                @Html.DropDownList("Project_Id", ViewBag.ProjectList as SelectList, "Select Project", new { @class = "form-control" })
+            </div>
+        </div> 
+        *@
+
+    <!-- Submit and Back Buttons -->
+    <div class="form-group row mt-4">
+        <div class="col-sm-10 offset-sm-2">
+            <input type="submit" value="Save" class="btn btn-primary me-2" />
+            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-secondary" })
+        </div>
+    </div>
+</div>
+}

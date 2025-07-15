@@ -1,0 +1,49 @@
+@model OmintakProduction.Models.Ticket
+@{
+    ViewData["Title"] = "Edit Ticket";
+}
+<div class="container py-4" style="background: var(--bg-primary, #f8f5f0); min-height: 100vh;">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg" style="border-radius: 18px; background: var(--bg-secondary, #f3e6d6);">
+                <div class="card-header" style="background: var(--bg-primary, #f8f5f0); border-radius: 18px 18px 0 0; color: var(--teams-purple, #7c3aed);">
+                    <h4 class="mb-0">Edit Ticket</h4>
+                </div>
+                <div class="card-body" style="background: var(--input-bg, #fff8f3);">
+                    @using (Html.BeginForm())
+                    {
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Title)
+                            @Html.EditorFor(m => m.Title, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(m => m.Title, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Description)
+                            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 4 })
+                            @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.DueDate)
+                            @Html.EditorFor(m => m.DueDate, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                            @Html.ValidationMessageFor(m => m.DueDate, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Status)
+                            @Html.DropDownListFor(m => m.Status, new SelectList(Enum.GetNames(typeof(OmintakProduction.Models.TaskStatuses))), "Select Status", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Status, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            <label for="AssignedToUserId" class="form-label">Assign To (Active Team Members)</label>
+                            @Html.DropDownListFor(m => m.AssignedToUserId, ViewBag.AssignedToList as SelectList, "Select Owner", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.AssignedToUserId, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Save" class="btn btn-primary" style="background: var(--teams-purple, #7c3aed); border: none;" />
+                            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default", style = "background: var(--bg-secondary, #f3e6d6); color: var(--teams-purple, #7c3aed);" })
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
