@@ -4,7 +4,7 @@
     --teams-blue: #5B5FC7;
     --teams-light-blue: #E8F3FF;
     --teams-nude: #F5EBDD;
-    --teams-nude-dark: #E2CFC3;
+    /*--teams-nude-dark: #E2CFC3;*/
     --teams-nude-accent: #F7D9C4;
     --edge-green: #3AB795;
     --edge-blue: #00A4EF;
@@ -50,10 +50,10 @@
     --error-bg: #FFEBEE;
     --error-text: #B71C1C;
     --error-border: #F44336;
-    --sidebar-bg: var(--teams-nude-dark);
+    --sidebar-bg: #FFFFFF;
     --sidebar-text: var(--text-primary);
-    --sidebar-link-hover: var(--teams-nude-accent);
-    --sidebar-active-bg: var(--edge-blue);
+    --sidebar-link-hover: #EFF1FF;
+    --sidebar-active-bg: #505BB5;
     --sidebar-active-text: #FFFFFF;
     --task-bg: var(--teams-nude);
     --task-text: #1F1F1F;
@@ -234,6 +234,10 @@ body {
     border-left-color: var(--sidebar-active-text);
     color: var(--sidebar-active-text);
     font-weight: 600;
+}
+
+.teams-sidebar-link.active span {
+    color: var(--sidebar-active-text);
 }
 
 .teams-content {
