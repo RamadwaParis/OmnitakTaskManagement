@@ -4,35 +4,91 @@
     ViewData["Title"] = "Pending User Approvals";
 }
 
-<h2>Pending User Approvals</h2>
-@if (!Model.Any())
-{
-    <div class="alert alert-info">There are no pending users to approve.</div>
-}
-else
-{
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Email</th>
-                <th>Username</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in Model)
-            {
-                <tr>
-                    <td>@user.Email</td>
-                    <td>@user.UserName</td>
-                    <td>
-                        <form asp-action="ApproveUser" method="post" style="display:inline;">
-                            <input type="hidden" name="id" value="@user.UserId" />
-                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
-                        </form>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-user-clock"></i> Pending User Approvals</h3>
+                    <p class="text-muted">Review and approve user registrations with role assignments</p>
+                </div>
+                <div class="card-body">
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["Success"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    @if (Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Username</th>
+                                        <th>Registration Date</th>
+                                        <th>Assign Role & Approve</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var user in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <strong>@user.FirstName @user.LastName</strong>
+                                            </td>
+                                            <td>
+                                                <i class="fas fa-envelope"></i> @user.Email
+                                            </td>
+                                            <td>@user.UserName</td>
+                                            <td>@user.CreatedDate.ToString("MMM dd, yyyy")</td>
+                                            <td>
+                                                <form method="post" action="@Url.Action("ApproveUser")" class="d-inline">
+                                                    <input type="hidden" name="id" value="@user.UserId" />
+                                                    <div class="input-group input-group-sm">
+                                                        <select name="roleId" class="form-select" required>
+                                                            <option value="">Select Role</option>
+                                                            @foreach (var role in ViewData["Roles"] as List<OmintakProduction.Models.Role> ?? new List<OmintakProduction.Models.Role>())
+                                                            {
+                                                                <option value="@role.RoleId">@role.RoleName</option>
+                                                            }
+                                                        </select>
+                                                        <button type="submit" class="btn btn-success btn-sm">
+                                                            <i class="fas fa-check"></i> Approve
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <form method="post" action="@Url.Action("RejectUser")" class="d-inline">
+                                                    <input type="hidden" name="id" value="@user.UserId" />
+                                                    <button type="submit" class="btn btn-danger btn-sm" 
+                                                            onclick="return confirm('Are you sure you want to reject this user? This action cannot be undone.')">
+                                                        <i class="fas fa-times"></i> Reject
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                            <h4>No Pending Approvals</h4>
+                            <p class="text-muted">All users have been reviewed and approved.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

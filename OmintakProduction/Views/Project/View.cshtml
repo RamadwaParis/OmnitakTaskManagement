@@ -1,0 +1,23 @@
+@model OmintakProduction.Models.Project
+@{
+    ViewData["Title"] = "Project Details";
+}
+<div class="project-details-card" style="background: var(--bg-secondary, rgba(255, 239, 227, 0.85)); border-radius: 16px; padding: 2rem;">
+    <h2 class="mb-3"><i class="fas fa-project-diagram me-2"></i>@Model.ProjectName</h2>
+    <div class="mb-2"><b>Description:</b> @Model.Description</div>
+    <div class="mb-2"><b>Team:</b> @Model.Team?.TeamName</div>
+    <div class="mb-2"><b>Start Date:</b> @Model.StartDate?.ToString("yyyy-MM-dd")</div>
+    <div class="mb-2"><b>End Date:</b> @Model.EndDate?.ToString("yyyy-MM-dd")</div>
+    <div class="mb-2"><b>Status:</b> @Model.Status</div>
+    <hr />
+    <h4>Tasks</h4>
+    <ul>
+        @foreach (var task in Model.Tasks ?? new List<OmintakProduction.Models.Task>())
+        {
+            <li><a href="/Task/Edit/@task.Id">@task.Title</a> - <span class="badge bg-info">@task.Status</span></li>
+        }
+    </ul>
+</div>
+<style>
+body, .project-details-card { background: var(--bg-secondary, rgba(255, 239, 227, 0.85)) !important; }
+</style>

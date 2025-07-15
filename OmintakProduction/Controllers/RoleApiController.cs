@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using OmintakProduction.Data;
 using OmintakProduction.Models;
 using System.Threading.Tasks;
- 
+
 namespace OmintakProduction.Controllers
 {
     /// <summary>
@@ -15,12 +15,12 @@ namespace OmintakProduction.Controllers
     public class RoleApiController : ControllerBase
     {
         private readonly AppDbContext _context;
- 
+
         public RoleApiController(AppDbContext context)
         {
             _context = context;
         }
- 
+
         /// <summary>
         /// Get all roles
         /// </summary>
@@ -29,9 +29,9 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<Role>), 200)]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _context.Roles.ToListAsync());
+            return Ok(await _context.Role.ToListAsync());
         }
- 
+
         /// <summary>
         /// Get a specific role by ID
         /// </summary>
@@ -42,11 +42,11 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Get(int id)
         {
-            var role = await _context.Roles.FindAsync(id);
+            var role = await _context.Role.FindAsync(id);
             if (role == null) return NotFound();
             return Ok(role);
         }
- 
+
         /// <summary>
         /// Create a new role
         /// </summary>
@@ -57,11 +57,11 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> Create(Role role)
         {
-            _context.Roles.Add(role);
+            _context.Role.Add(role);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(Get), new { id = role.RoleId }, role);
         }
- 
+
         /// <summary>
         /// Update an existing role
         /// </summary>
@@ -76,7 +76,7 @@ namespace OmintakProduction.Controllers
         {
             if (id != role.RoleId) return BadRequest();
             _context.Entry(role).State = EntityState.Modified;
-           
+            
             try
             {
                 await _context.SaveChangesAsync();
@@ -87,10 +87,10 @@ namespace OmintakProduction.Controllers
                     return NotFound();
                 throw;
             }
-           
+            
             return NoContent();
         }
- 
+
         /// <summary>
         /// Delete a role
         /// </summary>
@@ -101,16 +101,16 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Delete(int id)
         {
-            var role = await _context.Roles.FindAsync(id);
+            var role = await _context.Role.FindAsync(id);
             if (role == null) return NotFound();
-            _context.Roles.Remove(role);
+            _context.Role.Remove(role);
             await _context.SaveChangesAsync();
             return NoContent();
         }
- 
+
         private async Task<bool> RoleExists(int id)
         {
-            return await _context.Roles.AnyAsync(e => e.RoleId == id);
+            return await _context.Role.AnyAsync(e => e.RoleId == id);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model OmintakProduction.Models.Notification
+@model OmintakProduction.Models.Notification
 
 @{
     ViewData["Title"] = "Notification Details";
@@ -36,8 +36,8 @@
         </div>
         <div>
             <h4 class="mb-1">@Model.Title</h4>
-            <span class="badge bg-@(Model.Type == OmintakProduction.Models.NotificationType.Warning ? "warning" :
-                                                    Model.Type == OmintakProduction.Models.NotificationType.Success ? "success" : "primary")">
+            <span class="badge bg-@(Model.Type == OmintakProduction.Models.NotificationType.Warning ? "warning" : 
+                                  Model.Type == OmintakProduction.Models.NotificationType.Success ? "success" : "primary")">
                 @Model.Type.ToString().Replace("Task", "Task ").Replace("Project", "Project ")
             </span>
         </div>
@@ -71,9 +71,9 @@
         </div>
         <div class="col-md-6">
             <h6 class="text-muted mb-2">Type</h6>
-            <span class="badge bg-@(Model.Type == OmintakProduction.Models.NotificationType.Warning ? "warning" :
-                                                     Model.Type == OmintakProduction.Models.NotificationType.Error ? "danger" :
-                                                     Model.Type == OmintakProduction.Models.NotificationType.Success ? "success" : "primary")">
+            <span class="badge bg-@(Model.Type == OmintakProduction.Models.NotificationType.Warning ? "warning" : 
+                                   Model.Type == OmintakProduction.Models.NotificationType.Error ? "danger" :
+                                   Model.Type == OmintakProduction.Models.NotificationType.Success ? "success" : "primary")">
                 @Model.Type.ToString()
             </span>
         </div>
@@ -98,12 +98,12 @@
         <div>
             @if (!Model.IsRead)
             {
-                <button type="button" class="teams-btn me-2" id="mark-read-btn" data-id="@Model.NotificationId">
+                <button type="button" class="teams-btn me-2" id="mark-read-btn" data-id="@Model.Id">
                     <i class="fas fa-check"></i>
                     Mark as Read
                 </button>
             }
-            <a asp-action="Delete" asp-route-id="@Model.NotificationId" class="teams-btn" style="background: var(--teams-error);">
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="teams-btn" style="background: var(--teams-error);">
                 <i class="fas fa-trash"></i>
                 Delete
             </a>
@@ -152,4 +152,3 @@
         }
     });
 </script>
-

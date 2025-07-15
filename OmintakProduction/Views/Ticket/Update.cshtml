@@ -15,7 +15,7 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken() @* Helps prevent CSRF attacks *@
-    @Html.HiddenFor(model => model.TicketId) @* Keeps track of which ticket is being edited *@
+    @Html.HiddenFor(model => model.Id) @* Keeps track of which ticket is being edited *@
 
     <div class="form-horizontal">
         <h4>Ticket</h4>
@@ -62,12 +62,12 @@
         </div>
 
         @* Assigned user dropdown from ViewBag *@
-        @* <div class="form-group">
+        <div class="form-group">
             @Html.Label("Assigned_To", "Assigned To", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("Assigned_To", ViewBag.AssignedToList as SelectList, "Unassigned", new { @class = "form-control" })
+                @Html.DropDownList("Assigned_To", ViewBag.AssignedToList as SelectList, "Select Owner", new { @class = "form-control" })
             </div>
-        </div> *@
+        </div>
 
         @* Project dropdown from ViewBag *@
         @* <div class="form-group">

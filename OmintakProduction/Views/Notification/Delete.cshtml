@@ -1,4 +1,4 @@
-﻿@model OmintakProduction.Models.Notification
+@model OmintakProduction.Models.Notification
 
 @{
     ViewData["Title"] = "Delete Notification";
@@ -55,7 +55,7 @@
             Cancel
         </a>
         <form asp-action="Delete" method="post" class="d-inline">
-            <input type="hidden" asp-for="NotificationId" />
+            <input type="hidden" asp-for="Id" />
             <button type="submit" class="teams-btn" style="background: var(--teams-error);">
                 <i class="fas fa-trash"></i>
                 Delete Notification
@@ -76,4 +76,3 @@
         font-size: 1.2rem;
     }
 </style>
-

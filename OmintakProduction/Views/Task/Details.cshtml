@@ -1,4 +1,4 @@
-﻿@model OmintakProduction.Models.TaskAssignment
+@model OmintakProduction.Models.TaskAssignment
 @{
     ViewData["Title"] = "Task Details";
 }
@@ -7,18 +7,17 @@
     <h4>Task</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">Task ID</dt>
-        <dd class="col-sm-10">@Model.TaskAssignmentId</dd>
-        <dt class="col-sm-2">Project</dt>
-        <dd class="col-sm-10">@Model.Project?.ProjectName</dd>
-        <dt class="col-sm-2">Assigned User</dt>
-        <dd class="col-sm-10">@Model.User?.UserName</dd>
-        <dt class="col-sm-2">Status</dt>
-        <dd class="col-sm-10">@Model.Status</dd>
-        <dt class="col-sm-2">Due Date</dt>
-        <dd class="col-sm-10">@Model.DueDate.ToShortDateString()</dd>
+        <dt class = "col-sm-2">Task ID</dt>
+        <dd class = "col-sm-10">@Model.Id</dd>
+        <dt class = "col-sm-2">Project</dt>
+        <dd class = "col-sm-10">@Model.Project?.ProjectName</dd>
+        <dt class = "col-sm-2">Assigned User</dt>
+        <dd class = "col-sm-10">@Model.User?.UserName</dd>
+        <dt class = "col-sm-2">Status</dt>
+        <dd class = "col-sm-10">@Model.Status</dd>
+        <dt class = "col-sm-2">Due Date</dt>
+        <dd class = "col-sm-10">@Model.DueDate.ToShortDateString()</dd>
     </dl>
 </div>
-<a asp-action="Edit" asp-route-id="@Model.TaskAssignmentId" class="btn btn-primary">Edit</a>
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
 <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-

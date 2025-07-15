@@ -17,86 +17,101 @@ namespace OmintakProduction.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.7")
+                .HasAnnotation("ProductVersion", "9.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("OmintakProduction.Models.Attachment", b =>
-                {
-                    b.Property<int>("AttachmentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AttachmentId"));
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("FileSize")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FileType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TaskId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UploadedByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UploadedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("AttachmentId");
-
-                    b.ToTable("Attachments");
-                });
-
             modelBuilder.Entity("OmintakProduction.Models.BugReport", b =>
                 {
-                    b.Property<int>("BugReportId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BugReportId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ActualBehavior")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("AssignedToUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("BrowserInfo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly>("ReportDate")
-                        .HasColumnType("date");
-
-                    b.Property<string>("ReportedBy")
+                    b.Property<string>("ExpectedBehavior")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("OperatingSystem")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TaskId")
+                    b.Property<int?>("ProjectId")
                         .HasColumnType("int");
 
-                    b.HasKey("BugReportId");
+                    b.Property<int>("ReportedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ResolvedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ScreenshotPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Severity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StepsToReproduce")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TaskId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Version")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignedToUserId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("ReportedByUserId");
+
+                    b.HasIndex("TaskId");
 
                     b.ToTable("BugReports");
                 });
 
             modelBuilder.Entity("OmintakProduction.Models.Notification", b =>
                 {
-                    b.Property<int>("NotificationId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NotificationId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ActionUrl")
                         .HasColumnType("nvarchar(max)");
@@ -130,11 +145,11 @@ namespace OmintakProduction.Migrations
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("NotificationId");
+                    b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notification");
                 });
 
             modelBuilder.Entity("OmintakProduction.Models.Project", b =>
@@ -152,17 +167,28 @@ namespace OmintakProduction.Migrations
                     b.Property<DateOnly>("DueDate")
                         .HasColumnType("date");
 
+                    b.Property<DateOnly?>("EndDate")
+                        .HasColumnType("date");
+
                     b.Property<string>("ProjectName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateOnly?>("StartDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("TeamId")
+                        .HasColumnType("int");
+
                     b.HasKey("ProjectId");
 
-                    b.ToTable("Projects");
+                    b.HasIndex("TeamId");
+
+                    b.ToTable("Project");
 
                     b.HasData(
                         new
@@ -177,11 +203,11 @@ namespace OmintakProduction.Migrations
 
             modelBuilder.Entity("OmintakProduction.Models.ProjectReport", b =>
                 {
-                    b.Property<int>("ProjectReportId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProjectReportId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -192,11 +218,11 @@ namespace OmintakProduction.Migrations
                     b.Property<string>("ReportDetails")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ProjectReportId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("ProjectReports");
+                    b.ToTable("ProjectReport");
                 });
 
             modelBuilder.Entity("OmintakProduction.Models.Role", b =>
@@ -208,7 +234,6 @@ namespace OmintakProduction.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleId"));
 
                     b.Property<string>("RoleName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
@@ -216,7 +241,7 @@ namespace OmintakProduction.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Role");
 
                     b.HasData(
                         new
@@ -239,114 +264,15 @@ namespace OmintakProduction.Migrations
                         });
                 });
 
-            modelBuilder.Entity("OmintakProduction.Models.TaskAssignment", b =>
+            modelBuilder.Entity("OmintakProduction.Models.Task", b =>
                 {
-                    b.Property<int>("TaskAssignmentId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskAssignmentId"));
-
-                    b.Property<DateTime>("DueDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("TaskAssignmentId");
-
-                    b.HasIndex("ProjectId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("TaskAssignments");
-                });
-
-            modelBuilder.Entity("OmintakProduction.Models.TaskComment", b =>
-                {
-                    b.Property<int>("TaskCommentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskCommentId"));
-
-                    b.Property<string>("Comment")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsEdited")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("TaskId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("TaskCommentId");
-
-                    b.ToTable("TaskComments");
-                });
-
-            modelBuilder.Entity("OmintakProduction.Models.TaskHistory", b =>
-                {
-                    b.Property<int>("TaskHistoryId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskHistoryId"));
-
-                    b.Property<int>("Action")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NewValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OldValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TaskItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("TaskHistoryId");
-
-                    b.HasIndex("TaskItemId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("TaskHistories");
-                });
-
-            modelBuilder.Entity("OmintakProduction.Models.TaskItem", b =>
-                {
-                    b.Property<int>("TaskItemId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskItemId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ActualHours")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("AssignedToUserId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CompletedAt")
@@ -383,6 +309,9 @@ namespace OmintakProduction.Migrations
                     b.Property<string>("Tags")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("TicketId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -390,24 +319,168 @@ namespace OmintakProduction.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("TaskItemId");
-
-                    b.HasIndex("AssignedToUserId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CreatedByUserId");
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("TaskItems");
+                    b.HasIndex("TicketId");
+
+                    b.ToTable("Tasks");
+                });
+
+            modelBuilder.Entity("OmintakProduction.Models.TaskAssignment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TaskAssignment");
+                });
+
+            modelBuilder.Entity("OmintakProduction.Models.TaskComment", b =>
+                {
+                    b.Property<int>("TaskCommentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskCommentId"));
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsEdited")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("TaskId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("TaskCommentId");
+
+                    b.HasIndex("TaskId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TaskComment");
+                });
+
+            modelBuilder.Entity("OmintakProduction.Models.TaskHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Action")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NewValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OldValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TaskId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TaskId1")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId1")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TaskId");
+
+                    b.HasIndex("TaskId1");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("TaskHistory");
+                });
+
+            modelBuilder.Entity("OmintakProduction.Models.Team", b =>
+                {
+                    b.Property<int>("TeamId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TeamId"));
+
+                    b.Property<string>("TeamName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("TeamId");
+
+                    b.ToTable("Team");
+
+                    b.HasData(
+                        new
+                        {
+                            TeamId = 1,
+                            TeamName = "Dreamspace"
+                        },
+                        new
+                        {
+                            TeamId = 2,
+                            TeamName = "404Found"
+                        },
+                        new
+                        {
+                            TeamId = 3,
+                            TeamName = "Genty"
+                        });
                 });
 
             modelBuilder.Entity("OmintakProduction.Models.TestReport", b =>
                 {
-                    b.Property<int>("TestReportId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TestReportId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -418,20 +491,20 @@ namespace OmintakProduction.Migrations
                     b.Property<string>("TestSummary")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("TestReportId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("TestReports");
+                    b.ToTable("TestReport");
                 });
 
             modelBuilder.Entity("OmintakProduction.Models.Ticket", b =>
                 {
-                    b.Property<int>("TicketId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TicketId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("AssignedToUserId")
                         .HasColumnType("int");
@@ -449,6 +522,9 @@ namespace OmintakProduction.Migrations
                     b.Property<DateOnly>("DueDate")
                         .HasColumnType("date");
 
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
                     b.Property<int?>("ProjectId")
                         .HasColumnType("int");
 
@@ -460,48 +536,56 @@ namespace OmintakProduction.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("TicketId");
+                    b.HasKey("Id");
 
-                    b.ToTable("Tickets");
+                    b.HasIndex("AssignedToUserId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("Ticket");
 
                     b.HasData(
                         new
                         {
-                            TicketId = 1,
+                            Id = 1,
                             CompletedAt = new DateOnly(2025, 6, 26),
                             CreatedAt = new DateOnly(2025, 6, 26),
                             Description = "This is a sample ticket description.",
                             DueDate = new DateOnly(2025, 6, 26),
+                            Priority = 1,
                             Status = "ToDo",
                             Title = "Sample Ticket"
                         },
                         new
                         {
-                            TicketId = 2,
+                            Id = 2,
                             CompletedAt = new DateOnly(2025, 6, 26),
                             CreatedAt = new DateOnly(2025, 6, 26),
                             Description = "This is a sample ticket description.",
                             DueDate = new DateOnly(2025, 6, 26),
+                            Priority = 1,
                             Status = "In_Progress",
                             Title = "Sample Ticket"
                         },
                         new
                         {
-                            TicketId = 3,
+                            Id = 3,
                             CompletedAt = new DateOnly(2025, 6, 26),
                             CreatedAt = new DateOnly(2025, 6, 26),
                             Description = "This is a sample ticket description.",
                             DueDate = new DateOnly(2025, 6, 26),
+                            Priority = 1,
                             Status = "In_Review",
                             Title = "Sample Ticket"
                         },
                         new
                         {
-                            TicketId = 4,
+                            Id = 4,
                             CompletedAt = new DateOnly(2025, 6, 26),
                             CreatedAt = new DateOnly(2025, 6, 26),
                             Description = "This is a sample ticket description.",
                             DueDate = new DateOnly(2025, 6, 26),
+                            Priority = 1,
                             Status = "Done",
                             Title = "Sample Ticket"
                         });
@@ -521,6 +605,15 @@ namespace OmintakProduction.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("NeedsWelcome")
                         .HasColumnType("bit");
 
@@ -528,7 +621,16 @@ namespace OmintakProduction.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ProjectId")
+                        .HasColumnType("int");
+
                     b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TeamId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TeamId1")
                         .HasColumnType("int");
 
                     b.Property<string>("UserName")
@@ -539,7 +641,11 @@ namespace OmintakProduction.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users");
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("TeamId1");
+
+                    b.ToTable("User");
 
                     b.HasData(
                         new
@@ -547,6 +653,7 @@ namespace OmintakProduction.Migrations
                             UserId = 1,
                             CreatedDate = new DateOnly(2025, 6, 26),
                             Email = "Admin1.seededData@omnitak.com",
+                            IsApproved = false,
                             NeedsWelcome = true,
                             Password = "Admin@123",
                             RoleId = 1,
@@ -558,6 +665,7 @@ namespace OmintakProduction.Migrations
                             UserId = 2,
                             CreatedDate = new DateOnly(2025, 6, 26),
                             Email = "Admin2.seededData@omnitak.com",
+                            IsApproved = false,
                             NeedsWelcome = true,
                             Password = "Admin@123",
                             RoleId = 1,
@@ -569,6 +677,7 @@ namespace OmintakProduction.Migrations
                             UserId = 3,
                             CreatedDate = new DateOnly(2025, 6, 26),
                             Email = "Engineer1.seededData@omnitak.com",
+                            IsApproved = false,
                             NeedsWelcome = true,
                             Password = "Engineer@123",
                             RoleId = 2,
@@ -580,6 +689,7 @@ namespace OmintakProduction.Migrations
                             UserId = 4,
                             CreatedDate = new DateOnly(2025, 6, 26),
                             Email = "Engineer2.seededData@omnitak.com",
+                            IsApproved = false,
                             NeedsWelcome = true,
                             Password = "Engineer@123",
                             RoleId = 2,
@@ -591,6 +701,7 @@ namespace OmintakProduction.Migrations
                             UserId = 5,
                             CreatedDate = new DateOnly(2025, 6, 26),
                             Email = "Tester1.seededData@omnitak.com",
+                            IsApproved = false,
                             NeedsWelcome = true,
                             Password = "Tester@123",
                             RoleId = 3,
@@ -602,12 +713,137 @@ namespace OmintakProduction.Migrations
                             UserId = 6,
                             CreatedDate = new DateOnly(2025, 6, 26),
                             Email = "Tester2.seededData@omnitak.com",
+                            IsApproved = false,
                             NeedsWelcome = true,
                             Password = "Tester@123",
                             RoleId = 3,
                             UserName = "TesterUser2",
                             isActive = true
+                        },
+                        new
+                        {
+                            UserId = 7,
+                            CreatedDate = new DateOnly(2025, 6, 26),
+                            Email = "dreamer1@omnitak.com",
+                            IsApproved = false,
+                            NeedsWelcome = true,
+                            Password = "Dream@123",
+                            RoleId = 2,
+                            TeamId = 1,
+                            UserName = "Dreamer1",
+                            isActive = true
+                        },
+                        new
+                        {
+                            UserId = 8,
+                            CreatedDate = new DateOnly(2025, 6, 26),
+                            Email = "dreamer2@omnitak.com",
+                            IsApproved = false,
+                            NeedsWelcome = true,
+                            Password = "Dream@123",
+                            RoleId = 2,
+                            TeamId = 1,
+                            UserName = "Dreamer2",
+                            isActive = true
+                        },
+                        new
+                        {
+                            UserId = 9,
+                            CreatedDate = new DateOnly(2025, 6, 26),
+                            Email = "found1@omnitak.com",
+                            IsApproved = false,
+                            NeedsWelcome = true,
+                            Password = "Found@123",
+                            RoleId = 2,
+                            TeamId = 2,
+                            UserName = "Found1",
+                            isActive = true
+                        },
+                        new
+                        {
+                            UserId = 10,
+                            CreatedDate = new DateOnly(2025, 6, 26),
+                            Email = "found2@omnitak.com",
+                            IsApproved = false,
+                            NeedsWelcome = true,
+                            Password = "Found@123",
+                            RoleId = 2,
+                            TeamId = 2,
+                            UserName = "Found2",
+                            isActive = true
+                        },
+                        new
+                        {
+                            UserId = 11,
+                            CreatedDate = new DateOnly(2025, 6, 26),
+                            Email = "genty1@omnitak.com",
+                            IsApproved = false,
+                            NeedsWelcome = true,
+                            Password = "Genty@123",
+                            RoleId = 2,
+                            TeamId = 3,
+                            UserName = "Genty1",
+                            isActive = true
+                        },
+                        new
+                        {
+                            UserId = 12,
+                            CreatedDate = new DateOnly(2025, 6, 26),
+                            Email = "genty2@omnitak.com",
+                            IsApproved = false,
+                            NeedsWelcome = true,
+                            Password = "Genty@123",
+                            RoleId = 2,
+                            TeamId = 3,
+                            UserName = "Genty2",
+                            isActive = true
                         });
+                });
+
+            modelBuilder.Entity("TaskUser", b =>
+                {
+                    b.Property<int>("AssignedUsersUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TaskId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AssignedUsersUserId", "TaskId");
+
+                    b.HasIndex("TaskId");
+
+                    b.ToTable("TaskAssignedUsers", (string)null);
+                });
+
+            modelBuilder.Entity("OmintakProduction.Models.BugReport", b =>
+                {
+                    b.HasOne("OmintakProduction.Models.User", "AssignedToUser")
+                        .WithMany()
+                        .HasForeignKey("AssignedToUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("OmintakProduction.Models.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId");
+
+                    b.HasOne("OmintakProduction.Models.User", "ReportedByUser")
+                        .WithMany()
+                        .HasForeignKey("ReportedByUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("OmintakProduction.Models.Task", "Task")
+                        .WithMany()
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("AssignedToUser");
+
+                    b.Navigation("Project");
+
+                    b.Navigation("ReportedByUser");
+
+                    b.Navigation("Task");
                 });
 
             modelBuilder.Entity("OmintakProduction.Models.Notification", b =>
@@ -619,6 +855,15 @@ namespace OmintakProduction.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("OmintakProduction.Models.Project", b =>
+                {
+                    b.HasOne("OmintakProduction.Models.Team", "Team")
+                        .WithMany("Projects")
+                        .HasForeignKey("TeamId");
+
+                    b.Navigation("Team");
+                });
+
             modelBuilder.Entity("OmintakProduction.Models.ProjectReport", b =>
                 {
                     b.HasOne("OmintakProduction.Models.Project", "Project")
@@ -628,6 +873,30 @@ namespace OmintakProduction.Migrations
                         .IsRequired();
 
                     b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("OmintakProduction.Models.Task", b =>
+                {
+                    b.HasOne("OmintakProduction.Models.User", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("OmintakProduction.Models.Project", "Project")
+                        .WithMany("Tasks")
+                        .HasForeignKey("ProjectId");
+
+                    b.HasOne("OmintakProduction.Models.Ticket", "Ticket")
+                        .WithMany("Tasks")
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("Project");
+
+                    b.Navigation("Ticket");
                 });
 
             modelBuilder.Entity("OmintakProduction.Models.TaskAssignment", b =>
@@ -649,46 +918,46 @@ namespace OmintakProduction.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("OmintakProduction.Models.TaskComment", b =>
+                {
+                    b.HasOne("OmintakProduction.Models.Task", null)
+                        .WithMany()
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OmintakProduction.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("OmintakProduction.Models.TaskHistory", b =>
                 {
-                    b.HasOne("OmintakProduction.Models.TaskItem", "TaskItem")
+                    b.HasOne("OmintakProduction.Models.Task", null)
                         .WithMany()
-                        .HasForeignKey("TaskItemId")
+                        .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OmintakProduction.Models.Task", "Task")
+                        .WithMany()
+                        .HasForeignKey("TaskId1");
+
+                    b.HasOne("OmintakProduction.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("OmintakProduction.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId1");
 
-                    b.Navigation("TaskItem");
+                    b.Navigation("Task");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("OmintakProduction.Models.TaskItem", b =>
-                {
-                    b.HasOne("OmintakProduction.Models.User", "AssignedToUser")
-                        .WithMany()
-                        .HasForeignKey("AssignedToUserId");
-
-                    b.HasOne("OmintakProduction.Models.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedByUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OmintakProduction.Models.Project", "Project")
-                        .WithMany()
-                        .HasForeignKey("ProjectId");
-
-                    b.Navigation("AssignedToUser");
-
-                    b.Navigation("CreatedByUser");
-
-                    b.Navigation("Project");
                 });
 
             modelBuilder.Entity("OmintakProduction.Models.TestReport", b =>
@@ -700,6 +969,76 @@ namespace OmintakProduction.Migrations
                         .IsRequired();
 
                     b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("OmintakProduction.Models.Ticket", b =>
+                {
+                    b.HasOne("OmintakProduction.Models.User", "AssignedToUser")
+                        .WithMany("Tickets")
+                        .HasForeignKey("AssignedToUserId");
+
+                    b.HasOne("OmintakProduction.Models.Project", "Project")
+                        .WithMany("Tickets")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("AssignedToUser");
+
+                    b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("OmintakProduction.Models.User", b =>
+                {
+                    b.HasOne("OmintakProduction.Models.Team", "Team")
+                        .WithMany("TeamMembers")
+                        .HasForeignKey("TeamId");
+
+                    b.HasOne("OmintakProduction.Models.Team", null)
+                        .WithMany("Users")
+                        .HasForeignKey("TeamId1");
+
+                    b.Navigation("Team");
+                });
+
+            modelBuilder.Entity("TaskUser", b =>
+                {
+                    b.HasOne("OmintakProduction.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("AssignedUsersUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OmintakProduction.Models.Task", null)
+                        .WithMany()
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("OmintakProduction.Models.Project", b =>
+                {
+                    b.Navigation("Tasks");
+
+                    b.Navigation("Tickets");
+                });
+
+            modelBuilder.Entity("OmintakProduction.Models.Team", b =>
+                {
+                    b.Navigation("Projects");
+
+                    b.Navigation("TeamMembers");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("OmintakProduction.Models.Ticket", b =>
+                {
+                    b.Navigation("Tasks");
+                });
+
+            modelBuilder.Entity("OmintakProduction.Models.User", b =>
+                {
+                    b.Navigation("Tickets");
                 });
 #pragma warning restore 612, 618
         }
