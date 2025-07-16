@@ -53,7 +53,7 @@
     --sidebar-bg: #FFFFFF;
     --sidebar-text: var(--text-primary);
     --sidebar-link-hover: #EFF1FF;
-    --sidebar-active-bg: #505BB5;
+    --sidebar-active-bg: #4462B0;
     --sidebar-active-text: #FFFFFF;
     --task-bg: var(--teams-nude);
     --task-text: #1F1F1F;
@@ -243,7 +243,7 @@ body {
 .teams-content {
     flex: 1;
     padding: 24px;
-    /*background: #EFF1FF;*/
+    background: #EFF1FF;
     margin: 16px;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
@@ -315,7 +315,8 @@ body {
 }
 
 .teams-btn-secondary:hover {
-    background: var(--bg-secondary);
+    background: #EFF1FF;
+    border: 1px solid #EFF1FF;
     color: var(--button-secondary-text);
 }
 
@@ -520,7 +521,7 @@ a {
 
 /* Card Styling */
 .card {
-    background-color: var(--input-bg);
+    background-color: #505BB5;
     border: 1px solid var(--teams-border);
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
@@ -529,7 +530,7 @@ a {
 .card-header {
     padding: 1rem 1.25rem;
     margin-bottom: 0;
-    background-color: var(--bg-secondary);
+    background-color: #4462B0;
     border-bottom: 1px solid var(--teams-border);
     border-radius: 8px 8px 0 0;
     color: var(--text-primary);
@@ -651,9 +652,9 @@ p, span, div, li {
     color: var(--text-primary);
 }
 
-.text-muted {
+/*.text-muted {
     color: var(--text-secondary);
-}
+}*/
 
 .text-subtle {
     color: var(--text-subtle);
