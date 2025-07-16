@@ -16,7 +16,7 @@ body, html, .container, .row, .col {
 }
 
 body {
-    background: linear-gradient(135deg, #232526 0%, #414345 100%);
+    background: ##F7F8FD;
     color: #f8f9fa;
     font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
     margin: 0;
@@ -61,7 +61,7 @@ body {
     color: #00c6ff;
 }
 
-.card, .alert, .table, .form-control, .form-select, .navbar, footer.footer {
+.alert, .table, .form-control, .form-select, .navbar, footer.footer {
     background: #23272b !important;
     color: #fff !important;
     border: none;
@@ -71,16 +71,16 @@ body {
     border: none;
     border-radius: 1rem;
     box-shadow: 0 4px 24px rgba(0,0,0,0.10);
-    background: #23272b;
+    background: #F7F8FD;
     color: #fff;
-    transition: transform 0.2s, box-shadow 0.2s;
+    /*transition: transform 0.2s, box-shadow 0.2s;*/
     padding: 2rem 1.5rem;
     margin-bottom: 2rem;
 }
-.card:hover {
+/*.card:hover {
     transform: translateY(-4px) scale(1.03);
     box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-}
+}*/
 .card-title {
     font-size: 1.5rem;
     font-weight: 600;
@@ -223,15 +223,17 @@ footer.footer {
     overflow-x: auto;
     padding-bottom: 1rem;
 }
+
 .kanban-column {
-    background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+    background: #4462B0;
     border-radius: 18px;
     box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.18), 0 1.5px 8px 0 rgba(124, 58, 237, 0.10);
     min-width: 320px;
     flex: 1 1 320px;
     padding: 1.5rem 1rem;
     color: #fff;
-}
+} 
+
 .kanban-column-title {
     font-size: 1.2rem;
     font-weight: 600;

@@ -3,45 +3,56 @@
     ViewData["Title"] = "Dashboard";
 }
 <style>
-body, .teams-page-header, .teams-card, .form-control, .btn, .alert, .list-group-item {
+body {
+    background: #EFF1FF;
+}
+
+.teams-page-header, .form-control, .btn, .alert, .list-group-item {
     background-color: var(--bg-primary) !important;
 }
+
 .teams-card {
     border-radius: 18px;
-    background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%) !important;
-    box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.25), 0 1.5px 8px 0 rgba(124, 58, 237, 0.10);
-    color: #fff;
+    background: #FFFFFF;
+    box-shadow: 0 8px 32px 0 rgba(80, 91, 181, 0.25), 0 1.5px 8px 0 rgba(80, 91, 181, 0.10);
+    color: #202020;
     border: none;
-    transition: box-shadow 0.2s, transform 0.2s;
+    /* transition: box-shadow 0.2s, transform 0.2s; */
 }
-.teams-card .d-flex, .teams-card .card-header, .teams-card .card-body {
-    color: #fff !important;
+.teams-card .d-flex, .teams-card .card-header {
+    color: #202020;
 }
-.teams-card:hover {
-    box-shadow: 0 16px 48px 0 rgba(124, 58, 237, 0.35), 0 3px 16px 0 rgba(124, 58, 237, 0.15);
+/* .teams-card:hover {
+    box-shadow: 0 8px 32px 0 rgba(80, 91, 181, 0.25), 0 1.5px 8px 0 rgba(80, 91, 181, 0.10);
     transform: translateY(-2px) scale(1.01);
+} */
+
+.teams-page-title h1 {
+    font-size: ;
 }
+
 .teams-page-title, .teams-page-subtitle {
     color: #fff !important;
     text-shadow: 0 2px 8px rgba(124, 58, 237, 0.15);
 }
 .teams-page-header {
-    background: linear-gradient(90deg, #7c3aed 60%, #a78bfa 100%);
+    background: linear-gradient(90deg, #505BB5 60%, #959CD3 100%);
     border-radius: 18px;
     padding: 2rem 2rem 1rem 2rem;
     margin-bottom: 2rem;
     box-shadow: 0 4px 24px 0 rgba(124, 58, 237, 0.18);
 }
-.teams-card .badge, .teams-card .mb-0, .teams-card .mb-1 {
+
+/* .teams-card .badge, .teams-card .mb-0, .teams-card .mb-1 {
     color: #fff !important;
-}
+} */
+
 .teams-card .fa-2x {
-    color: #ede9fe !important;
-    opacity: 0.7;
+    color: #202020;
 }
+
 .teams-card .text-muted {
-    color: #ede9fe !important;
-    opacity: 0.8;
+    color: #202020;
 }
 </style>
 <div class="teams-page-header">

@@ -47,7 +47,7 @@
                                 if(user.isActive == true)
                                 {
                                     <div class="col-md-6 col-lg-4 mb-4">
-                                        <div class="card team-member-card h-100">
+                                        <div class="card team-member-card">
                                             <div class="card-body text-center">
                                                 <div class="team-avatar mb-3">
                                                     @((user.FirstName?.Substring(0, 1) + user.LastName?.Substring(0, 1))?.ToUpper() ?? "U")
@@ -61,10 +61,10 @@
                                                     @{
                                                         var roleClass = user.RoleId switch
                                                         {
-                                                            1 => "badge bg-danger",
-                                                            2 => "badge bg-warning",
-                                                            3 => "badge bg-info",
-                                                            4 => "badge bg-success",
+                                                            1 => "badge bg-secondary",
+                                                            2 => "badge bg-secondary",
+                                                            3 => "badge bg-secondary",
+                                                            4 => "badge bg-secondary",
                                                             _ => "badge bg-secondary"
                                                         };
                                                         var roleName = user.RoleId switch
@@ -112,17 +112,18 @@
 
 <style>
     .team-member-card {
+        min-width: max-content;
         transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         border: 1px solid #e0e0e0;
         border-radius: 12px;
-        background: #F5EBDD; /* Teams nude/light background */
+        background: #EFF1FF; /* Teams light background */
     }
 
-    .team-member-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(98, 100, 167, 0.12); /* Teams purple shadow */
-        background: #E8F3FF; /* Light blue on hover for visibility */
-    }
+    /* .team-member-card:hover {
+        transform: scale(1.005);
+        box-shadow: 0 8px 25px rgba(98, 100, 167, 0.12); /* Teams purple shadow
+        border: 2px solid #4462B0;
+    } */
 
     .team-avatar {
         width: 60px;
@@ -156,15 +157,16 @@
     }
 
     .card.modern-card {
-        background: #F5EBDD !important; /* Teams nude/light background for main card */
+        background: #EFF1FF !important; /* Teams light background for main card */
         border-radius: 16px;
         border: 1px solid #e0e0e0;
         box-shadow: 0 4px 24px rgba(98, 100, 167, 0.08);
     }
 
     .card-header.modern-card-header {
-        background: #E8F3FF !important; /* Light blue for header */
-        border-bottom: 1px solid #e0e0e0;
+        background: #EFF1FF !important; /* Light blue for header */
+        border-bottom: 1px solid #BBBBBB;
         border-radius: 16px 16px 0 0;
     }
+
 </style>
