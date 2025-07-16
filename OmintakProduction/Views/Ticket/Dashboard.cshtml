@@ -17,8 +17,8 @@
 <div class="kanban-board d-flex flex-wrap gap-4" style="overflow-x:auto; min-height: 400px;">
         @foreach (var group in statusGroups)
         {
-            <div class="kanban-column flex-shrink-0" style="background: var(--edge-blue); color: #fff; border-radius: 12px; min-width: 320px; max-width: 400px; box-shadow: 0 2px 8px rgba(0,0,0,0.07);">
-                <div class="kanban-column-header p-3" style="background: var(--teams-nude-accent); border-bottom: 1px solid var(--teams-border); color: var(--text-primary);">
+            <div class="kanban-column flex-shrink-0" style="background: #4462B0; color: #fff; border-radius: 12px; min-width: 320px; max-width: 400px; box-shadow: 0 2px 8px rgba(0,0,0,0.07);">
+                <div class="kanban-column-header p-3" style="background: #4462B0; border-bottom: 1px solid var(--teams-border); color: var(--text-primary);">
                     <h5 class="mb-1">@group.Key</h5>
                 </div>
                 <div class="kanban-column-body p-3">

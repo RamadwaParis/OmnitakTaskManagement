@@ -600,9 +600,13 @@ a {
 }
 
 /* Page Title Styling */
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h6 {
     color: var(--text-primary);
     margin-bottom: 0.5rem;
+}
+
+h5 {
+    color: #FFFFFF;
 }
 
 .page-title {
@@ -701,7 +705,7 @@ p, span, div, li {
     }
 
 .work-item-header {
-    background-color: var(--bg-accent);
+    background-color: #4462B0;
     color: var(--text-primary);
     padding: 16px;
     border-bottom: 1px solid var(--teams-border);
@@ -714,10 +718,18 @@ p, span, div, li {
 }
 
 .work-item-title {
-    color: var(--text-primary);
+    font-size: 1.5rem;
+    color: #202020;
     font-weight: 600;
     margin-bottom: 8px;
 }
+
+/*.work-item-title h6 {
+    font-size: 1.5rem;
+    color: #202020;
+    font-weight: 600;
+    margin-bottom: 8px;
+}*/
 
 .work-item-description {
     color: var(--text-secondary);
@@ -799,8 +811,8 @@ p, span, div, li {
     }
 
 .btn-primary {
-    background-color: var(--button-primary-bg);
-    border-color: var(--button-primary-bg);
+    background-color: #839dce;
+    /*border: 2px solid ;*/
     color: var(--button-primary-text);
 }
 
