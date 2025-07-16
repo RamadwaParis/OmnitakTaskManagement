@@ -223,15 +223,17 @@ footer.footer {
     overflow-x: auto;
     padding-bottom: 1rem;
 }
+
 .kanban-column {
-    background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+    background: #4462B0;
     border-radius: 18px;
     box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.18), 0 1.5px 8px 0 rgba(124, 58, 237, 0.10);
     min-width: 320px;
     flex: 1 1 320px;
     padding: 1.5rem 1rem;
     color: #fff;
-}
+} 
+
 .kanban-column-title {
     font-size: 1.2rem;
     font-weight: 600;
