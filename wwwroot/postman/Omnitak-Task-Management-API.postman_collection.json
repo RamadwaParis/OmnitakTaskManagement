@@ -1,0 +1,1155 @@
+{
+  "info": {
+    "name": "Omnitak Task Management API",
+    "description": "Complete API collection for the Omnitak Task Management System including Tasks, Projects, Bug Reports, Users, and Authentication endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5134",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userName\": \"testuser\",\n  \"email\": \"testuser@omnitak.com\",\n  \"password\": \"TestPass123!\",\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Account/Register",
+              "host": ["{{baseUrl}}"],
+              "path": ["Account", "Register"]
+            }
+          }
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@omnitak.com\",\n  \"password\": \"Admin123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Account/Login",
+              "host": ["{{baseUrl}}"],
+              "path": ["Account", "Login"]
+            }
+          }
+        },
+        {
+          "name": "Logout User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/Account/Logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["Account", "Logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tasks API",
+      "item": [
+        {
+          "name": "Get All Tasks",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/TaskApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TaskApi"]
+            }
+          }
+        },
+        {
+          "name": "Get Task by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/TaskApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TaskApi", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create New Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Test Task from Postman\",\n  \"description\": \"This is a test task created via Postman API\",\n  \"assignedTo\": \"developer@omnitak.com\",\n  \"priority\": \"High\",\n  \"status\": \"Open\",\n  \"dueDate\": \"2025-07-20T10:00:00\",\n  \"projectId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/TaskApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TaskApi"]
+            }
+          }
+        },
+        {
+          "name": "Update Task",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"title\": \"Updated Task Title\",\n  \"description\": \"Updated description from Postman\",\n  \"assignedTo\": \"developer@omnitak.com\",\n  \"priority\": \"Medium\",\n  \"status\": \"In Progress\",\n  \"dueDate\": \"2025-07-25T10:00:00\",\n  \"projectId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/TaskApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TaskApi", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Task",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/TaskApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TaskApi", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Projects API",
+      "item": [
+        {
+          "name": "Get All Projects",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ProjectApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ProjectApi"]
+            }
+          }
+        },
+        {
+          "name": "Get Project by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ProjectApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ProjectApi", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create New Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectName\": \"Mobile App Development\",\n  \"description\": \"Development of cross-platform mobile application using React Native\",\n  \"startDate\": \"2025-07-15T00:00:00\",\n  \"endDate\": \"2025-12-31T00:00:00\",\n  \"budget\": 50000.00,\n  \"status\": \"Active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/ProjectApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ProjectApi"]
+            }
+          }
+        },
+        {
+          "name": "Update Project",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"projectName\": \"Updated Mobile App\",\n  \"description\": \"Updated project description\",\n  \"startDate\": \"2025-07-15T00:00:00\",\n  \"endDate\": \"2025-12-31T00:00:00\",\n  \"budget\": 60000.00,\n  \"status\": \"Active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/ProjectApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ProjectApi", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Project",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ProjectApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ProjectApi", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bug Reports API",
+      "item": [
+        {
+          "name": "Get All Bug Reports",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/BugReportApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "BugReportApi"]
+            }
+          }
+        },
+        {
+          "name": "Get Bug Report by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/BugReportApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "BugReportApi", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create New Bug Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Login Page Not Responsive\",\n  \"description\": \"The login form breaks on mobile devices smaller than 480px. Elements overlap and become unusable.\",\n  \"severity\": \"Medium\",\n  \"status\": \"Open\",\n  \"reportedBy\": \"user@omnitak.com\",\n  \"assignedTo\": \"developer@omnitak.com\",\n  \"reproductionSteps\": \"1. Open login page on mobile device\\n2. Try to enter credentials\\n3. Observe form elements overlapping\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/BugReportApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "BugReportApi"]
+            }
+          }
+        },
+        {
+          "name": "Update Bug Report",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"title\": \"Login Page Responsiveness Fixed\",\n  \"description\": \"Updated: The login form has been made responsive for all device sizes.\",\n  \"severity\": \"Medium\",\n  \"status\": \"Resolved\",\n  \"reportedBy\": \"user@omnitak.com\",\n  \"assignedTo\": \"developer@omnitak.com\",\n  \"reproductionSteps\": \"Issue has been resolved with CSS media queries.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/BugReportApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "BugReportApi", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Bug Report",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/BugReportApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "BugReportApi", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users API",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/UserApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "UserApi"]
+            }
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/UserApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "UserApi", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create New User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userName\": \"newuser\",\n  \"email\": \"newuser@omnitak.com\",\n  \"password\": \"NewUser123!\",\n  \"firstName\": \"New\",\n  \"lastName\": \"User\",\n  \"roleId\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/UserApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "UserApi"]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"userName\": \"updateduser\",\n  \"email\": \"updated@omnitak.com\",\n  \"firstName\": \"Updated\",\n  \"lastName\": \"User\",\n  \"roleId\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/UserApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "UserApi", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/UserApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "UserApi", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications API",
+      "item": [
+        {
+          "name": "Get All Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/NotificationApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "NotificationApi"]
+            }
+          }
+        },
+        {
+          "name": "Get Unread Notification Count",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/NotificationApi/GetUnreadCount",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "NotificationApi", "GetUnreadCount"]
+            }
+          }
+        },
+        {
+          "name": "Create New Notification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"New Task Assigned\",\n  \"message\": \"You have been assigned a new task: Complete API documentation\",\n  \"userId\": 1,\n  \"type\": \"TaskAssignment\",\n  \"isRead\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/NotificationApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "NotificationApi"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tickets API",
+      "item": [
+        {
+          "name": "Get All Tickets",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/TicketApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TicketApi"]
+            }
+          }
+        },
+        {
+          "name": "Get Ticket by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/TicketApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TicketApi", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create New Ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"System Performance Issue\",\n  \"description\": \"The application is running slowly during peak hours\",\n  \"priority\": \"High\",\n  \"status\": \"Open\",\n  \"assignedTo\": \"admin@omnitak.com\",\n  \"reportedBy\": \"user@omnitak.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/TicketApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TicketApi"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Task History API",
+      "item": [
+        {
+          "name": "Get All Task History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/TaskHistoryApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TaskHistoryApi"]
+            }
+          }
+        },
+        {
+          "name": "Get Task History by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/TaskHistoryApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TaskHistoryApi", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Task History by Task ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/TaskHistoryApi/by-task/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TaskHistoryApi", "by-task", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Task History Entry",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"taskId\": 1,\n  \"userId\": 1,\n  \"action\": \"Status Changed\",\n  \"oldValue\": \"In Progress\",\n  \"newValue\": \"Completed\",\n  \"description\": \"Task marked as completed\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/TaskHistoryApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TaskHistoryApi"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Task Assignment API",
+      "item": [
+        {
+          "name": "Get All Task Assignments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/TaskAssignmentApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TaskAssignmentApi"]
+            }
+          }
+        },
+        {
+          "name": "Get Task Assignment by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/TaskAssignmentApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TaskAssignmentApi", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Assignments by Task ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/TaskAssignmentApi/by-task/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TaskAssignmentApi", "by-task", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Assignments by User ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/TaskAssignmentApi/by-user/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TaskAssignmentApi", "by-user", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Task Assignment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"taskId\": 1,\n  \"userId\": 1,\n  \"role\": \"Assignee\",\n  \"assignedAt\": \"2024-01-15T10:00:00\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/TaskAssignmentApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TaskAssignmentApi"]
+            }
+          }
+        },
+        {
+          "name": "Update Task Assignment",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"taskId\": 1,\n  \"userId\": 1,\n  \"role\": \"Lead\",\n  \"assignedAt\": \"2024-01-15T10:00:00\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/TaskAssignmentApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TaskAssignmentApi", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Task Assignment",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/TaskAssignmentApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TaskAssignmentApi", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Task Comment API",
+      "item": [
+        {
+          "name": "Get All Task Comments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/TaskCommentApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TaskCommentApi"]
+            }
+          }
+        },
+        {
+          "name": "Get Task Comment by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/TaskCommentApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TaskCommentApi", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Comments by Task ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/TaskCommentApi/by-task/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TaskCommentApi", "by-task", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Task Comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"taskId\": 1,\n  \"userId\": 1,\n  \"comment\": \"This task looks good to go!\",\n  \"isInternal\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/TaskCommentApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TaskCommentApi"]
+            }
+          }
+        },
+        {
+          "name": "Update Task Comment",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"taskId\": 1,\n  \"userId\": 1,\n  \"comment\": \"Updated comment content\",\n  \"isInternal\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/TaskCommentApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TaskCommentApi", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Task Comment",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/TaskCommentApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TaskCommentApi", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Test Report API",
+      "item": [
+        {
+          "name": "Get All Test Reports",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/TestReportApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TestReportApi"]
+            }
+          }
+        },
+        {
+          "name": "Get Test Report by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/TestReportApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TestReportApi", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Test Reports by Project ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/TestReportApi/by-project/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TestReportApi", "by-project", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Test Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectId\": 1,\n  \"testSuite\": \"Unit Tests\",\n  \"totalTests\": 50,\n  \"passedTests\": 45,\n  \"failedTests\": 5,\n  \"testResults\": \"5 tests failed due to timeout issues\",\n  \"executionTime\": \"00:05:30\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/TestReportApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TestReportApi"]
+            }
+          }
+        },
+        {
+          "name": "Update Test Report",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"projectId\": 1,\n  \"testSuite\": \"Unit Tests\",\n  \"totalTests\": 50,\n  \"passedTests\": 50,\n  \"failedTests\": 0,\n  \"testResults\": \"All tests passed\",\n  \"executionTime\": \"00:04:30\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/TestReportApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TestReportApi", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Test Report",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/TestReportApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "TestReportApi", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Project Report API",
+      "item": [
+        {
+          "name": "Get All Project Reports",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ProjectReportApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ProjectReportApi"]
+            }
+          }
+        },
+        {
+          "name": "Get Project Report by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ProjectReportApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ProjectReportApi", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Project Reports by Project ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ProjectReportApi/by-project/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ProjectReportApi", "by-project", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Project Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectId\": 1,\n  \"reportType\": \"Monthly Status\",\n  \"summary\": \"Project is on track with 80% completion\",\n  \"details\": \"All major milestones achieved. Minor delays in testing phase.\",\n  \"generatedByUserId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/ProjectReportApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ProjectReportApi"]
+            }
+          }
+        },
+        {
+          "name": "Update Project Report",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"projectId\": 1,\n  \"reportType\": \"Monthly Status\",\n  \"summary\": \"Project completed successfully\",\n  \"details\": \"All deliverables met. Testing completed with no major issues.\",\n  \"generatedByUserId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/ProjectReportApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ProjectReportApi", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Project Report",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ProjectReportApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ProjectReportApi", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Role API",
+      "item": [
+        {
+          "name": "Get All Roles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/RoleApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "RoleApi"]
+            }
+          }
+        },
+        {
+          "name": "Get Role by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/RoleApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "RoleApi", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roleName\": \"Project Manager\",\n  \"description\": \"Manages project tasks and team coordination\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/RoleApi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "RoleApi"]
+            }
+          }
+        },
+        {
+          "name": "Update Role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roleId\": 1,\n  \"roleName\": \"Senior Project Manager\",\n  \"description\": \"Manages complex projects and team coordination\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/RoleApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "RoleApi", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Role",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/RoleApi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "RoleApi", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard API",
+      "item": [
+        {
+          "name": "Get Dashboard Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/DashboardApi/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "DashboardApi", "stats"]
+            }
+          }
+        },
+        {
+          "name": "Populate Sample Data",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/DashboardApi/populate-sample-data",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "DashboardApi", "populate-sample-data"]
+            }
+          }
+        },
+        {
+          "name": "Clear Dashboard Data",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/DashboardApi/clear-data",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "DashboardApi", "clear-data"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
