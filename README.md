@@ -12,6 +12,54 @@ This project is developed by a team of four:
 - **Thando**
 - **Dumisani**
 
+### 🗂️ Branching & Folder Structure
+- Each main folder (Controllers, Models, Views, Data, Migrations, wwwroot, etc.) will have its own feature branch for initial implementation and review.
+- Branches must follow the [coding standards](OmintakProduction/wwwroot/coding_standards/coding_standards.md) in `wwwroot/coding_standards/`.
+- All code, commit messages, and PRs must adhere to these standards.
+
+### 🔄 Merge Plan
+- All branches must be merged into `main` within 1 hour of project start.
+- Each team member is responsible for a specific area (see below).
+- Each commit should be atomic, descriptive, and reference the feature or fix (see commit message guidelines below).
+
+### 👤 Team Member Responsibilities
+
+| Member    | Area(s) of Responsibility                | Example Branch Name           |
+|-----------|------------------------------------------|------------------------------|
+| Paris     | Models, Data, Migrations                 | feature/models-and-data       |
+| Zilungile | Controllers, API, Business Logic         | feature/controllers-api       |
+| Thando    | Views, UI/UX, Razor Pages                | feature/views-ui              |
+| Dumisani  | wwwroot (CSS/JS/assets), Docs, Testing   | feature/wwwroot-and-docs      |
+
+- **Paris**: Implements all models, seeds, and migrations. Ensures DB structure and relationships are correct.
+- **Zilungile**: Implements all controllers (MVC + API), business logic, and validation. Ensures all endpoints are testable.
+- **Thando**: Implements all Razor views, partials, and UI/UX. Ensures accessibility and theme consistency.
+- **Dumisani**: Implements all static assets (CSS, JS, images), coding standards, and documentation. Ensures code style and testing.
+
+### 📝 Commit Message Guidelines
+- Use the following prefixes: `feature/`, `bugfix/`, `docs/`, `refactor/` (see [coding standards](OmintakProduction/wwwroot/coding_standards/coding_standards.md)).
+- Example commit messages:
+  - `feature/add-task-model`
+  - `feature/implement-task-controller`
+  - `feature/create-task-views`
+  - `feature/add-kanban-css`
+  - `bugfix/fix-task-assignment-validation`
+  - `docs/update-readme`
+  - `refactor/cleanup-dashboard`
+- Keep messages concise and relevant to the change.
+
+### 🔗 Coding Standards Reference
+- See [`wwwroot/coding_standards/coding_standards.md`](OmintakProduction/wwwroot/coding_standards/coding_standards.md) for naming, formatting, and branch/commit rules.
+- All code must use PascalCase for classes/methods, camelCase for variables, and ALL_CAPS for constants.
+- Branches must be lowercase, hyphenated, and descriptive.
+
+### 🚦 Merge Checklist
+- [ ] All code reviewed and tested by at least one other team member
+- [ ] All branches merged into `main` before the deadline
+- [ ] No unresolved merge conflicts
+- [ ] All code follows coding standards
+- [ ] All features and bugfixes have descriptive commit messages
+
 ---
 
 ## 🚀 Features
