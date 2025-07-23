@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Abstractions;
 using OmintakProduction.Models;
+using BCrypt.Net;
 // ...existing code...
 
 namespace OmintakProduction.Data
@@ -114,18 +115,79 @@ namespace OmintakProduction.Data
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<User>().HasData(
-                new User { UserId = 1, RoleId = 1, UserName = "AdminUser", Email = "Admin1.seededData@omnitak.com", Password = "Admin@123", isActive = true, CreatedDate = new DateOnly(2025, 06, 26) },
-                new User { UserId = 2, RoleId = 1, UserName = "AdminUser2", Email = "Admin2.seededData@omnitak.com", Password = "Admin@123", isActive = true, CreatedDate = new DateOnly(2025, 06, 26) },
-                new User { UserId = 3, RoleId = 2, UserName = "EngineerUser1", Email = "Engineer1.seededData@omnitak.com", Password = "Engineer@123", isActive = true, CreatedDate = new DateOnly(2025, 06, 26) },
-                new User { UserId = 4, RoleId = 2, UserName = "EngineerUser2", Email = "Engineer2.seededData@omnitak.com", Password = "Engineer@123", isActive = true, CreatedDate = new DateOnly(2025, 06, 26) },
-                new User { UserId = 5, RoleId = 3, UserName = "TesterUser1", Email = "Tester1.seededData@omnitak.com", Password = "Tester@123", isActive = true, CreatedDate = new DateOnly(2025, 06, 26) },
-                new User { UserId = 6, RoleId = 3, UserName = "TesterUser2", Email = "Tester2.seededData@omnitak.com", Password = "Tester@123", isActive = true, CreatedDate = new DateOnly(2025, 06, 26) },
-                new User { UserId = 7, RoleId = 2, UserName = "Dreamer1", Email = "dreamer1@omnitak.com", Password = "Dream@123", isActive = true, CreatedDate = new DateOnly(2025, 06, 26), TeamId = 1 },
-                new User { UserId = 8, RoleId = 2, UserName = "Dreamer2", Email = "dreamer2@omnitak.com", Password = "Dream@123", isActive = true, CreatedDate = new DateOnly(2025, 06, 26), TeamId = 1 },
-                new User { UserId = 9, RoleId = 2, UserName = "Found1", Email = "found1@omnitak.com", Password = "Found@123", isActive = true, CreatedDate = new DateOnly(2025, 06, 26), TeamId = 2 },
-                new User { UserId = 10, RoleId = 2, UserName = "Found2", Email = "found2@omnitak.com", Password = "Found@123", isActive = true, CreatedDate = new DateOnly(2025, 06, 26), TeamId = 2 },
-                new User { UserId = 11, RoleId = 2, UserName = "Genty1", Email = "genty1@omnitak.com", Password = "Genty@123", isActive = true, CreatedDate = new DateOnly(2025, 06, 26), TeamId = 3 },
-                new User { UserId = 12, RoleId = 2, UserName = "Genty2", Email = "genty2@omnitak.com", Password = "Genty@123", isActive = true, CreatedDate = new DateOnly(2025, 06, 26), TeamId = 3 }
+                // System Administrator - Password: Admin@123
+                new User { 
+                    UserId = 1, 
+                    RoleId = 1, 
+                    UserName = "Tee", 
+                    Email = "uthandocibi@gmail.com", 
+                    FirstName = "Thando", 
+                    LastName = "Cibi", 
+                    Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi", // password
+                    isActive = true, 
+                    IsApproved = true, 
+                    CreatedDate = new DateOnly(2025, 01, 01),
+                    IsDeleted = false 
+                },
+                // Team Lead - Password: User@123  
+                new User { 
+                    UserId = 2, 
+                    RoleId = 8, 
+                    UserName = "Duma", 
+                    Email = "dumisaninxumalo5gmail.com", 
+                    FirstName = "Dumisani", 
+                    LastName = "Nxumalo", 
+                    Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi", // password
+                    isActive = true, 
+                    IsApproved = true, 
+                    CreatedDate = new DateOnly(2025, 01, 02),
+                    TeamId = 1,
+                    IsDeleted = false 
+                },
+                // Stakeholder - Password: User@123
+                new User { 
+                    UserId = 3, 
+                    RoleId = 7, 
+                    UserName = "Chief", 
+                    Email = "tledwaba@dynamicdna.co.za", 
+                    FirstName = "Thabang", 
+                    LastName = "Ledwaba", 
+                    Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi", // password
+                    isActive = true, 
+                    IsApproved = true, 
+                    CreatedDate = new DateOnly(2025, 01, 03),
+                    IsDeleted = false 
+                },
+                // Tester - Password: User@123
+                new User { 
+                    UserId = 4, 
+                    RoleId = 6, 
+                    UserName = "Paris", 
+                    Email = "ramadwaparis@gmail.com", 
+                    FirstName = "Paris", 
+                    LastName = "Ramadwa", 
+                    Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi", // password
+                    isActive = true, 
+                    IsApproved = true, 
+                    CreatedDate = new DateOnly(2025, 01, 04),
+                    TeamId = 2,
+                    IsDeleted = false 
+                },
+                // Developer - Password: User@123
+                new User { 
+                    UserId = 5, 
+                    RoleId = 5, 
+                    UserName = "Zee", 
+                    Email = "ayakazilungile20@gmail.com", 
+                    FirstName = "Zilungile", 
+                    LastName = "Nquku", 
+                    Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi", // password
+                    isActive = true, 
+                    IsApproved = true, 
+                    CreatedDate = new DateOnly(2025, 01, 05),
+                    TeamId = 3,
+                    IsDeleted = false 
+                }
             );
 
             modelBuilder.Entity<Ticket>().HasData(
@@ -188,29 +250,15 @@ namespace OmintakProduction.Data
            });
 
             modelBuilder.Entity<Role>().HasData(
-            new Role
-            {
-                RoleId = 1,
-                UserId = 1,
-                RoleName = "SystemAdmin"
-
-            });
-            modelBuilder.Entity<Role>().HasData(
-            new Role
-            {
-                RoleId = 2,
-                UserId = 2,
-                RoleName = "Engineer"
-
-            });
-                        modelBuilder.Entity<Role>().HasData(
-            new Role
-            {
-                RoleId = 3,
-                UserId = 3,
-                RoleName = "Software Tester"
-
-            });
+                new Role { RoleId = 1, RoleName = "SystemAdmin" },
+                new Role { RoleId = 2, RoleName = "Engineer" },
+                new Role { RoleId = 3, RoleName = "Software Tester" },
+                new Role { RoleId = 4, RoleName = "ProjectLead" },
+                new Role { RoleId = 5, RoleName = "Developer" },
+                new Role { RoleId = 6, RoleName = "Tester" },
+                new Role { RoleId = 7, RoleName = "Stakeholder" },
+                new Role { RoleId = 8, RoleName = "TeamLead" }
+            );
 
             modelBuilder.Entity<Team>()
                 .HasMany(t => t.TeamMembers)

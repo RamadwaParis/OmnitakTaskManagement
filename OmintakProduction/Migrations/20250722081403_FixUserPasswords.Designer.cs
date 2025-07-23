@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OmintakProduction.Data;
 
@@ -11,9 +12,11 @@ using OmintakProduction.Data;
 namespace OmintakProduction.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250722081403_FixUserPasswords")]
+    partial class FixUserPasswords
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -686,7 +689,7 @@ namespace OmintakProduction.Migrations
                             IsDeleted = false,
                             LastName = "Cibi",
                             NeedsWelcome = true,
-                            Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+                            Password = "$2a$11$fBSTrcOEAqca4FS2enM.We5LxG4HFsp54Rk3mQgXW1CNmccnPmLuq",
                             RoleId = 1,
                             UserName = "Tee",
                             isActive = true
@@ -701,7 +704,7 @@ namespace OmintakProduction.Migrations
                             IsDeleted = false,
                             LastName = "Nxumalo",
                             NeedsWelcome = true,
-                            Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+                            Password = "$2a$11$PFw30qehubrtTQbOquLUJOkz6Qbr2Tssdx1OSdIQvEPR/cfJdRXZq",
                             RoleId = 8,
                             TeamId = 1,
                             UserName = "Duma",
@@ -717,7 +720,7 @@ namespace OmintakProduction.Migrations
                             IsDeleted = false,
                             LastName = "Ledwaba",
                             NeedsWelcome = true,
-                            Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+                            Password = "$2a$11$dKdxIObeDocGpDzgCMjpNOcNr6GlzKNMZ/g5mL8z39HWOXTuXrFv2",
                             RoleId = 7,
                             UserName = "Chief",
                             isActive = true
@@ -732,7 +735,7 @@ namespace OmintakProduction.Migrations
                             IsDeleted = false,
                             LastName = "Ramadwa",
                             NeedsWelcome = true,
-                            Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+                            Password = "$2a$11$YNgrELn4X6n9erLUI/0ei.XILMDwUAGOn.jsT9avBSuIrjLqdmnRC",
                             RoleId = 6,
                             TeamId = 2,
                             UserName = "Paris",
@@ -748,7 +751,7 @@ namespace OmintakProduction.Migrations
                             IsDeleted = false,
                             LastName = "Nquku",
                             NeedsWelcome = true,
-                            Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+                            Password = "$2a$11$0p80QhdwA3Xx7Efb0WHYCuAMQ8sPwrUR1vWr5tJZDk1pJ5MbIhwSu",
                             RoleId = 5,
                             TeamId = 3,
                             UserName = "Zee",

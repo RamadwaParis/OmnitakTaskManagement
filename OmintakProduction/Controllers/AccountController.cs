@@ -8,6 +8,9 @@ using OmintakProduction.Data;
 using OmintakProduction.Models;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 
 
 namespace OmintakProduction.Controllers
@@ -118,139 +121,68 @@ namespace OmintakProduction.Controllers
 
             var user = await _context.User.SingleOrDefaultAsync(u => u.Email == email);
 
-            if (!email.EndsWith(".seededData@omnitak.com", StringComparison.OrdinalIgnoreCase))
+            if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.Password))
             {
-                if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.Password))
-                {
-                    ViewData["LoginError"] = "Invalid email or password.";
-                    return View();
-                }
-                if (!user.isActive)
-                {
-                    ViewData["LoginError"] = "Your account is pending admin approval. Please wait for approval before logging in.";
-                    return View();
-                }
+                ViewData["LoginError"] = "Invalid email or password.";
+                return View();
+            }
+            if (!user.isActive)
+            {
+                ViewData["LoginError"] = "Your account is pending admin approval. Please wait for approval before logging in.";
+                return View();
+            }
 
-                // Check if this is the user's first login after approval
-                if (user.NeedsWelcome)
-                {
-                    // Create a notification for the user
-                    var roleTitle = new Role().getRole(user.RoleId);
-                    var welcomeMsg = $"Welcome to Omnitak! Your role is: {roleTitle}.";
-                    var notification = new Notification
-                    {
-                        UserId = user.UserId,
-                        Title = "Welcome to Omnitak!",
-                        Message = welcomeMsg,
-                        Type = NotificationType.Success,
-                        CreatedAt = DateTime.Now
-                    };
-                    _context.Notification.Add(notification);
-                    user.NeedsWelcome = false; // Only show once
-                    await _context.SaveChangesAsync();
-                }
-
-                var claims = new List<Claim>
+            // JWT claims
+            var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
                 new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
             };
-
-
-                if (user.RoleId > 0)
-                {
-                    Role getUserRole = new Role();
-                    var role = getUserRole.getRole(user.RoleId);
-
-                    claims.Add(new Claim(ClaimTypes.Role, role ?? string.Empty));
-                }
-
-                var claimsIdentity = new ClaimsIdentity(
-                    claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                var authProperties = new AuthenticationProperties
-                {
-                    IsPersistent = true,
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
-                };
-
-                await HttpContext.SignInAsync(
-                    CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity),
-                    authProperties);
-
-                return RedirectToAction("Index", "Dashboard");
-            }
-            else
+            if (user.RoleId > 0)
             {
-                // Allow admin to log in without BCrypt
-                bool isAdmin = user != null && user.RoleId == 1; // Adjust RoleId as needed for your admin role
-
-                bool isPasswordValid;
-                if (isAdmin)
-                {
-                    // Plain text check for admin
-                    isPasswordValid = !string.IsNullOrEmpty(user?.Password) && (password == user.Password);
-                }
-                else
-                {
-                    // BCrypt check for all others
-                    isPasswordValid = user != null && BCrypt.Net.BCrypt.Verify(password, user.Password ?? "");
-                }
-
-                if (user == null || !isPasswordValid)
-                {
-                    ViewData["LoginError"] = "Invalid email or password.";
-                    return View();
-                }
-                if (!user.isActive)
-                {
-                    ViewData["LoginError"] = "Your account is pending admin approval. Please wait for approval before logging in.";
-                    return View();
-                }
-
-                // Check if this is the user's first login after approval
-                // if (user.NeedsWelcome)
-                // {
-                //     // Store user info in session for welcome screen
-                //     HttpContext.Session.SetString("WelcomeUserName", $"{user.FirstName} {user.LastName}");
-                //     HttpContext.Session.SetString("WelcomeUserRole", GetUserRoleTitle(user.RoleId));
-                //     HttpContext.Session.SetString("WelcomeUserEmail", user.Email ?? "");
-                //     user.NeedsWelcome = false; // Reset so it's only shown once
-                //     await _context.SaveChangesAsync();
-                // }
-
-                var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-        new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
-        new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
-    };
-
-                if (user.RoleId > 0)
-                {
-                    Role getUserRole = new Role();
-                    var role = getUserRole.getRole(user.RoleId);
-                    claims.Add(new Claim(ClaimTypes.Role, role ?? string.Empty));
-                }
-
-                var claimsIdentity = new ClaimsIdentity(
-                    claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                var authProperties = new AuthenticationProperties
-                {
-                    IsPersistent = true,
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
-                };
-
-                await HttpContext.SignInAsync(
-                    CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity),
-                    authProperties);
-
-                return RedirectToAction("Index", "Dashboard");
+                Role getUserRole = new Role();
+                var role = getUserRole.getRole(user.RoleId);
+                claims.Add(new Claim(ClaimTypes.Role, role ?? string.Empty));
             }
+
+            var config = HttpContext.RequestServices.GetRequiredService<IConfiguration>();
+            var jwtKey = config["Jwt:Key"] ?? "YourSuperSecretKeyHere";
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var jwtIssuer = config["Jwt:Issuer"] ?? "OmnitakIssuer";
+            var token = new JwtSecurityToken(
+                issuer: jwtIssuer,
+                audience: null,
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(60),
+                signingCredentials: creds
+            );
+            var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+            // Sign in the user with cookies for web authentication
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            // Store user info in session for welcome message
+            HttpContext.Session.SetString("WelcomeUserName", user.FirstName + " " + user.LastName);
+            if (user.RoleId > 0)
+            {
+                Role getUserRole = new Role();
+                var role = getUserRole.getRole(user.RoleId);
+                HttpContext.Session.SetString("WelcomeUserRole", role ?? "User");
+            }
+
+            // Return JWT token as JSON for API clients
+            if (Request.Headers["Accept"].ToString().Contains("application/json"))
+            {
+                return Json(new { token = jwtToken });
+            }
+
+            // For web clients, redirect to dashboard
+            return RedirectToAction("Index", "Dashboard");
+            // (Legacy admin login logic removed; all logins now use JWT)
         }
 
         [HttpPost]

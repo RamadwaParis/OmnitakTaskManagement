@@ -1,11 +1,19 @@
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using OmintakProduction.Data;
 using OmintakProduction.Models;
+using System.Security.Claims;
+using System.Linq;
+using System;
+using System.Collections.Generic;
+
 
 namespace OmintakProduction.Controllers
 {
+    // Role-based permissions for Task actions
     [Authorize]
     public class TaskController : Controller
     {
@@ -16,7 +24,41 @@ namespace OmintakProduction.Controllers
             _context = context;
         }
 
+        // --- AUDIT TRAIL & NOTIFICATION HELPERS ---
+        private void LogTaskHistory(int taskId, int userId, TaskHistoryAction action, string? oldValue, string? newValue, string? description)
+        {
+            var history = new TaskHistory
+            {
+                TaskId = taskId,
+                UserId = userId,
+                Action = action,
+                OldValue = oldValue,
+                NewValue = newValue,
+                Description = description,
+                CreatedAt = DateTime.Now
+            };
+            _context.TaskHistory.Add(history);
+            _context.SaveChanges();
+        }
+
+        private async System.Threading.Tasks.Task NotifyUser(int userId, string title, string message, NotificationType type, int? relatedEntityId, string? relatedEntityType)
+        {
+            var notification = new Notification
+            {
+                UserId = userId,
+                Title = title,
+                Message = message,
+                Type = type,
+                CreatedAt = DateTime.Now,
+                RelatedEntityId = relatedEntityId,
+                RelatedEntityType = relatedEntityType
+            };
+            _context.Notification.Add(notification);
+            await _context.SaveChangesAsync();
+        }
+
         // GET: Task/Manage/{ticketId}
+        [Authorize(Roles = "ProjectLead,SystemAdmin")]
         public async Task<IActionResult> Manage(int ticketId)
         {
             var ticket = await _context.Ticket.Include(t => t.Project).FirstOrDefaultAsync(t => t.Id == ticketId);
@@ -34,6 +76,7 @@ namespace OmintakProduction.Controllers
         }
 
         // GET: Task
+        [Authorize(Roles = "Developer,Engineer,ProjectLead,Tester,SoftwareTester,SystemAdmin")]
         public async Task<IActionResult> Index()
         {
             var tasks = await _context.Tasks
@@ -48,6 +91,7 @@ namespace OmintakProduction.Controllers
         }
 
         // GET: Task/Details/5
+        [Authorize(Roles = "Developer,Engineer,ProjectLead,Tester,SoftwareTester,SystemAdmin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -70,8 +114,15 @@ namespace OmintakProduction.Controllers
         }
 
         // GET: Task/Create
+        [Authorize(Roles = "ProjectLead,SystemAdmin")]
         public IActionResult Create(int? ticketId)
         {
+            // Permission enforcement: Only allow if user has ManageTasks
+            var userRole = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+            if (userRole == null || !RolePermissions.HasPermission(userRole, "ManageTasks"))
+            {
+                return Forbid();
+            }
             if (!ticketId.HasValue)
             {
                 // Block direct access to /Task/Create without a ticket context
@@ -98,8 +149,16 @@ namespace OmintakProduction.Controllers
         // POST: Task/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "ProjectLead,SystemAdmin")]
         public async System.Threading.Tasks.Task<IActionResult> Create(OmintakProduction.Models.Task task, int ProjectId, int[] AssignedUserIds, int? ticketId)
         {
+            // Permission enforcement: Only allow if user has ManageTasks
+            var userRole = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+            if (userRole == null || !RolePermissions.HasPermission(userRole, "ManageTasks"))
+            {
+                return Forbid();
+            }
+            int currentUserId = GetCurrentUserId();
             if (ticketId.HasValue)
             {
                 // Creating from ticket context: auto-assign project, skip user assignment
@@ -126,9 +185,16 @@ namespace OmintakProduction.Controllers
                 if (ModelState.IsValid)
                 {
                     // Set CreatedByUserId to the current user
-                    task.CreatedByUserId = GetCurrentUserId();
+                    task.CreatedByUserId = currentUserId;
                     _context.Tasks.Add(task);
                     await _context.SaveChangesAsync();
+                    // Audit log
+                    LogTaskHistory(task.Id, currentUserId, TaskHistoryAction.Created, null, null, "Task created");
+                    // Notify assignee
+                    if (ticket?.AssignedToUser != null)
+                    {
+                        await NotifyUser(ticket.AssignedToUser.UserId, $"New Task Assigned: {task.Title}", $"You have been assigned a new task.", NotificationType.Task, task.Id, "Task");
+                    }
                     TempData["SuccessMessage"] = "Task created successfully.";
                     return RedirectToAction("Manage", new { ticketId = ticketId.Value });
                 }
@@ -161,9 +227,16 @@ namespace OmintakProduction.Controllers
                 {
                     task.ProjectId = ProjectId;
                     task.Project = project;
-                    task.CreatedByUserId = GetCurrentUserId();
+                    task.CreatedByUserId = currentUserId;
                     _context.Tasks.Add(task);
                     await _context.SaveChangesAsync();
+                    // Audit log
+                    LogTaskHistory(task.Id, currentUserId, TaskHistoryAction.Created, null, null, "Task created");
+                    // Notify all assignees
+                    foreach (var user in task.AssignedUsers)
+                    {
+                        await NotifyUser(user.UserId, $"New Task Assigned: {task.Title}", $"You have been assigned a new task.", NotificationType.Task, task.Id, "Task");
+                    }
                     TempData["SuccessMessage"] = "Task created successfully.";
                     return RedirectToAction("Index");
                 }
@@ -175,6 +248,7 @@ namespace OmintakProduction.Controllers
         }
 
         // GET: Task/Edit/5
+        [Authorize(Roles = "Developer,Engineer,ProjectLead,SystemAdmin")]
         public async Task<IActionResult> Edit(int? id, int? ticketId)
         {
             if (id == null)
@@ -196,6 +270,7 @@ namespace OmintakProduction.Controllers
         // POST: Task/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Developer,Engineer,ProjectLead,SystemAdmin")]
         public async System.Threading.Tasks.Task<IActionResult> Edit(OmintakProduction.Models.Task model, int[] AssignedUserIds)
         {
             // ENFORCE: Task must always have an assignee
@@ -214,8 +289,28 @@ namespace OmintakProduction.Controllers
             }
             if (ModelState.IsValid)
             {
-                var task = await _context.Tasks.Include(t => t.AssignedUsers).FirstOrDefaultAsync(t => t.Id == model.Id);
+            var task = await _context.Tasks.Include(t => t.AssignedUsers).FirstOrDefaultAsync(t => t.Id == model.Id);
                 if (task == null) return NotFound();
+                int currentUserId = GetCurrentUserId();
+                // Audit: Track changes
+                if (task.Status != model.Status)
+                    LogTaskHistory(task.Id, currentUserId, TaskHistoryAction.StatusChanged, task.Status.ToString(), model.Status.ToString(), "Status changed");
+                if (task.DueDate != model.DueDate)
+                    LogTaskHistory(task.Id, currentUserId, TaskHistoryAction.DueDateChanged, task.DueDate?.ToString(), model.DueDate?.ToString(), "Due date changed");
+                if (task.Priority != model.Priority)
+                    LogTaskHistory(task.Id, currentUserId, TaskHistoryAction.PriorityChanged, task.Priority.ToString(), model.Priority.ToString(), "Priority changed");
+                if (task.ProjectId != model.ProjectId)
+                    LogTaskHistory(task.Id, currentUserId, TaskHistoryAction.Updated, task.ProjectId?.ToString(), model.ProjectId?.ToString(), "Project changed");
+                // Assignment changes
+                var oldAssignees = task.AssignedUsers.Select(u => u.UserId).OrderBy(x => x).ToList();
+                var newAssignees = (AssignedUserIds ?? new int[0]).OrderBy(x => x).ToList();
+                if (!oldAssignees.SequenceEqual(newAssignees))
+                {
+                    LogTaskHistory(task.Id, currentUserId, TaskHistoryAction.AssigneeChanged, string.Join(",", oldAssignees), string.Join(",", newAssignees), "Assignees changed");
+                    // Notify new assignees
+                    foreach (var userId in newAssignees.Except(oldAssignees))
+                        await NotifyUser(userId, $"New Task Assigned: {model.Title}", $"You have been assigned a new task.", NotificationType.Task, task.Id, "Task");
+                }
                 // Update properties
                 task.Title = model.Title;
                 task.Description = model.Description;
@@ -251,6 +346,7 @@ namespace OmintakProduction.Controllers
         }
 
         // GET: Task/Delete/5
+        [Authorize(Roles = "ProjectLead,SystemAdmin")]
         public async Task<IActionResult> Delete(int? id, int? ticketId)
         {
             if (id == null)
@@ -275,6 +371,7 @@ namespace OmintakProduction.Controllers
         // POST: Task/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "ProjectLead,SystemAdmin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var task = await _context.Tasks.FindAsync(id);
@@ -285,6 +382,8 @@ namespace OmintakProduction.Controllers
                 task.IsDeleted = true;
                 _context.Update(task);
                 await _context.SaveChangesAsync();
+                // Audit log
+                LogTaskHistory(task.Id, GetCurrentUserId(), TaskHistoryAction.Deleted, null, null, "Task deleted");
             }
             if (ticketId.HasValue)
             {

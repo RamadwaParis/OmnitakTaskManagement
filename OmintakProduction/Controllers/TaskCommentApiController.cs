@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using OmintakProduction.Data;
 using OmintakProduction.Models;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OmintakProduction.Controllers
 {
@@ -12,6 +13,8 @@ namespace OmintakProduction.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Produces("application/json")]
+    // Role-based permissions for Task Comments
+    [Authorize(Roles = "Developer,Engineer,Tester,SoftwareTester,ProjectLead,SystemAdmin")]
     public class TaskCommentApiController : ControllerBase
     {
         private readonly AppDbContext _context;

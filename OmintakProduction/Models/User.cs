@@ -15,6 +15,12 @@
         public DateOnly CreatedDate { get; set; }
         public int? ProjectId { get; set; }
         public int? TeamId { get; set; }
+        
+        // Soft Delete Implementation
+        public bool IsDeleted { get; set; } = false;
+        public DateTime? DeletedAt { get; set; }
+        public int? DeletedByUserId { get; set; }
+        
         public Team? Team { get; set; }
         public List<Ticket> Tickets { get; set; } = new List<Ticket>();
     }

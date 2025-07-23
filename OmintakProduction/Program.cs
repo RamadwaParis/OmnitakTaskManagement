@@ -1,8 +1,42 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using OmintakProduction.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// JWT Authentication configuration
+var jwtKey = builder.Configuration["Jwt:Key"] ?? "YourSuperSecretKeyHere";
+var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "OmnitakIssuer";
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+})
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login"; 
+        options.LogoutPath = "/Account/Logout";
+        options.AccessDeniedPath = "/Account/AccessDenied"; 
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30); 
+        options.SlidingExpiration = true; 
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtIssuer,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        };
+    });
 
 // Add Swagger services
 builder.Services.AddEndpointsApiExplorer();
@@ -27,6 +61,28 @@ builder.Services.AddSwaggerGen(c =>
     {
         c.IncludeXmlComments(xmlPath);
     }
+
+    // Add JWT Bearer support to Swagger
+    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'",
+        Name = "Authorization",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT"
+    });
+    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
 });
 
 // Required using for Swagger
@@ -47,22 +103,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
   options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
 ));
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/Account/Login"; 
-        options.LogoutPath = "/Account/Logout";
-        options.AccessDeniedPath = "/Account/AccessDenied"; 
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(30); 
-        options.SlidingExpiration = true; 
-    });
-
-// Add Authorization�services
+// Add Authorization services
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Seed the database with default users
+// Ensure the database is created
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -70,9 +116,6 @@ using (var scope = app.Services.CreateScope())
     
     // Ensure the database is created
     context.Database.EnsureCreated();
-    
-    // Seed users
-    await UserSeeder.SeedUsersAsync(context);
 }
 
 if (!app.Environment.IsDevelopment())

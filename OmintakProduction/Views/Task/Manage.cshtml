@@ -11,9 +11,20 @@
         </a>
     </div>
     <div class="mb-3">
-        <a href="@Url.Action("Create", "Task", new { ticketId = ticket?.Id })" class="btn btn-primary" style="background:#7c3aed;border-radius:8px;">
-            <i class="fas fa-plus me-1"></i> Create New Task
-        </a>
+        @{
+            var userRole = Context.User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+            var canCreateTask = false;
+            if (!string.IsNullOrEmpty(userRole))
+            {
+                canCreateTask = OmintakProduction.Models.RolePermissions.HasPermission(userRole, "ManageTasks");
+            }
+        }
+        @if (canCreateTask)
+        {
+            <a href="@Url.Action("Create", "Task", new { ticketId = ticket?.Id })" class="btn btn-primary" style="background:#7c3aed;border-radius:8px;">
+                <i class="fas fa-plus me-1"></i> Create New Task
+            </a>
+        }
     </div>
     <table class="table table-bordered table-hover align-middle" style="background:#fff8f3;border-radius:12px;overflow:hidden;">
         <thead class="table-light">

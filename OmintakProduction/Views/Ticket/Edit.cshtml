@@ -34,7 +34,12 @@
                         </div>
                         <div class="form-group">
                             <label for="AssignedToUserId" class="form-label">Assign To (Active Team Members)</label>
-                            @Html.DropDownListFor(m => m.AssignedToUserId, ViewBag.AssignedToList as SelectList, "Select Owner", new { @class = "form-control" })
+                            @using (Html.BeginForm("AssignTicket", "Ticket", FormMethod.Post, new { @class = "d-flex align-items-center" }))
+                            {
+                                @Html.HiddenFor(m => m.Id)
+                                @Html.DropDownListFor(m => m.AssignedToUserId, ViewBag.AssignedToList as SelectList, "Unassigned", new { @class = "form-control me-2", style = "width: 250px; display: inline-block;" })
+                                <button type="submit" class="btn btn-outline-primary ms-2">Assign/Unassign</button>
+                            }
                             @Html.ValidationMessageFor(m => m.AssignedToUserId, "", new { @class = "text-danger" })
                         </div>
                         <div class="form-group">

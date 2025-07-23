@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OmintakProduction.Data;
 
@@ -11,9 +12,11 @@ using OmintakProduction.Data;
 namespace OmintakProduction.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250722075607_AddSoftDeleteToUser")]
+    partial class AddSoftDeleteToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -236,6 +239,9 @@ namespace OmintakProduction.Migrations
                     b.Property<string>("RoleName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("RoleId");
 
                     b.ToTable("Role");
@@ -244,42 +250,50 @@ namespace OmintakProduction.Migrations
                         new
                         {
                             RoleId = 1,
-                            RoleName = "SystemAdmin"
+                            RoleName = "SystemAdmin",
+                            UserId = 1
                         },
                         new
                         {
                             RoleId = 2,
-                            RoleName = "Engineer"
+                            RoleName = "Engineer",
+                            UserId = 2
                         },
                         new
                         {
                             RoleId = 3,
-                            RoleName = "Software Tester"
+                            RoleName = "Software Tester",
+                            UserId = 3
                         },
                         new
                         {
                             RoleId = 4,
-                            RoleName = "ProjectLead"
+                            RoleName = "ProjectLead",
+                            UserId = 4
                         },
                         new
                         {
                             RoleId = 5,
-                            RoleName = "Developer"
+                            RoleName = "Developer",
+                            UserId = 5
                         },
                         new
                         {
                             RoleId = 6,
-                            RoleName = "Tester"
+                            RoleName = "Tester",
+                            UserId = 6
                         },
                         new
                         {
                             RoleId = 7,
-                            RoleName = "Stakeholder"
+                            RoleName = "Stakeholder",
+                            UserId = 7
                         },
                         new
                         {
                             RoleId = 8,
-                            RoleName = "TeamLead"
+                            RoleName = "TeamLead",
+                            UserId = 8
                         });
                 });
 
@@ -686,7 +700,7 @@ namespace OmintakProduction.Migrations
                             IsDeleted = false,
                             LastName = "Cibi",
                             NeedsWelcome = true,
-                            Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+                            Password = "Admin@123",
                             RoleId = 1,
                             UserName = "Tee",
                             isActive = true
@@ -701,7 +715,7 @@ namespace OmintakProduction.Migrations
                             IsDeleted = false,
                             LastName = "Nxumalo",
                             NeedsWelcome = true,
-                            Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+                            Password = "User@123",
                             RoleId = 8,
                             TeamId = 1,
                             UserName = "Duma",
@@ -717,7 +731,7 @@ namespace OmintakProduction.Migrations
                             IsDeleted = false,
                             LastName = "Ledwaba",
                             NeedsWelcome = true,
-                            Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+                            Password = "User@123",
                             RoleId = 7,
                             UserName = "Chief",
                             isActive = true
@@ -732,7 +746,7 @@ namespace OmintakProduction.Migrations
                             IsDeleted = false,
                             LastName = "Ramadwa",
                             NeedsWelcome = true,
-                            Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+                            Password = "User@123",
                             RoleId = 6,
                             TeamId = 2,
                             UserName = "Paris",
@@ -748,7 +762,7 @@ namespace OmintakProduction.Migrations
                             IsDeleted = false,
                             LastName = "Nquku",
                             NeedsWelcome = true,
-                            Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+                            Password = "User@123",
                             RoleId = 5,
                             TeamId = 3,
                             UserName = "Zee",

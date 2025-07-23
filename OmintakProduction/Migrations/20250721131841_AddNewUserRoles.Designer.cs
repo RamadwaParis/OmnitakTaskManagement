@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OmintakProduction.Data;
 
@@ -11,9 +12,11 @@ using OmintakProduction.Data;
 namespace OmintakProduction.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250721131841_AddNewUserRoles")]
+    partial class AddNewUserRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -236,6 +239,9 @@ namespace OmintakProduction.Migrations
                     b.Property<string>("RoleName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("RoleId");
 
                     b.ToTable("Role");
@@ -244,42 +250,20 @@ namespace OmintakProduction.Migrations
                         new
                         {
                             RoleId = 1,
-                            RoleName = "SystemAdmin"
+                            RoleName = "SystemAdmin",
+                            UserId = 1
                         },
                         new
                         {
                             RoleId = 2,
-                            RoleName = "Engineer"
+                            RoleName = "Engineer",
+                            UserId = 2
                         },
                         new
                         {
                             RoleId = 3,
-                            RoleName = "Software Tester"
-                        },
-                        new
-                        {
-                            RoleId = 4,
-                            RoleName = "ProjectLead"
-                        },
-                        new
-                        {
-                            RoleId = 5,
-                            RoleName = "Developer"
-                        },
-                        new
-                        {
-                            RoleId = 6,
-                            RoleName = "Tester"
-                        },
-                        new
-                        {
-                            RoleId = 7,
-                            RoleName = "Stakeholder"
-                        },
-                        new
-                        {
-                            RoleId = 8,
-                            RoleName = "TeamLead"
+                            RoleName = "Software Tester",
+                            UserId = 3
                         });
                 });
 
@@ -621,12 +605,6 @@ namespace OmintakProduction.Migrations
                     b.Property<DateOnly>("CreatedDate")
                         .HasColumnType("date");
 
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("DeletedByUserId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
@@ -634,9 +612,6 @@ namespace OmintakProduction.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsApproved")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastName")
@@ -679,79 +654,151 @@ namespace OmintakProduction.Migrations
                         new
                         {
                             UserId = 1,
-                            CreatedDate = new DateOnly(2025, 1, 1),
-                            Email = "uthandocibi@gmail.com",
-                            FirstName = "Thando",
-                            IsApproved = true,
-                            IsDeleted = false,
-                            LastName = "Cibi",
+                            CreatedDate = new DateOnly(2025, 6, 26),
+                            Email = "Admin1.seededData@omnitak.com",
+                            IsApproved = false,
                             NeedsWelcome = true,
-                            Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+                            Password = "Admin@123",
                             RoleId = 1,
-                            UserName = "Tee",
+                            UserName = "AdminUser",
                             isActive = true
                         },
                         new
                         {
                             UserId = 2,
-                            CreatedDate = new DateOnly(2025, 1, 2),
-                            Email = "dumisaninxumalo5gmail.com",
-                            FirstName = "Dumisani",
-                            IsApproved = true,
-                            IsDeleted = false,
-                            LastName = "Nxumalo",
+                            CreatedDate = new DateOnly(2025, 6, 26),
+                            Email = "Admin2.seededData@omnitak.com",
+                            IsApproved = false,
                             NeedsWelcome = true,
-                            Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
-                            RoleId = 8,
-                            TeamId = 1,
-                            UserName = "Duma",
+                            Password = "Admin@123",
+                            RoleId = 1,
+                            UserName = "AdminUser2",
                             isActive = true
                         },
                         new
                         {
                             UserId = 3,
-                            CreatedDate = new DateOnly(2025, 1, 3),
-                            Email = "tledwaba@dynamicdna.co.za",
-                            FirstName = "Thabang",
-                            IsApproved = true,
-                            IsDeleted = false,
-                            LastName = "Ledwaba",
+                            CreatedDate = new DateOnly(2025, 6, 26),
+                            Email = "Engineer1.seededData@omnitak.com",
+                            IsApproved = false,
                             NeedsWelcome = true,
-                            Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
-                            RoleId = 7,
-                            UserName = "Chief",
+                            Password = "Engineer@123",
+                            RoleId = 2,
+                            UserName = "EngineerUser1",
                             isActive = true
                         },
                         new
                         {
                             UserId = 4,
-                            CreatedDate = new DateOnly(2025, 1, 4),
-                            Email = "ramadwaparis@gmail.com",
-                            FirstName = "Paris",
-                            IsApproved = true,
-                            IsDeleted = false,
-                            LastName = "Ramadwa",
+                            CreatedDate = new DateOnly(2025, 6, 26),
+                            Email = "Engineer2.seededData@omnitak.com",
+                            IsApproved = false,
                             NeedsWelcome = true,
-                            Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
-                            RoleId = 6,
-                            TeamId = 2,
-                            UserName = "Paris",
+                            Password = "Engineer@123",
+                            RoleId = 2,
+                            UserName = "EngineerUser2",
                             isActive = true
                         },
                         new
                         {
                             UserId = 5,
-                            CreatedDate = new DateOnly(2025, 1, 5),
-                            Email = "ayakazilungile20@gmail.com",
-                            FirstName = "Zilungile",
-                            IsApproved = true,
-                            IsDeleted = false,
-                            LastName = "Nquku",
+                            CreatedDate = new DateOnly(2025, 6, 26),
+                            Email = "Tester1.seededData@omnitak.com",
+                            IsApproved = false,
                             NeedsWelcome = true,
-                            Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
-                            RoleId = 5,
+                            Password = "Tester@123",
+                            RoleId = 3,
+                            UserName = "TesterUser1",
+                            isActive = true
+                        },
+                        new
+                        {
+                            UserId = 6,
+                            CreatedDate = new DateOnly(2025, 6, 26),
+                            Email = "Tester2.seededData@omnitak.com",
+                            IsApproved = false,
+                            NeedsWelcome = true,
+                            Password = "Tester@123",
+                            RoleId = 3,
+                            UserName = "TesterUser2",
+                            isActive = true
+                        },
+                        new
+                        {
+                            UserId = 7,
+                            CreatedDate = new DateOnly(2025, 6, 26),
+                            Email = "dreamer1@omnitak.com",
+                            IsApproved = false,
+                            NeedsWelcome = true,
+                            Password = "Dream@123",
+                            RoleId = 2,
+                            TeamId = 1,
+                            UserName = "Dreamer1",
+                            isActive = true
+                        },
+                        new
+                        {
+                            UserId = 8,
+                            CreatedDate = new DateOnly(2025, 6, 26),
+                            Email = "dreamer2@omnitak.com",
+                            IsApproved = false,
+                            NeedsWelcome = true,
+                            Password = "Dream@123",
+                            RoleId = 2,
+                            TeamId = 1,
+                            UserName = "Dreamer2",
+                            isActive = true
+                        },
+                        new
+                        {
+                            UserId = 9,
+                            CreatedDate = new DateOnly(2025, 6, 26),
+                            Email = "found1@omnitak.com",
+                            IsApproved = false,
+                            NeedsWelcome = true,
+                            Password = "Found@123",
+                            RoleId = 2,
+                            TeamId = 2,
+                            UserName = "Found1",
+                            isActive = true
+                        },
+                        new
+                        {
+                            UserId = 10,
+                            CreatedDate = new DateOnly(2025, 6, 26),
+                            Email = "found2@omnitak.com",
+                            IsApproved = false,
+                            NeedsWelcome = true,
+                            Password = "Found@123",
+                            RoleId = 2,
+                            TeamId = 2,
+                            UserName = "Found2",
+                            isActive = true
+                        },
+                        new
+                        {
+                            UserId = 11,
+                            CreatedDate = new DateOnly(2025, 6, 26),
+                            Email = "genty1@omnitak.com",
+                            IsApproved = false,
+                            NeedsWelcome = true,
+                            Password = "Genty@123",
+                            RoleId = 2,
                             TeamId = 3,
-                            UserName = "Zee",
+                            UserName = "Genty1",
+                            isActive = true
+                        },
+                        new
+                        {
+                            UserId = 12,
+                            CreatedDate = new DateOnly(2025, 6, 26),
+                            Email = "genty2@omnitak.com",
+                            IsApproved = false,
+                            NeedsWelcome = true,
+                            Password = "Genty@123",
+                            RoleId = 2,
+                            TeamId = 3,
+                            UserName = "Genty2",
                             isActive = true
                         });
                 });

@@ -6,7 +6,6 @@ using OmintakProduction.Data;
 using OmintakProduction.Models;
 using System.Security.Claims;
 
-
 namespace OmintakProduction.Controllers
 {
     public class TicketController : Controller
@@ -15,7 +14,22 @@ namespace OmintakProduction.Controllers
         public TicketController(AppDbContext context)
         {
             _context = context;
+        }
 
+        // POST: Ticket/AssignTicket
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignTicket(int id, int? assignedToUserId)
+        {
+            var ticket = await _context.Ticket.FindAsync(id);
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+            ticket.AssignedToUserId = assignedToUserId;
+            _context.Update(ticket);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Edit", new { id = ticket.Id });
         }
 
         // Ticket Management Landing Page (Kanban)
@@ -45,14 +59,13 @@ namespace OmintakProduction.Controllers
             return View("~/Views/Ticket/Details.cshtml", ticket);
         }
 
-
         public IActionResult Create(int? projectId)
         {
             ViewBag.ProjectList = new SelectList(_context.Project.Include(p => p.Team).ToList(), "ProjectId", "ProjectName");
             if (projectId.HasValue)
             {
                 var project = _context.Project.Include(p => p.Team).FirstOrDefault(p => p.ProjectId == projectId.Value);
-                var activeTeamUsers = project?.Team?.TeamMembers?.Where(u => u.isActive).ToList() ?? new List<User>();
+                var activeTeamUsers = project?.Team?.TeamMembers?.Where(u => u != null && u.isActive).ToList() ?? new List<User>();
                 ViewBag.AssignedToList = new SelectList(activeTeamUsers, "UserId", "UserName");
             }
             else
@@ -94,13 +107,12 @@ namespace OmintakProduction.Controllers
             }
             var project = _context.Project.Include(p => p.Team).FirstOrDefault(p => p.ProjectId == ticket.ProjectId);
             var activeTeamUsers = (project != null && project.Team != null && project.Team.TeamMembers != null)
-                ? project.Team.TeamMembers.Where(u => u.isActive).ToList()
+                ? project.Team.TeamMembers.Where(u => u != null && u.isActive).ToList()
                 : new List<User>();
             ViewBag.ProjectList = new SelectList(_context.Project.Include(p => p.Team).ToList(), "ProjectId", "ProjectName");
             ViewBag.AssignedToList = new SelectList(activeTeamUsers, "UserId", "UserName");
             return View(ticket);
         }
-
 
         public async Task<IActionResult> Update(int? id)
         {
@@ -113,14 +125,11 @@ namespace OmintakProduction.Controllers
             return View("~/Views/Ticket/Update.cshtml", ticket);
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(int id, [Bind("Id,Title,Description,DueDate,Status")] Ticket updatedTicket)
         {
-
             if (id != updatedTicket.Id) return NotFound();
-
 
             var existingTicket = await _context.Ticket.FindAsync(id);
             if (existingTicket == null) return NotFound();
@@ -129,11 +138,9 @@ namespace OmintakProduction.Controllers
             {
                 try
                 {
-
                     existingTicket.Title = updatedTicket.Title;
                     existingTicket.Description = updatedTicket.Description;
                     existingTicket.Status = updatedTicket.Status;
-
 
                     _context.Update(existingTicket);
                     await _context.SaveChangesAsync();
@@ -150,16 +157,12 @@ namespace OmintakProduction.Controllers
             return View("~/Views/Ticket/Update.cshtml", updatedTicket);
         }
 
-
-
         public IActionResult Delete()
         {
-
             return View();
         }
 
         [HttpGet]
-
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -179,7 +182,6 @@ namespace OmintakProduction.Controllers
             return RedirectToAction("Index");
         }
 
-
         private bool TicketExists(int id)
         {
             return _context.Ticket.Any(e => e.Id == id);
@@ -188,12 +190,16 @@ namespace OmintakProduction.Controllers
         public IActionResult Edit(int id)
         {
             var ticket = _context.Ticket.Include(t => t.Project).Include(t => t.AssignedToUser).FirstOrDefault(t => t.Id == id);
-            if (ticket == null) return NotFound();
+            if (ticket == null)
+            {
+                return NotFound();
+            }
             ViewBag.ProjectList = new SelectList(_context.Project.ToList(), "ProjectId", "ProjectName");
             List<User> assignedUsers = new List<User>();
-            if (ticket.ProjectId != null)
+            if (ticket.ProjectId.HasValue)
             {
-                var project = _context.Project.Include(p => p.Team).ThenInclude(team => team.TeamMembers).FirstOrDefault(p => p.ProjectId == ticket.ProjectId.GetValueOrDefault());
+                var project = _context.Project.Include(p => p.Team).ThenInclude(team => team.TeamMembers)
+                    .FirstOrDefault(p => p.ProjectId == ticket.ProjectId.Value);
                 if (project != null && project.Team != null && project.Team.TeamMembers != null)
                 {
                     assignedUsers = project.Team.TeamMembers.Where(u => u != null && u.isActive).ToList();
@@ -207,6 +213,10 @@ namespace OmintakProduction.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("Id,Title,Description,DueDate,Status,ProjectId,AssignedToUserId")] Ticket ticket)
         {
+            if (ticket == null)
+            {
+                return NotFound();
+            }
             if (ModelState.IsValid)
             {
                 _context.Update(ticket);
@@ -215,9 +225,10 @@ namespace OmintakProduction.Controllers
             }
             ViewBag.ProjectList = new SelectList(_context.Project.ToList(), "ProjectId", "ProjectName");
             List<User> assignedUsers = new List<User>();
-            if (ticket.ProjectId != null)
+            if (ticket.ProjectId.HasValue)
             {
-                var project = _context.Project.Include(p => p.Team).ThenInclude(team => team.TeamMembers).FirstOrDefault(p => p.ProjectId == ticket.ProjectId.GetValueOrDefault());
+                var project = _context.Project.Include(p => p.Team).ThenInclude(team => team.TeamMembers)
+                    .FirstOrDefault(p => p.ProjectId == ticket.ProjectId.Value);
                 if (project != null && project.Team != null && project.Team.TeamMembers != null)
                 {
                     assignedUsers = project.Team.TeamMembers.Where(u => u != null && u.isActive).ToList();

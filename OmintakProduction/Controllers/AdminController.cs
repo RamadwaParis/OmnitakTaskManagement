@@ -35,6 +35,7 @@ namespace OmintakProduction.Controllers
         }
 
         [HttpPost]
+        [Route("Admin/ApproveUser")]
         [Authorize(Roles = "SystemAdmin")]
         public async Task<IActionResult> ApproveUser(int id, int roleId)
         {
@@ -63,6 +64,69 @@ namespace OmintakProduction.Controllers
 
             TempData["Success"] = "User has been rejected and removed from the system.";
             return RedirectToAction("PendingUsers");
+        }
+
+        [HttpPost]
+        [Route("Admin/ApproveUserJson")]
+        [Authorize(Roles = "SystemAdmin")]
+        public async Task<IActionResult> ApproveUser([FromBody] ApprovalRequest request)
+        {
+            try
+            {
+                var user = await _context.User.FindAsync(request.UserId);
+                if (user == null) 
+                    return Json(new { success = false, message = "User not found" });
+
+                // Get role by name
+                var role = await _context.Role.FirstOrDefaultAsync(r => r.RoleName == request.Role);
+                if (role == null)
+                    return Json(new { success = false, message = "Role not found" });
+
+                user.IsApproved = true;
+                user.isActive = true;
+                user.RoleId = role.RoleId;
+                user.NeedsWelcome = true;
+                
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = $"User approved as {request.Role}" });
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "Error approving user" });
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "SystemAdmin")]
+        public async Task<IActionResult> RejectUser([FromBody] RejectRequest request)
+        {
+            try
+            {
+                var user = await _context.User.FindAsync(request.UserId);
+                if (user == null)
+                    return Json(new { success = false, message = "User not found" });
+
+                _context.User.Remove(user);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "User rejected and removed" });
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = "Error rejecting user" });
+            }
+        }
+
+        public class ApprovalRequest
+        {
+            public int UserId { get; set; }
+            public required string Role { get; set; }
+        }
+
+        public class RejectRequest
+        {
+            public int UserId { get; set; }
         }
     }
 }
