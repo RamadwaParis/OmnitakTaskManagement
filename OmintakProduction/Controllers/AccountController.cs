@@ -90,10 +90,12 @@ namespace OmintakProduction.Controllers
                 UserName = username,
                 Email = email,
                 Password = passwordHash,
-                RoleId = 2,
-                CreatedDate = new DateOnly(2025, 06, 27),
-                isActive = false, // not approved/active. Default to false on registration, will set to true when user approves account
-                NeedsWelcome = true
+                RoleId = 2, // Default role - will be changed by admin during approval
+                CreatedDate = DateOnly.FromDateTime(DateTime.Now),
+                isActive = false, // Must be approved by admin first
+                IsApproved = false, // Requires admin approval
+                NeedsWelcome = true,
+                IsDeleted = false
             };
 
             _context.User.Add(newUser);
@@ -235,42 +237,55 @@ namespace OmintakProduction.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SystemAdmin")]
         public IActionResult ApproveUsers()
         {
-            var pendingUsers = _context.User.Where(u => !u.isActive).ToList();
+            var pendingUsers = _context.User.Where(u => !u.IsApproved && !u.IsDeleted).ToList();
             ViewBag.Teams = _context.Team.ToList();
+            ViewBag.Roles = _context.Role.ToList();
             return View(pendingUsers);
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public IActionResult ApproveUser(int userId, string newUsername, int teamId, string firstName, string lastName)
+        [Authorize(Roles = "SystemAdmin")]
+        public IActionResult ApproveUser(int userId, string newUsername, int roleId, int? teamId, int? projectId, string firstName, string lastName)
         {
             var user = _context.User.Find(userId);
-            var team = _context.Team.Find(teamId);
-            if (user != null && !string.IsNullOrWhiteSpace(newUsername) && team != null && !string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(lastName))
+            var team = teamId.HasValue ? _context.Team.Find(teamId.Value) : null;
+            var role = _context.Role.Find(roleId);
+            
+            if (user != null && !string.IsNullOrWhiteSpace(newUsername) && role != null && !string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(lastName))
             {
                 user.UserName = newUsername;
                 user.FirstName = firstName;
                 user.LastName = lastName;
+                user.RoleId = roleId;
                 user.isActive = true;
+                user.IsApproved = true;
                 user.TeamId = teamId;
-                user.Team = team;
+                user.ProjectId = projectId;
+                
+                if (team != null)
+                {
+                    user.Team = team;
+                }
+
                 _context.User.Update(user);
                 _context.SaveChanges();
-                TempData["Success"] = $"User {firstName} {lastName} approved, assigned to team {team.TeamName}, and username updated.";
+
+                string teamMessage = team != null ? $" and assigned to team {team.TeamName}" : "";
+                TempData["Success"] = $"User {firstName} {lastName} approved with role {role.RoleName}{teamMessage}.";
 
                 // Create notification for user
                 var notification = new Notification {
                     UserId = user.UserId,
                     Title = "Welcome to Omnitak!",
-                    Message = $"You have been approved and assigned to team <b>{team.TeamName}</b>.",
+                    Message = $"You have been approved with role <b>{role.RoleName}</b>{(team != null ? $" and assigned to team <b>{team.TeamName}</b>" : "")}.",
                     Type = NotificationType.Success,
                     IsRead = false,
                     CreatedAt = DateTime.Now,
-                    RelatedEntityId = team.TeamId,
-                    RelatedEntityType = "Team"
+                    RelatedEntityId = roleId,
+                    RelatedEntityType = "Role"
                 };
                 _context.Notification.Add(notification);
                 _context.SaveChanges();
