@@ -1,0 +1,360 @@
+@model OmintakProduction.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Stakeholder Dashboard";
+}
+
+<style>
+/* Stakeholder styling */
+.stakeholder-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 15px;
+    color: white;
+    transition: transform 0.3s ease;
+}
+.stakeholder-card:hover {
+    transform: translateY(-5px);
+}
+.stakeholder-stats-card {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    border: none;
+    border-radius: 10px;
+    color: #333;
+}
+.insight-card {
+    border-left: 4px solid #28a745;
+    transition: all 0.3s ease;
+}
+.insight-card:hover {
+    border-left-color: #667eea;
+    transform: translateX(5px);
+}
+.milestone-item {
+    border-bottom: 1px solid #e9ecef;
+    padding: 0.75rem 0;
+}
+.milestone-item:last-child {
+    border-bottom: none;
+}
+.chart-container {
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+}
+</style>
+
+<div class="container-fluid py-4">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="stakeholder-card p-4">
+                <h2 class="mb-0"><i class="fas fa-eye me-2"></i>Stakeholder Dashboard</h2>
+                <p class="mt-2 mb-0">Welcome, Stakeholder! Monitor project progress, view key metrics, and track deliverable milestones.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Performance Indicators -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card stakeholder-stats-card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-project-diagram fa-2x mb-2 text-primary"></i>
+                    <h3 class="mb-1">@(Model.ActiveProjects)</h3>
+                    <p class="mb-0">Active Projects</p>
+                    <small class="text-muted">@(Model.TotalProjects - Model.ActiveProjects) completed</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stakeholder-stats-card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-chart-line fa-2x mb-2 text-success"></i>
+                    <h3 class="mb-1">@(Math.Round((double)(Model.CompletedTasks) / Math.Max(1, Model.CompletedTasks + Model.ActiveTasks) * 100))%</h3>
+                    <p class="mb-0">Overall Progress</p>
+                    <small class="text-muted">@(Model.CompletedTasks) of @(Model.CompletedTasks + Model.ActiveTasks) tasks</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stakeholder-stats-card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-calendar-check fa-2x mb-2 text-info"></i>
+                    <h3 class="mb-1">@(Model.OverdueTasks == 0 ? "On Track" : Model.OverdueTasks.ToString())</h3>
+                    <p class="mb-0">@(Model.OverdueTasks == 0 ? "Delivery Status" : "Overdue Tasks")</p>
+                    <small class="text-muted">@(Model.OverdueTasks == 0 ? "All milestones on schedule" : "Require attention")</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stakeholder-stats-card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-dollar-sign fa-2x mb-2 text-warning"></i>
+                    <h3 class="mb-1">$2.4M</h3>
+                    <p class="mb-0">Budget Utilized</p>
+                    <small class="text-muted">78% of total budget</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Project Portfolio Overview -->
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-briefcase me-2"></i>Project Portfolio</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentProjects?.Any() == true)
+                    {
+                        @foreach (var project in Model.RecentProjects)
+                        {
+                            var progress = new Random().Next(25, 95); // In real app, calculate actual progress
+                            var progressClass = progress >= 75 ? "bg-success" : progress >= 50 ? "bg-info" : progress >= 25 ? "bg-warning" : "bg-danger";
+                            var statusClass = project.Status?.ToLower() switch
+                            {
+                                "active" => "bg-success",
+                                "on hold" => "bg-warning text-dark",
+                                "completed" => "bg-primary",
+                                _ => "bg-secondary"
+                            };
+                            
+                            <div class="card insight-card mb-3">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-8">
+                                            <h6 class="card-title mb-1">@project.ProjectName</h6>
+                                            <p class="text-muted small mb-2">@project.Description</p>
+                                            <div class="progress mb-2" style="height: 8px;">
+                                                <div class="progress-bar @progressClass" role="progressbar" style="width: @(progress)%"></div>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="badge @statusClass">@project.Status</span>
+                                                <small class="text-muted">@(progress)% Complete</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 text-end">
+                                            <div class="text-muted">
+                                                <small class="d-block">Start: @(project.StartDate?.ToString("MMM dd, yyyy") ?? "TBD")</small>
+                                                <small class="d-block">Due: @project.DueDate.ToString("MMM dd, yyyy")</small>
+                                                <small class="d-block">Budget: $@(new Random().Next(100, 800))K</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-briefcase fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No active projects to display</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Progress Analytics -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Progress Analytics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="chart-container">
+                                <div class="text-center">
+                                    <i class="fas fa-chart-pie fa-4x text-muted mb-3"></i>
+                                    <h6 class="text-muted">Task Completion Distribution</h6>
+                                    <div class="row text-center mt-3">
+                                        <div class="col-4">
+                                            <h5 class="text-success">@(Model.CompletedTasks)</h5>
+                                            <small class="text-muted">Completed</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <h5 class="text-primary">@(Model.ActiveTasks)</h5>
+                                            <small class="text-muted">In Progress</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <h5 class="text-warning">@(Model.OverdueTasks)</h5>
+                                            <small class="text-muted">Overdue</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="chart-container">
+                                <div class="text-center">
+                                    <i class="fas fa-chart-line fa-4x text-muted mb-3"></i>
+                                    <h6 class="text-muted">Monthly Progress Trend</h6>
+                                    <div class="row text-center mt-3">
+                                        <div class="col-4">
+                                            <h5 class="text-info">+15%</h5>
+                                            <small class="text-muted">This Month</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <h5 class="text-success">+8%</h5>
+                                            <small class="text-muted">Last Month</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <h5 class="text-warning">+12%</h5>
+                                            <small class="text-muted">Quarterly</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Milestones & Reports -->
+        <div class="col-md-4">
+            <!-- Upcoming Milestones -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-flag me-2"></i>Upcoming Milestones</h5>
+                </div>
+                <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                    <div class="milestone-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">Phase 1 Completion</h6>
+                                <small class="text-muted">E-Commerce Platform</small>
+                            </div>
+                            <span class="badge bg-warning text-dark">5 days</span>
+                        </div>
+                    </div>
+                    <div class="milestone-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">Beta Testing Launch</h6>
+                                <small class="text-muted">Mobile App</small>
+                            </div>
+                            <span class="badge bg-info">12 days</span>
+                        </div>
+                    </div>
+                    <div class="milestone-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">Security Audit</h6>
+                                <small class="text-muted">Payment System</small>
+                            </div>
+                            <span class="badge bg-primary">18 days</span>
+                        </div>
+                    </div>
+                    <div class="milestone-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">Production Deployment</h6>
+                                <small class="text-muted">CRM Integration</small>
+                            </div>
+                            <span class="badge bg-success">25 days</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Executive Reports -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0"><i class="fas fa-file-alt me-2"></i>Executive Reports</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="/ProjectReport" class="btn btn-outline-primary">
+                            <i class="fas fa-chart-bar me-2"></i>Project Status Report
+                        </a>
+                        <a href="/ProjectReport/Financial" class="btn btn-outline-success">
+                            <i class="fas fa-dollar-sign me-2"></i>Financial Summary
+                        </a>
+                        <a href="/ProjectReport/Performance" class="btn btn-outline-info">
+                            <i class="fas fa-tachometer-alt me-2"></i>Performance Metrics
+                        </a>
+                        <a href="/ProjectReport/Risk" class="btn btn-outline-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Risk Assessment
+                        </a>
+                        <a href="/ProjectReport/Export" class="btn btn-outline-secondary">
+                            <i class="fas fa-download me-2"></i>Export Reports
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Insights -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Key Insights</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success" role="alert">
+                        <i class="fas fa-arrow-up me-1"></i>
+                        <strong>Productivity Up:</strong> Team efficiency increased by 15% this month.
+                    </div>
+                    <div class="alert alert-info" role="alert">
+                        <i class="fas fa-clock me-1"></i>
+                        <strong>On Schedule:</strong> 3 of 4 projects are meeting deadlines.
+                    </div>
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-exclamation me-1"></i>
+                        <strong>Budget Alert:</strong> Mobile App project at 85% budget utilization.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROI & Business Impact -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Business Impact & ROI</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <div class="p-3">
+                                <i class="fas fa-money-bill-wave fa-2x text-success mb-2"></i>
+                                <h4 class="text-success">$1.8M</h4>
+                                <p class="small text-muted">Expected ROI</p>
+                                <small class="text-success">+28% from projections</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3">
+                                <i class="fas fa-users fa-2x text-info mb-2"></i>
+                                <h4 class="text-info">45,000</h4>
+                                <p class="small text-muted">Users Impacted</p>
+                                <small class="text-info">Across all projects</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3">
+                                <i class="fas fa-clock fa-2x text-warning mb-2"></i>
+                                <h4 class="text-warning">320hrs</h4>
+                                <p class="small text-muted">Time Saved</p>
+                                <small class="text-warning">Process automation</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3">
+                                <i class="fas fa-star fa-2x text-primary mb-2"></i>
+                                <h4 class="text-primary">92%</h4>
+                                <p class="small text-muted">Client Satisfaction</p>
+                                <small class="text-primary">+5% increase</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,112 @@
+@model IEnumerable<OmintakProduction.Models.Task>
+@{
+    var ticket = ViewBag.Ticket as OmintakProduction.Models.Ticket;
+    ViewData["Title"] = $"Tasks for Ticket #{ticket?.Id} — {ticket?.Title}";
+}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Tasks for Ticket #@ticket?.Id — @ticket?.Title</h2>
+        <a href="@Url.Action("Dashboard", "Ticket")" class="btn btn-secondary" style="border-radius:8px;background:#ede9fe;color:#7c3aed;">
+            &larr; Back to Tickets
+        </a>
+    </div>
+    <div class="mb-3">
+        @{
+            var userRole = Context.User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+            var canCreateTask = false;
+            if (!string.IsNullOrEmpty(userRole))
+            {
+                canCreateTask = OmintakProduction.Models.RolePermissions.HasPermission(userRole, "ManageTasks");
+            }
+        }
+        @if (canCreateTask)
+        {
+            <a href="@Url.Action("Create", "Task", new { ticketId = ticket?.Id })" class="btn btn-primary" style="background:#7c3aed;border-radius:8px;">
+                <i class="fas fa-plus me-1"></i> Create New Task
+            </a>
+        }
+    </div>
+    <table class="table table-bordered table-hover align-middle" style="background:#fff8f3;border-radius:12px;overflow:hidden;">
+        <thead class="table-light">
+            <tr>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Assigned To</th>
+                <th>Due Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var task in Model)
+        {
+            <tr>
+                <td>@task.Title</td>
+                <td>
+                    @switch (task.Status)
+                    {
+                        case OmintakProduction.Models.TaskStatus.Todo:
+                            <span class="badge" style="background:#ede9fe;color:#7c3aed;">To Do</span>
+                            break;
+                        case OmintakProduction.Models.TaskStatus.InProgress:
+                            <span class="badge" style="background:#c7d2fe;color:#3730a3;">In Progress</span>
+                            break;
+                        case OmintakProduction.Models.TaskStatus.InReview:
+                            <span class="badge" style="background:#fef08a;color:#b45309;">In Review</span>
+                            break;
+                        case OmintakProduction.Models.TaskStatus.Completed:
+                            <span class="badge" style="background:#bbf7d0;color:#166534;">Completed</span>
+                            break;
+                        case OmintakProduction.Models.TaskStatus.Cancelled:
+                            <span class="badge bg-secondary">Cancelled</span>
+                            break;
+                        case OmintakProduction.Models.TaskStatus.OnHold:
+                            <span class="badge bg-warning text-dark">On Hold</span>
+                            break;
+                    }
+                </td>
+                <td>
+                    @switch (task.Priority)
+                    {
+                        case OmintakProduction.Models.TaskPriority.High:
+                            <span class="badge" style="background:#fca5a5;color:#991b1b;">High</span>
+                            break;
+                        case OmintakProduction.Models.TaskPriority.Medium:
+                            <span class="badge" style="background:#fef08a;color:#92400e;">Medium</span>
+                            break;
+                        case OmintakProduction.Models.TaskPriority.Low:
+                            <span class="badge" style="background:#d1fae5;color:#065f46;">Low</span>
+                            break;
+                        case OmintakProduction.Models.TaskPriority.Critical:
+                            <span class="badge" style="background:#f87171;color:#7f1d1d;">Critical</span>
+                            break;
+                        case OmintakProduction.Models.TaskPriority.Urgent:
+                            <span class="badge" style="background:#fbbf24;color:#78350f;">Urgent</span>
+                            break;
+                    }
+                </td>
+                <td>
+                    @if (task.AssignedUsers != null && task.AssignedUsers.Any())
+                    {
+                        foreach (var user in task.AssignedUsers)
+                        {
+                            <span class="badge" style="background:#ede9fe;color:#7c3aed;">@user.UserName</span>
+                        }
+                    }
+                    else if (ticket != null && ticket.AssignedToUser != null && !string.IsNullOrWhiteSpace(ticket.AssignedToUser.UserName))
+                    {
+                        <span class="badge" style="background:#ede9fe;color:#7c3aed;">@ticket.AssignedToUser.UserName</span>
+                    }
+                </td>
+                <td>@task.DueDate?.ToString("MMM dd, yyyy")</td>
+                <td>
+                    <div class="btn-group btn-group-sm">
+                        <a href="@Url.Action("Edit", "Task", new { id = task.Id, ticketId = ticket?.Id })" class="btn btn-outline-secondary">Edit</a>
+                        <a href="@Url.Action("Delete", "Task", new { id = task.Id, ticketId = ticket?.Id })" class="btn btn-outline-danger ms-1">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

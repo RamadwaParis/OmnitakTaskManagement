@@ -1,0 +1,54 @@
+@model OmintakProduction.Models.Task
+@{
+    ViewData["Title"] = "Edit Task";
+}
+<div class="task-edit-card" style="background: #f8f5f0; border-radius: 16px; padding: 2rem;">
+    <h2 style="color: #7c3aed;">Edit Task</h2>
+    <form asp-action="Edit" method="post">
+        @if (ViewBag.TicketId != null)
+        {
+            <input type="hidden" name="ticketId" value="@ViewBag.TicketId" />
+        }
+        <input type="hidden" asp-for="Id" />
+        <div class="form-group">
+            <label asp-for="Title"></label>
+            <input asp-for="Title" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+        </div>
+        <div class="form-group">
+            <label asp-for="ProjectId"></label>
+            <input asp-for="ProjectId" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Status"></label>
+            <select asp-for="Status" class="form-control">
+                @foreach (var status in Enum.GetValues(typeof(OmintakProduction.Models.TaskStatus)))
+                {
+                    <option value="@status" selected="@(Model.Status == (OmintakProduction.Models.TaskStatus)status)">@status</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label asp-for="DueDate"></label>
+            <input asp-for="DueDate" class="form-control" type="date" />
+        </div>
+        <!-- Assign Users field removed as requested -->
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-primary" style="background: #7c3aed; border: none;" />
+            @if (ViewBag.TicketId != null)
+            {
+                <a href="@Url.Action("Manage", "Task", new { ticketId = ViewBag.TicketId })" class="btn btn-default" style="background: #f3e6d6; color: #7c3aed;">Back to Ticket Tasks</a>
+            }
+            else
+            {
+                <a href="@Url.Action("Index", "Task")" class="btn btn-default" style="background: #f3e6d6; color: #7c3aed;">Back to List</a>
+            }
+        </div>
+    </form>
+</div>
+<style>
+body, .task-edit-card { background: rgba(255, 239, 227, 0.85) !important; }
+</style>
