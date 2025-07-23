@@ -33,7 +33,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
-<body>
+<body class="@(hideNavbar ? "auth-page-body" : "")">
     @if (!hideNavbar)
     {
         <header class="ms-header">

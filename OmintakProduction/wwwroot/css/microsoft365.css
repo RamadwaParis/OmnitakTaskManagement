@@ -1,0 +1,632 @@
+/* Microsoft 365 / Fluent UI Theme for Omnitak Task Management */
+
+:root {
+    /* Microsoft 365 Color Palette */
+    --ms-blue: #0078d4;
+    --ms-blue-hover: #106ebe;
+    --ms-blue-dark: #005a9e;
+    --ms-blue-light: #deecf9;
+    --ms-purple: #881798;
+    --ms-teal: #008272;
+    --ms-green: #107c10;
+    --ms-yellow: #ffb900;
+    --ms-orange: #d83b01;
+    --ms-red: #d13438;
+    
+    /* Neutral Colors */
+    --ms-gray-10: #faf9f8;
+    --ms-gray-20: #f3f2f1;
+    --ms-gray-30: #edebe9;
+    --ms-gray-40: #e1dfdd;
+    --ms-gray-50: #d2d0ce;
+    --ms-gray-60: #c8c6c4;
+    --ms-gray-70: #a19f9d;
+    --ms-gray-80: #797775;
+    --ms-gray-90: #605e5c;
+    --ms-gray-100: #484644;
+    --ms-gray-110: #323130;
+    --ms-gray-120: #201f1e;
+    --ms-gray-130: #16100b;
+    
+    /* Typography */
+    --ms-font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;
+    --ms-font-size-10: 10px;
+    --ms-font-size-12: 12px;
+    --ms-font-size-14: 14px;
+    --ms-font-size-16: 16px;
+    --ms-font-size-18: 18px;
+    --ms-font-size-20: 20px;
+    --ms-font-size-24: 24px;
+    --ms-font-size-28: 28px;
+    --ms-font-size-32: 32px;
+    --ms-font-size-40: 40px;
+    
+    /* Spacing */
+    --ms-spacing-xs: 4px;
+    --ms-spacing-s: 8px;
+    --ms-spacing-m: 12px;
+    --ms-spacing-l: 16px;
+    --ms-spacing-xl: 20px;
+    --ms-spacing-xxl: 24px;
+    --ms-spacing-xxxl: 32px;
+    
+    /* Border Radius */
+    --ms-border-radius-s: 2px;
+    --ms-border-radius-m: 4px;
+    --ms-border-radius-l: 6px;
+    
+    /* Shadows */
+    --ms-shadow-depth-4: 0 0 2px rgba(0,0,0,.12), 0 2px 2px rgba(0,0,0,.24);
+    --ms-shadow-depth-8: 0 0 2px rgba(0,0,0,.12), 0 4px 4px rgba(0,0,0,.24);
+    --ms-shadow-depth-16: 0 0 2px rgba(0,0,0,.12), 0 8px 8px rgba(0,0,0,.24);
+}
+
+/* Global Styles */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--ms-font-family);
+    background-color: var(--ms-gray-10);
+    color: var(--ms-gray-120);
+    margin: 0;
+    padding: 0;
+    font-size: var(--ms-font-size-14);
+    line-height: 1.5;
+}
+
+/* Microsoft 365 Header */
+.ms-header {
+    background-color: var(--ms-blue);
+    color: white;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    padding: 0 var(--ms-spacing-l);
+    box-shadow: var(--ms-shadow-depth-4);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.ms-header-brand {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    font-size: var(--ms-font-size-16);
+    color: white;
+    text-decoration: none;
+    margin-right: auto;
+}
+
+.ms-header-brand:hover {
+    color: white;
+    text-decoration: none;
+}
+
+.ms-header-brand i {
+    margin-right: var(--ms-spacing-s);
+    font-size: var(--ms-font-size-18);
+}
+
+.ms-header-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--ms-spacing-l);
+}
+
+.ms-header-user {
+    display: flex;
+    align-items: center;
+    gap: var(--ms-spacing-s);
+    cursor: pointer;
+    padding: var(--ms-spacing-xs) var(--ms-spacing-s);
+    border-radius: var(--ms-border-radius-m);
+    transition: background-color 0.15s ease;
+}
+
+.ms-header-user:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.ms-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--ms-purple);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: var(--ms-font-size-14);
+}
+
+/* Main Layout */
+.ms-layout {
+    display: flex;
+    min-height: calc(100vh - 48px);
+}
+
+.ms-sidebar {
+    width: 250px;
+    background-color: white;
+    border-right: 1px solid var(--ms-gray-30);
+    padding: var(--ms-spacing-l);
+    overflow-y: auto;
+}
+
+.ms-sidebar-section {
+    margin-bottom: var(--ms-spacing-xxl);
+}
+
+.ms-sidebar-title {
+    font-size: var(--ms-font-size-12);
+    font-weight: 600;
+    color: var(--ms-gray-90);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--ms-spacing-s);
+    margin-top: 0;
+}
+
+.ms-sidebar-link {
+    display: flex;
+    align-items: center;
+    padding: var(--ms-spacing-s) var(--ms-spacing-m);
+    border-radius: var(--ms-border-radius-m);
+    color: var(--ms-gray-120);
+    text-decoration: none;
+    font-weight: 400;
+    transition: all 0.15s ease;
+    margin-bottom: var(--ms-spacing-xs);
+    position: relative;
+}
+
+.ms-sidebar-link:hover {
+    background-color: var(--ms-gray-20);
+    color: var(--ms-blue);
+    text-decoration: none;
+}
+
+.ms-sidebar-link.active {
+    background-color: var(--ms-blue-light);
+    color: var(--ms-blue);
+    font-weight: 600;
+}
+
+.ms-sidebar-link.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background-color: var(--ms-blue);
+    border-radius: 0 2px 2px 0;
+}
+
+.ms-sidebar-link i {
+    margin-right: var(--ms-spacing-m);
+    width: 16px;
+    text-align: center;
+    font-size: var(--ms-font-size-16);
+}
+
+.ms-sidebar-link .badge {
+    margin-left: auto;
+}
+
+/* Main Content */
+.ms-main {
+    flex: 1;
+    padding: var(--ms-spacing-xxl);
+    background-color: var(--ms-gray-10);
+    overflow-y: auto;
+}
+
+/* Page Header */
+.ms-page-header {
+    margin-bottom: var(--ms-spacing-xxl);
+}
+
+.ms-page-title {
+    font-size: var(--ms-font-size-28);
+    font-weight: 600;
+    color: var(--ms-gray-120);
+    margin: 0 0 var(--ms-spacing-s) 0;
+}
+
+.ms-page-subtitle {
+    font-size: var(--ms-font-size-14);
+    color: var(--ms-gray-90);
+    margin: 0;
+}
+
+/* Cards */
+.ms-card {
+    background-color: white;
+    border-radius: var(--ms-border-radius-l);
+    box-shadow: var(--ms-shadow-depth-4);
+    border: none;
+    overflow: hidden;
+    margin-bottom: var(--ms-spacing-l);
+}
+
+.ms-card-header {
+    padding: var(--ms-spacing-l);
+    border-bottom: 1px solid var(--ms-gray-30);
+    background-color: white;
+}
+
+.ms-card-title {
+    font-size: var(--ms-font-size-16);
+    font-weight: 600;
+    color: var(--ms-gray-120);
+    margin: 0;
+}
+
+.ms-card-body {
+    padding: var(--ms-spacing-l);
+}
+
+/* Buttons */
+.ms-btn {
+    font-family: var(--ms-font-family);
+    font-size: var(--ms-font-size-14);
+    font-weight: 600;
+    padding: var(--ms-spacing-s) var(--ms-spacing-l);
+    border-radius: var(--ms-border-radius-m);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ms-spacing-xs);
+    min-height: 32px;
+}
+
+.ms-btn-primary {
+    background-color: var(--ms-blue);
+    color: white;
+    border-color: var(--ms-blue);
+}
+
+.ms-btn-primary:hover {
+    background-color: var(--ms-blue-hover);
+    border-color: var(--ms-blue-hover);
+    color: white;
+}
+
+.ms-btn-secondary {
+    background-color: white;
+    color: var(--ms-gray-120);
+    border-color: var(--ms-gray-60);
+}
+
+.ms-btn-secondary:hover {
+    background-color: var(--ms-gray-20);
+    border-color: var(--ms-gray-70);
+    color: var(--ms-gray-120);
+}
+
+.ms-btn-success {
+    background-color: var(--ms-green);
+    color: white;
+    border-color: var(--ms-green);
+}
+
+.ms-btn-success:hover {
+    background-color: #0e6e0e;
+    border-color: #0e6e0e;
+    color: white;
+}
+
+.ms-btn-danger {
+    background-color: var(--ms-red);
+    color: white;
+    border-color: var(--ms-red);
+}
+
+.ms-btn-danger:hover {
+    background-color: #b92b2b;
+    border-color: #b92b2b;
+    color: white;
+}
+
+/* Form Controls */
+.ms-form-control {
+    font-family: var(--ms-font-family);
+    font-size: var(--ms-font-size-14);
+    padding: var(--ms-spacing-s) var(--ms-spacing-m);
+    border: 1px solid var(--ms-gray-60);
+    border-radius: var(--ms-border-radius-m);
+    background-color: white;
+    color: var(--ms-gray-120);
+    transition: border-color 0.15s ease;
+}
+
+.ms-form-control:focus {
+    outline: none;
+    border-color: var(--ms-blue);
+    box-shadow: 0 0 0 1px var(--ms-blue);
+}
+
+.ms-form-label {
+    font-size: var(--ms-font-size-14);
+    font-weight: 600;
+    color: var(--ms-gray-120);
+    margin-bottom: var(--ms-spacing-xs);
+    display: block;
+}
+
+/* Tables */
+.ms-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: var(--ms-border-radius-l);
+    overflow: hidden;
+    box-shadow: var(--ms-shadow-depth-4);
+}
+
+.ms-table th {
+    background-color: var(--ms-gray-20);
+    padding: var(--ms-spacing-m) var(--ms-spacing-l);
+    text-align: left;
+    font-weight: 600;
+    font-size: var(--ms-font-size-12);
+    color: var(--ms-gray-120);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--ms-gray-30);
+}
+
+.ms-table td {
+    padding: var(--ms-spacing-m) var(--ms-spacing-l);
+    border-bottom: 1px solid var(--ms-gray-30);
+    color: var(--ms-gray-120);
+}
+
+.ms-table tbody tr:hover {
+    background-color: var(--ms-gray-10);
+}
+
+/* Badges */
+.ms-badge {
+    font-size: var(--ms-font-size-12);
+    font-weight: 600;
+    padding: var(--ms-spacing-xs) var(--ms-spacing-s);
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ms-badge-primary {
+    background-color: var(--ms-blue-light);
+    color: var(--ms-blue);
+}
+
+.ms-badge-success {
+    background-color: #c6e1c6;
+    color: var(--ms-green);
+}
+
+.ms-badge-warning {
+    background-color: #fff4ce;
+    color: #8a6914;
+}
+
+.ms-badge-danger {
+    background-color: #fde7e9;
+    color: var(--ms-red);
+}
+
+/* Dashboard Specific Styles */
+.ms-dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--ms-spacing-l);
+    margin-bottom: var(--ms-spacing-xxl);
+}
+
+.ms-stat-card {
+    background: linear-gradient(135deg, var(--ms-blue), var(--ms-blue-hover));
+    color: white;
+    padding: var(--ms-spacing-l);
+    border-radius: var(--ms-border-radius-l);
+    box-shadow: var(--ms-shadow-depth-8);
+}
+
+.ms-stat-card.purple {
+    background: linear-gradient(135deg, var(--ms-purple), #9c2aa3);
+}
+
+.ms-stat-card.teal {
+    background: linear-gradient(135deg, var(--ms-teal), #0a9384);
+}
+
+.ms-stat-card.green {
+    background: linear-gradient(135deg, var(--ms-green), #218c21);
+}
+
+.ms-stat-card.orange {
+    background: linear-gradient(135deg, var(--ms-orange), #e04905);
+}
+
+.ms-stat-number {
+    font-size: var(--ms-font-size-32);
+    font-weight: 700;
+    margin: 0;
+}
+
+.ms-stat-label {
+    font-size: var(--ms-font-size-14);
+    opacity: 0.9;
+    margin: var(--ms-spacing-xs) 0 0 0;
+}
+
+.ms-stat-icon {
+    font-size: var(--ms-font-size-24);
+    opacity: 0.8;
+    float: right;
+    margin-top: -var(--ms-spacing-s);
+}
+
+/* Modals */
+.ms-modal .modal-content {
+    border: none;
+    border-radius: var(--ms-border-radius-l);
+    box-shadow: var(--ms-shadow-depth-16);
+}
+
+.ms-modal .modal-header {
+    background-color: var(--ms-gray-10);
+    border-bottom: 1px solid var(--ms-gray-30);
+    padding: var(--ms-spacing-l);
+}
+
+.ms-modal .modal-title {
+    font-weight: 600;
+    color: var(--ms-gray-120);
+}
+
+.ms-modal .modal-body {
+    padding: var(--ms-spacing-l);
+}
+
+.ms-modal .modal-footer {
+    background-color: var(--ms-gray-10);
+    border-top: 1px solid var(--ms-gray-30);
+    padding: var(--ms-spacing-l);
+}
+
+/* Alerts */
+.ms-alert {
+    padding: var(--ms-spacing-m) var(--ms-spacing-l);
+    border-radius: var(--ms-border-radius-m);
+    margin-bottom: var(--ms-spacing-l);
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: var(--ms-spacing-s);
+}
+
+.ms-alert-success {
+    background-color: #dff6dd;
+    border-color: #d1e7dd;
+    color: var(--ms-green);
+}
+
+.ms-alert-info {
+    background-color: var(--ms-blue-light);
+    border-color: #b6d7ff;
+    color: var(--ms-blue);
+}
+
+.ms-alert-warning {
+    background-color: #fff8db;
+    border-color: #ffecb5;
+    color: #8a6914;
+}
+
+.ms-alert-danger {
+    background-color: #fde7e9;
+    border-color: #f5c6cb;
+    color: var(--ms-red);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .ms-layout {
+        flex-direction: column;
+    }
+    
+    .ms-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--ms-gray-30);
+    }
+    
+    .ms-main {
+        padding: var(--ms-spacing-l);
+    }
+    
+    .ms-dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Auth Pages */
+.auth-page-body {
+    background: linear-gradient(135deg, var(--ms-blue), var(--ms-blue-hover));
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ms-auth-card {
+    background: white;
+    padding: var(--ms-spacing-xxxl);
+    border-radius: var(--ms-border-radius-l);
+    box-shadow: var(--ms-shadow-depth-16);
+    width: 100%;
+    max-width: 400px;
+}
+
+.ms-auth-title {
+    font-size: var(--ms-font-size-24);
+    font-weight: 600;
+    color: var(--ms-gray-120);
+    text-align: center;
+    margin-bottom: var(--ms-spacing-xxl);
+}
+
+.ms-auth-form .form-group {
+    margin-bottom: var(--ms-spacing-l);
+}
+
+/* Loading States */
+.ms-loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: ms-spin 1s ease-in-out infinite;
+}
+
+@keyframes ms-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Utility Classes */
+.ms-text-center { text-align: center; }
+.ms-text-left { text-align: left; }
+.ms-text-right { text-align: right; }
+
+.ms-mb-0 { margin-bottom: 0; }
+.ms-mb-1 { margin-bottom: var(--ms-spacing-xs); }
+.ms-mb-2 { margin-bottom: var(--ms-spacing-s); }
+.ms-mb-3 { margin-bottom: var(--ms-spacing-m); }
+.ms-mb-4 { margin-bottom: var(--ms-spacing-l); }
+.ms-mb-5 { margin-bottom: var(--ms-spacing-xl); }
+
+.ms-mt-0 { margin-top: 0; }
+.ms-mt-1 { margin-top: var(--ms-spacing-xs); }
+.ms-mt-2 { margin-top: var(--ms-spacing-s); }
+.ms-mt-3 { margin-top: var(--ms-spacing-m); }
+.ms-mt-4 { margin-top: var(--ms-spacing-l); }
+.ms-mt-5 { margin-top: var(--ms-spacing-xl); }
+
+.ms-p-0 { padding: 0; }
+.ms-p-1 { padding: var(--ms-spacing-xs); }
+.ms-p-2 { padding: var(--ms-spacing-s); }
+.ms-p-3 { padding: var(--ms-spacing-m); }
+.ms-p-4 { padding: var(--ms-spacing-l); }
+.ms-p-5 { padding: var(--ms-spacing-xl); }

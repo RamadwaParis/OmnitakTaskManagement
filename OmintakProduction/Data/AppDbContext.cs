@@ -115,7 +115,7 @@ namespace OmintakProduction.Data
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<User>().HasData(
-                // System Administrator - Password: Admin@123
+                // System Administrator - Password: Admin@123 - Only user remaining
                 new User { 
                     UserId = 1, 
                     RoleId = 1, 
@@ -127,65 +127,6 @@ namespace OmintakProduction.Data
                     isActive = true, 
                     IsApproved = true, 
                     CreatedDate = new DateOnly(2025, 01, 01),
-                    IsDeleted = false 
-                },
-                // Team Lead - Password: User@123  
-                new User { 
-                    UserId = 2, 
-                    RoleId = 8, 
-                    UserName = "Duma", 
-                    Email = "dumisaninxumalo5gmail.com", 
-                    FirstName = "Dumisani", 
-                    LastName = "Nxumalo", 
-                    Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi", // password
-                    isActive = true, 
-                    IsApproved = true, 
-                    CreatedDate = new DateOnly(2025, 01, 02),
-                    TeamId = 1,
-                    IsDeleted = false 
-                },
-                // Stakeholder - Password: User@123
-                new User { 
-                    UserId = 3, 
-                    RoleId = 7, 
-                    UserName = "Chief", 
-                    Email = "tledwaba@dynamicdna.co.za", 
-                    FirstName = "Thabang", 
-                    LastName = "Ledwaba", 
-                    Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi", // password
-                    isActive = true, 
-                    IsApproved = true, 
-                    CreatedDate = new DateOnly(2025, 01, 03),
-                    IsDeleted = false 
-                },
-                // Tester - Password: User@123
-                new User { 
-                    UserId = 4, 
-                    RoleId = 6, 
-                    UserName = "Paris", 
-                    Email = "ramadwaparis@gmail.com", 
-                    FirstName = "Paris", 
-                    LastName = "Ramadwa", 
-                    Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi", // password
-                    isActive = true, 
-                    IsApproved = true, 
-                    CreatedDate = new DateOnly(2025, 01, 04),
-                    TeamId = 2,
-                    IsDeleted = false 
-                },
-                // Developer - Password: User@123
-                new User { 
-                    UserId = 5, 
-                    RoleId = 5, 
-                    UserName = "Zee", 
-                    Email = "ayakazilungile20@gmail.com", 
-                    FirstName = "Zilungile", 
-                    LastName = "Nquku", 
-                    Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi", // password
-                    isActive = true, 
-                    IsApproved = true, 
-                    CreatedDate = new DateOnly(2025, 01, 05),
-                    TeamId = 3,
                     IsDeleted = false 
                 }
             );
