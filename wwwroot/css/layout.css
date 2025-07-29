@@ -1,0 +1,31 @@
+.ms-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 100vh;
+  background-color: var(--background);
+}
+
+.ms-main {
+  padding: var(--content-padding);
+  overflow-y: auto;
+}
+
+.ms-dashboard-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  margin-bottom: 2rem;
+}
+
+.ms-card {
+  background: var(--surface);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  padding: 1.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ms-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
