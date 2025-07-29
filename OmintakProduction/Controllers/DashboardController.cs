@@ -124,13 +124,23 @@ namespace OmintakProduction.Controllers
                     return View("ProjectLeadDashboard", dashboardData);
                 case "Developer":
                 case "Engineer": // fallback for old role name
-                    return View("DeveloperDashboard", dashboardData);
+                    var developerData = await GetDeveloperDashboardData(currentUserId);
+                    return View("DeveloperDashboard", developerData);
                 case "Tester":
                 case "SoftwareTester": // fallback for old role name
-                    return View("TesterDashboard", dashboardData);
+                    var testerData = await GetTesterDashboardData(currentUserId);
+                    return View("TesterDashboard", testerData);
                 case "Stakeholder":
                     return View("StakeholderDashboard", dashboardData);
+                case "TeamLead":
+                    return View("ProjectLeadDashboard", dashboardData); // TeamLead uses same dashboard as ProjectLead
                 default:
+                    // For unapproved users or unknown roles, redirect to pending approval page
+                    var currentUser = await _context.User.FindAsync(currentUserId);
+                    if (currentUser != null && (!currentUser.IsApproved || !currentUser.isActive))
+                    {
+                        return View("PendingApproval");
+                    }
                     return View("StakeholderDashboard", dashboardData); // fallback to view-only
             }
         }

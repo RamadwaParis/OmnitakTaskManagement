@@ -1,0 +1,244 @@
+@model OmintakProduction.Models.SystemAdminDashboardViewModel
+@{
+    ViewData["Title"] = "System Admin Dashboard";
+}
+
+<div class="ms-page-header">
+    <h1 class="ms-page-title">System Administration</h1>
+    <p class="ms-page-subtitle">Manage users, monitor system health, and oversee platform operations</p>
+</div>
+
+<!-- Welcome Message -->
+@if (TempData["WelcomeMessage"] != null)
+{
+    <div class="ms-alert ms-alert-success">
+        <i class="fas fa-check-circle"></i>
+        @Html.Raw(TempData["WelcomeMessage"])
+    </div>
+}
+
+<!-- System Statistics -->
+<div class="ms-dashboard-stats">
+    <div class="ms-stat-card">
+        <div class="ms-stat-icon">
+            <i class="fas fa-users"></i>
+        </div>
+        <h2 class="ms-stat-number">@Model.AllUsers.Count</h2>
+        <p class="ms-stat-label">Total Users</p>
+    </div>
+    
+    <div class="ms-stat-card purple">
+        <div class="ms-stat-icon">
+            <i class="fas fa-user-check"></i>
+        </div>
+        <h2 class="ms-stat-number">@Model.AllUsers.Count(u => u.isActive && u.IsApproved)</h2>
+        <p class="ms-stat-label">Active Users</p>
+    </div>
+    
+    <div class="ms-stat-card teal">
+        <div class="ms-stat-icon">
+            <i class="fas fa-user-clock"></i>
+        </div>
+        <h2 class="ms-stat-number">@Model.PendingUsers.Count</h2>
+        <p class="ms-stat-label">Pending Approval</p>
+    </div>
+    
+    <div class="ms-stat-card green">
+        <div class="ms-stat-icon">
+            <i class="fas fa-project-diagram"></i>
+        </div>
+        <h2 class="ms-stat-number">@Model.AllProjects.Count</h2>
+        <p class="ms-stat-label">Total Projects</p>
+    </div>
+    
+    <div class="ms-stat-card orange">
+        <div class="ms-stat-icon">
+            <i class="fas fa-tasks"></i>
+        </div>
+        <h2 class="ms-stat-number">@Model.AllTasks.Count</h2>
+        <p class="ms-stat-label">Total Tasks</p>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Quick Actions -->
+    <div class="col-lg-4 mb-4">
+        <div class="ms-card">
+            <div class="ms-card-header">
+                <h3 class="ms-card-title">
+                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                </h3>
+            </div>
+            <div class="ms-card-body">
+                <div class="d-grid gap-3">
+                    <a href="@Url.Action("ApproveUsers", "Account")" class="ms-btn ms-btn-primary">
+                        <i class="fas fa-user-check me-2"></i>Approve Users
+                        @if (Model.PendingUsers.Count > 0)
+                        {
+                            <span class="ms-badge ms-badge-danger ms-2">@Model.PendingUsers.Count</span>
+                        }
+                    </a>
+                    <a href="@Url.Action("GetAllUsers", "User")" class="ms-btn ms-btn-secondary">
+                        <i class="fas fa-users-cog me-2"></i>Manage Users
+                    </a>
+                    <a href="@Url.Action("Index", "Role")" class="ms-btn ms-btn-secondary">
+                        <i class="fas fa-user-tag me-2"></i>Manage Roles
+                    </a>
+                    <a href="@Url.Action("Index", "Project")" class="ms-btn ms-btn-secondary">
+                        <i class="fas fa-project-diagram me-2"></i>Manage Projects
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Users -->
+    <div class="col-lg-8 mb-4">
+        <div class="ms-card">
+            <div class="ms-card-header">
+                <h3 class="ms-card-title">
+                    <i class="fas fa-users me-2"></i>Recent Users
+                </h3>
+            </div>
+            <div class="ms-card-body" style="padding: 0;">
+                @if (Model.AllUsers.Any())
+                {
+                    <table class="ms-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Joined</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in Model.AllUsers.Take(5))
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="ms-avatar me-2" style="width: 24px; height: 24px; font-size: 12px;">
+                                                @((user.FirstName ?? user.UserName ?? "U").Substring(0, 1).ToUpper())
+                                            </div>
+                                            <span>@(user.FirstName ?? "") @(user.LastName ?? "")</span>
+                                        </div>
+                                    </td>
+                                    <td>@user.Email</td>
+                                    <td>
+                                        @{
+                                            var role = new OmintakProduction.Models.Role();
+                                            var roleName = role.getRole(user.RoleId);
+                                        }
+                                        <span class="ms-badge ms-badge-primary">@roleName</span>
+                                    </td>
+                                    <td>
+                                        @if (user.isActive && user.IsApproved)
+                                        {
+                                            <span class="ms-badge ms-badge-success">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="ms-badge ms-badge-warning">Pending</span>
+                                        }
+                                    </td>
+                                    <td>@user.CreatedDate.ToString("MMM dd, yyyy")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <i class="fas fa-users" style="font-size: 3rem; color: var(--ms-gray-60); margin-bottom: 16px;"></i>
+                        <p style="color: var(--ms-gray-90);">No users found</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- System Health -->
+    <div class="col-lg-6 mb-4">
+        <div class="ms-card">
+            <div class="ms-card-header">
+                <h3 class="ms-card-title">
+                    <i class="fas fa-heartbeat me-2"></i>System Health
+                </h3>
+            </div>
+            <div class="ms-card-body">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="text-center p-3" style="background-color: var(--ms-gray-10); border-radius: 8px;">
+                            <i class="fas fa-database" style="font-size: 2rem; color: var(--ms-green); margin-bottom: 8px;"></i>
+                            <div style="font-size: 18px; font-weight: 600; color: var(--ms-gray-120);">Healthy</div>
+                            <div style="font-size: 12px; color: var(--ms-gray-90);">Database</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-center p-3" style="background-color: var(--ms-gray-10); border-radius: 8px;">
+                            <i class="fas fa-server" style="font-size: 2rem; color: var(--ms-green); margin-bottom: 8px;"></i>
+                            <div style="font-size: 18px; font-weight: 600; color: var(--ms-gray-120);">Online</div>
+                            <div style="font-size: 12px; color: var(--ms-gray-90);">Server</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-center p-3" style="background-color: var(--ms-gray-10); border-radius: 8px;">
+                            <i class="fas fa-shield-alt" style="font-size: 2rem; color: var(--ms-green); margin-bottom: 8px;"></i>
+                            <div style="font-size: 18px; font-weight: 600; color: var(--ms-gray-120);">Secure</div>
+                            <div style="font-size: 12px; color: var(--ms-gray-90);">Security</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-center p-3" style="background-color: var(--ms-gray-10); border-radius: 8px;">
+                            <i class="fas fa-tachometer-alt" style="font-size: 2rem; color: var(--ms-blue); margin-bottom: 8px;"></i>
+                            <div style="font-size: 18px; font-weight: 600; color: var(--ms-gray-120);">Fast</div>
+                            <div style="font-size: 12px; color: var(--ms-gray-90);">Performance</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Activity -->
+    <div class="col-lg-6 mb-4">
+        <div class="ms-card">
+            <div class="ms-card-header">
+                <h3 class="ms-card-title">
+                    <i class="fas fa-clock me-2"></i>Recent Activity
+                </h3>
+            </div>
+            <div class="ms-card-body">
+                @if (Model.SystemLogs?.Any() == true)
+                {
+                    <div class="d-flex flex-column gap-3">
+                        @foreach (var log in Model.SystemLogs.Take(5))
+                        {
+                            <div class="d-flex align-items-start gap-3">
+                                <div class="ms-avatar" style="width: 32px; height: 32px; font-size: 14px; flex-shrink: 0;">
+                                    <i class="fas fa-history"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div style="font-weight: 600; color: var(--ms-gray-120);">@(log.User != null ? $"{log.User.FirstName} {log.User.LastName}" : "System") @log.Action</div>
+                                    <div style="font-size: 12px; color: var(--ms-gray-90);">@log.CreatedAt.ToString("MMM dd, yyyy 'at' h:mm tt")</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <i class="fas fa-clock" style="font-size: 3rem; color: var(--ms-gray-60); margin-bottom: 16px;"></i>
+                        <p style="color: var(--ms-gray-90);">No recent activity</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
