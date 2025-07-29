@@ -3,7 +3,7 @@
     padding: 0;
     height: 100vh;
     overflow: hidden;
-    background: linear-gradient(135deg, #677ae4 0%, #677ae4 50%, #272847 100%);
+    background: linear-gradient(135deg, #677ae4 0%, #272847 100%);
     font-family: var(--ms-font-family);
 }
 
