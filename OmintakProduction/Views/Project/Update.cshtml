@@ -10,6 +10,7 @@
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.ProjectId)
+    @Html.HiddenFor(model => model.DueDate)  @* Add this hidden field to preserve the original date *@
 
     <div class="form-horizontal">
         <h4 class="text-primary">Project Details</h4>
@@ -39,7 +40,10 @@
         <div class="form-group row mb-3">
             @Html.LabelFor(m => m.DueDate, htmlAttributes: new { @class = "col-sm-2 col-form-label" })
             <div class="col-sm-10">
-                @Html.EditorFor(m => m.DueDate, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                <input type="date" 
+                       name="NewDueDate" 
+                       class="form-control" 
+                       value="@Model.DueDate.ToString("yyyy-MM-dd")" />
                 @Html.ValidationMessageFor(m => m.DueDate, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -49,40 +53,19 @@
             @Html.LabelFor(m => m.Status, htmlAttributes: new { @class = "col-sm-2 col-form-label" })
             <div class="col-sm-10">
                 @Html.DropDownListFor(
-                m => m.Status,
-                        new SelectList(Enum.GetNames(typeof(OmintakProduction.Models.ProjectStatuses))),
-                        "Select Status",
-                        new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Status, "", new { @class = "text-danger" })
+                    m => m.Status,
+                    new SelectList(Enum.GetNames(typeof(OmintakProduction.Models.ProjectStatuses))),
+                    "Select Status",
+                    new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Status, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-10 offset-sm-2">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
         </div>
     </div>
-
-    <!-- Optional: Assigned To Dropdown -->
-    @* 
-        <div class="form-group row mb-3">
-            @Html.Label("Assigned_To", "Assigned To", htmlAttributes: new { @class = "col-sm-2 col-form-label" })
-            <div class="col-sm-10">
-                @Html.DropDownList("Assigned_To", ViewBag.AssignedToList as SelectList, "Unassigned", new { @class = "form-control" })
-            </div>
-        </div> 
-        *@
-
-    <!-- Optional: Project Selection Dropdown -->
-    @* 
-        <div class="form-group row mb-3">
-            @Html.Label("Project_Id", "Project", htmlAttributes: new { @class = "col-sm-2 col-form-label" })
-            <div class="col-sm-10">
-                @Html.DropDownList("Project_Id", ViewBag.ProjectList as SelectList, "Select Project", new { @class = "form-control" })
-            </div>
-        </div> 
-        *@
-
-    <!-- Submit and Back Buttons -->
-    <div class="form-group row mt-4">
-        <div class="col-sm-10 offset-sm-2">
-            <input type="submit" value="Save" class="btn btn-primary me-2" />
-            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-secondary" })
-        </div>
-    </div>
-</div>
 }
