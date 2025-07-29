@@ -145,8 +145,6 @@ namespace OmintakProduction.Controllers
         }
 
 
-
-
         public IActionResult Delete()
         {
 
