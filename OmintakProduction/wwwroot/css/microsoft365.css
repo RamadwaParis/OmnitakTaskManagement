@@ -78,8 +78,8 @@ body {
 
 /* Microsoft 365 Header */
 .ms-header {
-    background-color: var(--ms-blue);
-    color: black;
+    background: #272847;
+    color: #fff;
     height: 48px;
     display: flex;
     align-items: center;
@@ -92,7 +92,7 @@ body {
 .ms-sidebar-toggle {
     background: none;
     border: none;
-    color: black;
+    color: #fff;
     font-size: 16px;
     padding: 8px;
     margin-right: 12px;
@@ -110,9 +110,13 @@ body {
     align-items: center;
     font-weight: 600;
     font-size: var(--ms-font-size-16);
-    color: black;
+    color: #fff;
     text-decoration: none;
     margin-right: auto;
+}
+
+.ms-header span {
+    color: #fff;
 }
 
 .ms-header-brand:hover {
@@ -213,13 +217,13 @@ body {
 
 .ms-sidebar-link:hover {
     background-color: var(--ms-gray-20);
-    color: var(--ms-blue);
+    color: #4462b0;
     text-decoration: none;
 }
 
 .ms-sidebar-link.active {
-    background-color: var(--ms-blue-light);
-    color: var(--ms-blue);
+    background-color: #4462b0;
+    color: #fff;
     font-weight: 600;
 }
 
@@ -230,8 +234,12 @@ body {
     top: 0;
     bottom: 0;
     width: 3px;
-    background-color: var(--ms-blue);
+    background-color: #4462b0;
     border-radius: 0 2px 2px 0;
+}
+
+.ms-sidebar-link.active i {
+    color: #fff;
 }
 
 .ms-sidebar-link i {
