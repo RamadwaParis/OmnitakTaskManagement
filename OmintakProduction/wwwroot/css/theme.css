@@ -1,0 +1,101 @@
+/* Theme System */
+:root {
+  /* Color system */
+  --primary: #0078d4;
+  --primary-light: #2b88d8;
+  --primary-dark: #005a9e;
+  --secondary: #6c757d;
+  --success: #28a745;
+  --danger: #dc3545;
+  --warning: #ffc107;
+  --info: #17a2b8;
+  
+  /* Surface colors */
+  --surface-color: #ffffff;
+  --background-color: #f8f9fa;
+  --border-color: #dee2e6;
+  
+  /* Text colors */
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --text-muted: #898989;
+  --text-light: #f8f9fa;
+  
+  /* Status colors */
+  --status-todo: #6c757d;
+  --status-in-progress: #007bff;
+  --status-completed: #28a745;
+  --status-blocked: #dc3545;
+  
+  /* Priority colors */
+  --priority-low: #28a745;
+  --priority-medium: #ffc107;
+  --priority-high: #dc3545;
+  --priority-critical: #721c24;
+  
+  /* Severity colors */
+  --severity-low: #28a745;
+  --severity-medium: #ffc107;
+  --severity-high: #dc3545;
+  --severity-critical: #721c24;
+  
+  /* Border radius */
+  --border-radius-sm: 0.25rem;
+  --border-radius: 0.375rem;
+  --border-radius-lg: 0.5rem;
+  
+  /* Transitions */
+  --transition-base: all 0.2s ease-in-out;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
+  /* Font settings */
+  --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  
+  /* Font sizes */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  
+  /* Font weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Line heights */
+  --line-height-tight: 1.25;
+  --line-height-base: 1.5;
+  --line-height-loose: 1.75;
+  
+  /* Spacing */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 1rem;
+  --spacing-4: 1.5rem;
+  --spacing-5: 2rem;
+  --spacing-6: 3rem;
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+  --surface-color: #1f1f1f;
+  --background-color: #121212;
+  --border-color: #2d2d2d;
+  
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --text-muted: #898989;
+  
+  --shadow-sm: 0 1px 2px rgba(255, 255, 255, 0.05);
+  --shadow: 0 1px 3px rgba(255, 255, 255, 0.1);
+  --shadow-lg: 0 4px 6px rgba(255, 255, 255, 0.1);
+}

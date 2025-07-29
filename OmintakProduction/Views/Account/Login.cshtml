@@ -1,0 +1,88 @@
+@model OmintakProduction.Models.User;
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_Layout";
+}
+
+<style>
+    html, body {
+        height: 100%;
+        overflow: hidden;
+    }
+    
+    .login-wrapper {
+        height: 100vh;
+        overflow: hidden;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+    
+    .login-card {
+        max-width: 400px;
+        width: 90%;
+        border-radius: 15px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+</style>
+
+<div class="login-wrapper">
+    <div class="card login-card border-0">
+        <div class="card-body p-5">
+            <div class="text-center mb-4">
+                <i class="fas fa-tasks text-primary" style="font-size: 3rem;"></i>
+                <h2 class="mt-3 mb-1 text-dark">Welcome Back</h2>
+                <p class="text-secondary">Sign in to your account</p>
+            </div>
+
+            @if (ViewData["LoginError"] != null)
+            {
+                <div class="alert alert-danger d-flex align-items-center" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    @ViewData["LoginError"]
+                </div>
+            }
+
+            <form asp-controller="Account" asp-action="Login" method="post">
+                <div class="mb-3">
+                    <label for="email" class="form-label text-dark">
+                        <i class="fas fa-envelope me-2"></i>Email Address
+                    </label>
+                    <input type="email" id="email" asp-for="@Model.Email" name="email" 
+                           class="form-control form-control-lg" 
+                           placeholder="Enter your email address" required />
+                </div>
+
+                <div class="mb-4">
+                    <label for="password" class="form-label text-dark">
+                        <i class="fas fa-lock me-2"></i>Password
+                    </label>
+                    <input type="password" id="password" asp-for="@Model.Password" name="password" 
+                           class="form-control form-control-lg" 
+                           placeholder="Enter your password" required />
+                </div>
+
+                <div class="d-grid mb-3">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                    </button>
+                </div>
+
+                <div class="text-center">
+                    <p class="mb-0 text-dark">Don't have an account? 
+                        <a asp-controller="Account" asp-action="Register" class="text-decoration-none fw-bold text-primary">
+                            Sign up here
+                        </a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

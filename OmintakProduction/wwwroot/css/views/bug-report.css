@@ -1,0 +1,247 @@
+/* Bug report page layout */
+.bug-page {
+    padding: var(--spacing-lg);
+}
+
+/* Bug report header */
+.bug-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.bug-title {
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.bug-title i {
+    color: var(--error-color);
+}
+
+/* Bug statistics */
+.bug-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+.stat-card {
+    background: var(--surface-background);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-value {
+    font-size: var(--text-3xl);
+    font-weight: 700;
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-value.danger { color: var(--error-color); }
+.stat-value.warning { color: var(--warning-color); }
+.stat-value.success { color: var(--success-color); }
+.stat-value.info { color: var(--info-color); }
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+}
+
+/* Bug list */
+.bug-list {
+    background: var(--surface-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+}
+
+.bug-list-header {
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bug-filters {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+/* Bug table */
+.bug-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.bug-table th,
+.bug-table td {
+    padding: var(--spacing-md);
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.bug-table th {
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--surface-alt);
+}
+
+.bug-table tr:hover {
+    background: var(--surface-hover);
+}
+
+/* Bug severity and status badges */
+.severity,
+.status {
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    text-align: center;
+}
+
+.severity-blocker {
+    background: var(--error-color);
+    color: white;
+}
+
+.severity-critical {
+    background: var(--error-color-light);
+    color: var(--error-color);
+}
+
+.severity-major {
+    background: var(--warning-color-light);
+    color: var(--warning-color);
+}
+
+.severity-minor {
+    background: var(--info-color-light);
+    color: var(--info-color);
+}
+
+.status-open {
+    background: var(--error-color-light);
+    color: var(--error-color);
+}
+
+.status-inprogress {
+    background: var(--warning-color-light);
+    color: var(--warning-color);
+}
+
+.status-resolved {
+    background: var(--success-color-light);
+    color: var(--success-color);
+}
+
+/* Bug details section */
+.bug-details {
+    display: grid;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+}
+
+.detail-item {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.detail-label {
+    font-weight: 500;
+    color: var(--text-secondary);
+    min-width: 120px;
+}
+
+/* Action buttons */
+.button-group {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.button-group .button {
+    padding: 0.25rem 0.75rem;
+    font-size: var(--text-sm);
+}
+
+/* Search and filter */
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    background: var(--surface-alt);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+}
+
+.search-input {
+    border: none;
+    background: none;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    color: var(--text-primary);
+    width: 200px;
+}
+
+.search-input:focus {
+    outline: none;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .bug-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .bug-page {
+        padding: var(--spacing-md);
+    }
+
+    .bug-header {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        align-items: stretch;
+    }
+
+    .bug-filters {
+        flex-wrap: wrap;
+    }
+
+    .bug-table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    .button-group .button {
+        width: 100%;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .search-input {
+        width: 100%;
+    }
+}

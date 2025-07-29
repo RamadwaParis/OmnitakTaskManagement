@@ -1,0 +1,318 @@
+@model OmintakProduction.Models.StakeholderDashboardViewModel
+@{
+    ViewData["Title"] = "Stakeholder Dashboard";
+}
+
+<div class="premium-dashboard">
+    <div class="container-fluid p-4">
+        <!-- Premium Welcome Section -->
+        <div class="premium-welcome premium-animate-in">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="premium-title">
+                        <i class="fas fa-chart-line premium-icon me-2"></i>
+                        Stakeholder Overview
+                    </h1>
+                    <p class="premium-subtitle mb-0">
+                        Strategic insights and executive reporting for informed decision-making and project oversight.
+                    </p>
+                </div>
+                <div>
+                    <a asp-action="DownloadDashboardReport" class="btn btn-primary">
+                        <i class="fas fa-download me-2"></i>
+                        Download Report
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Premium Statistics Grid -->
+        <div class="premium-grid premium-grid-4 mb-4">
+            <div class="premium-stat-card">
+                <div class="premium-stat-value">@(Model.AllProjects?.Count ?? 0)</div>
+                <div class="premium-stat-label">
+                    <i class="fas fa-project-diagram me-1"></i>
+                    Total Projects
+                </div>
+            </div>
+            <div class="premium-stat-card success">
+                <div class="premium-stat-value">@(Model.CompletedTasks?.Count ?? 0)</div>
+                <div class="premium-stat-label">
+                    <i class="fas fa-check-circle me-1"></i>
+                    Delivered
+                </div>
+            </div>
+            <div class="premium-stat-card warning">
+                <div class="premium-stat-value">@(Model.TotalBudget.ToString("C") ?? "$0")</div>
+                <div class="premium-stat-label">
+                    <i class="fas fa-dollar-sign me-1"></i>
+                    Total Investment
+                </div>
+            </div>
+            <div class="premium-stat-card info">
+                <div class="premium-stat-value">@Model.TeamCount</div>
+                <div class="premium-stat-label">
+                    <i class="fas fa-users me-1"></i>
+                    Team Size
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="premium-grid premium-grid-2">
+            <!-- Project Portfolio -->
+            <div class="premium-card premium-card-elevated">
+                <h3 class="premium-section-title">
+                    <i class="fas fa-briefcase premium-icon accent"></i>
+                    Project Portfolio
+                </h3>
+                
+                @if (Model.AllProjects?.Any() == true)
+                {
+                    <div class="premium-list">
+                        @foreach (var project in Model.AllProjects.Take(5))
+                        {
+                            <div class="premium-list-item">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <h6 class="premium-card-title mb-0">@project.ProjectName</h6>
+                                            <small class="text-muted">@project.Description</small>
+                                        </div>
+                                        <span class="premium-badge @(project.Status == "Active" ? "success" : 
+                                                                      project.Status == "Planning" ? "warning" : "primary")">
+                                            @project.Status
+                                        </span>
+                                    </div>
+                                    
+                                    @{
+                                        var projectTasks = Model.AllTasks?.Where(t => t.ProjectId == project.ProjectId).ToList() ?? new List<OmintakProduction.Models.Task>();
+                                        var completedCount = projectTasks.Count(t => t.Status == OmintakProduction.Models.TaskStatus.Completed);
+                                        var totalCount = projectTasks.Count;
+                                        var progressPercentage = totalCount > 0 ? (completedCount * 100 / totalCount) : 0;
+                                    }
+                                    
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="premium-progress flex-grow-1 me-3">
+                                            <div class="premium-progress-bar @(progressPercentage >= 80 ? "success" : progressPercentage >= 60 ? "warning" : "")" 
+                                                 style="width: @(progressPercentage)%"></div>
+                                        </div>
+                                        <small class="text-muted">@progressPercentage% Complete</small>
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                        <small class="text-muted">
+                                            Started: @project.StartDate?.ToString("MMM dd, yyyy")
+                                        </small>
+                                        @if (project.EndDate.HasValue)
+                                        {
+                                            <small class="text-muted">
+                                                Due: @project.EndDate?.ToString("MMM dd, yyyy")
+                                            </small>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-project-diagram fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No projects available</p>
+                    </div>
+                }
+            </div>
+
+            <!-- Key Metrics & Performance -->
+            <div class="premium-card premium-card-elevated">
+                <h3 class="premium-section-title">
+                    <i class="fas fa-chart-bar premium-icon accent"></i>
+                    Performance Metrics
+                </h3>
+                
+                <div class="premium-grid premium-grid-2">
+                    <div class="text-center p-3">
+                        <div class="premium-stat-value" style="font-size: 2rem; color: var(--premium-accent-success);">
+                            @{
+                                var totalTasks = Model.AllTasks?.Count ?? 0;
+                                var completedTasks = Model.CompletedTasks?.Count ?? 0;
+                                var completionRate = totalTasks > 0 ? Math.Round((double)completedTasks / totalTasks * 100) : 0;
+                            }
+                            @completionRate%
+                        </div>
+                        <div class="premium-stat-label">Task Completion Rate</div>
+                    </div>
+                    
+                    <div class="text-center p-3">
+                        <div class="premium-stat-value" style="font-size: 2rem; color: var(--premium-accent-primary);">
+                            @{
+                                var activeProjects = Model.AllProjects?.Count(p => p.Status == "Active") ?? 0;
+                            }
+                            @activeProjects
+                        </div>
+                        <div class="premium-stat-label">Active Projects</div>
+                    </div>
+                    
+                    <div class="text-center p-3">
+                        <div class="premium-stat-value" style="font-size: 2rem; color: var(--premium-accent-warning);">
+                            @{
+                                var onTimeProjects = Model.AllProjects?.Count(p => p.EndDate == null || p.EndDate >= DateOnly.FromDateTime(DateTime.Now)) ?? 0;
+                            }
+                            @onTimeProjects
+                        </div>
+                        <div class="premium-stat-label">On Schedule</div>
+                    </div>
+                    
+                    <div class="text-center p-3">
+                        <div class="premium-stat-value" style="font-size: 2rem; color: var(--premium-accent-danger);">
+                            @(Model.HighPriorityTasks?.Count ?? 0)
+                        </div>
+                        <div class="premium-stat-label">High Priority</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Secondary Content Grid -->
+        <div class="premium-grid premium-grid-2 mt-4">
+            <!-- Recent Deliverables -->
+            <div class="premium-card premium-card-accent">
+                <h3 class="premium-section-title">
+                    <i class="fas fa-trophy premium-icon accent"></i>
+                    Recent Deliverables
+                </h3>
+                
+                @if (Model.CompletedTasks?.Any() == true)
+                {
+                    <div class="premium-list">
+                        @foreach (var task in Model.CompletedTasks.Take(6))
+                        {
+                            <div class="premium-list-item">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                        <h6 class="premium-card-title mb-0" style="font-size: 0.95rem;">@task.Title</h6>
+                                        <span class="premium-badge success">Completed</span>
+                                    </div>
+                                    <small class="text-muted">@task.Project?.ProjectName</small>
+                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                        <small class="text-muted">
+                                            Delivered: @task.UpdatedAt?.ToString("MMM dd, yyyy")
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <i class="fas fa-trophy fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No completed deliverables yet</p>
+                    </div>
+                }
+            </div>
+
+            <!-- Risk & Issues -->
+            <div class="premium-card premium-card-warning">
+                <h3 class="premium-section-title">
+                    <i class="fas fa-exclamation-triangle premium-icon" style="color: var(--premium-accent-warning);"></i>
+                    Risk Overview
+                </h3>
+                
+                @if (Model.HighPriorityTasks?.Any() == true)
+                {
+                    <div class="premium-list">
+                        @foreach (var task in Model.HighPriorityTasks.Take(5))
+                        {
+                            <div class="premium-list-item">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                        <h6 class="premium-card-title mb-0" style="font-size: 0.9rem;">@task.Title</h6>
+                                        <span class="premium-badge @(task.Priority == OmintakProduction.Models.TaskPriority.High ? "danger" : "warning")">
+                                            @task.Priority
+                                        </span>
+                                    </div>
+                                    <small class="text-muted">@task.Project?.ProjectName</small>
+                                    @if (task.DueDate.HasValue)
+                                    {
+                                        <div class="mt-2">
+                                            <small class="text-muted">
+                                                Due: @task.DueDate?.ToString("MMM dd, yyyy")
+                                            </small>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <i class="fas fa-check-circle fa-3x" style="color: var(--premium-accent-success);" class="mb-3"></i>
+                        <p class="text-muted">No high-priority risks identified</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Executive Summary */
+        <div class="premium-card premium-card-elevated mt-4">
+            <h3 class="premium-section-title">
+                <i class="fas fa-chart-line premium-icon accent"></i>
+                Executive Summary
+            </h3>
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="premium-grid premium-grid-3">
+                        <div class="text-center p-3">
+                            <h4 style="color: var(--premium-accent-primary); margin-bottom: 0.5rem;">Portfolio Health</h4>
+                            <div class="premium-progress">
+                                <div class="premium-progress-bar success" style="width: @completionRate%"></div>
+                            </div>
+                            <small class="text-muted mt-2 d-block">@completionRate% completion rate</small>
+                        </div>
+                        
+                        <div class="text-center p-3">
+                            <h4 style="color: var(--premium-accent-success); margin-bottom: 0.5rem;">Delivery Status</h4>
+                            <div class="premium-badge success" style="font-size: 1.1rem; padding: 0.5rem 1rem;">
+                                On Track
+                            </div>
+                            <small class="text-muted mt-2 d-block">@onTimeProjects of @(Model.AllProjects?.Count ?? 0) projects</small>
+                        </div>
+                        
+                        <div class="text-center p-3">
+                            <h4 style="color: var(--premium-accent-warning); margin-bottom: 0.5rem;">Resource Utilization</h4>
+                            <div class="premium-stat-value" style="font-size: 1.8rem; color: var(--premium-accent-warning);">
+                                @{
+                                    var utilization = Model.TeamCount > 0 ? Math.Round((double)(Model.AllTasks?.Count ?? 0) / Model.TeamCount) : 0;
+                                }
+                                @utilization
+                            </div>
+                            <small class="text-muted">tasks per team member</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <h4 style="color: var(--premium-text-primary); margin-bottom: 1rem;">Quick Actions</h4>
+                        <div class="d-grid gap-2">
+                            <a href="/ProjectReport" class="premium-btn primary">
+                                <i class="fas fa-chart-bar"></i>
+                                Full Reports
+                            </a>
+                            <a href="/Project" class="premium-btn primary">
+                                <i class="fas fa-project-diagram"></i>
+                                View Projects
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

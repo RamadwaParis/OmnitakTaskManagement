@@ -1,0 +1,180 @@
+@using System.Security.Claims;
+@{
+    var hideNavbar = false;
+    if (ViewContext.RouteData.Values["controller"]?.ToString()?.Equals("Account", StringComparison.OrdinalIgnoreCase) == true &&
+        (ViewContext.RouteData.Values["action"]?.ToString()?.Equals("Login", StringComparison.OrdinalIgnoreCase) == true ||
+         ViewContext.RouteData.Values["action"]?.ToString()?.Equals("Register", StringComparison.OrdinalIgnoreCase) == true))
+    {
+        hideNavbar = true;
+    }
+    string firstName = string.Empty;
+    string lastName = string.Empty;
+    if (User.Identity?.IsAuthenticated == true && User.Identity is ClaimsIdentity claimsIdentity)
+    {
+        firstName = claimsIdentity.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname")?.Value ?? string.Empty;
+        lastName = claimsIdentity.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname")?.Value ?? string.Empty;
+    }
+    string displayName = (!string.IsNullOrEmpty(firstName) && !string.IsNullOrEmpty(lastName)) ? $"{firstName} {lastName}" : User.Identity?.Name ?? "User";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Omnitak Task Management</title>
+    
+    <!-- Microsoft 365 / Fluent UI styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="~/css/microsoft365.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body class="@(hideNavbar ? "auth-page-body" : "")">
+    @if (!hideNavbar)
+    {
+        <header class="ms-header">
+            <a class="ms-header-brand" asp-controller="Dashboard" asp-action="Index">
+                <i class="fas fa-tasks"></i>
+                Omnitak Task Management
+            </a>
+            
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <div class="ms-header-nav">
+                    <div class="ms-header-user">
+                        <div class="ms-avatar">
+                            @(displayName.Substring(0, 1).ToUpper())
+                        </div>
+                        <span>@displayName</span>
+                        <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline; margin-left: 8px;">
+                            <button type="submit" class="ms-btn ms-btn-secondary" style="padding: 4px 8px; min-height: auto;">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </button>
+                            @Html.AntiForgeryToken()
+                        </form>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="ms-header-nav">
+                    <a class="ms-btn ms-btn-secondary" asp-controller="Account" asp-action="Login">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login
+                    </a>
+                    <a class="ms-btn ms-btn-primary" asp-controller="Account" asp-action="Register">
+                        <i class="fas fa-user-plus"></i>
+                        Register
+                    </a>
+                </div>
+            }
+        </header>
+    }
+
+    @if (hideNavbar)
+    {
+        <!-- Login/Register pages without navbar -->
+        <main style="display: contents;">
+            @RenderBody()
+        </main>
+    }
+    else if (User.Identity?.IsAuthenticated == true)
+    {
+        <div class="ms-layout">
+            <aside class="ms-sidebar">
+                <div class="ms-sidebar-section">
+                    <h6 class="ms-sidebar-title">Main</h6>
+                    <a class="ms-sidebar-link" asp-controller="Dashboard" asp-action="Index">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+
+                <div class="ms-sidebar-section">
+                    <h6 class="ms-sidebar-title">Work Items</h6>
+                    <a class="ms-sidebar-link" asp-controller="Ticket" asp-action="Dashboard">
+                        <i class="fas fa-ticket-alt"></i>
+                        <span>Tickets</span>
+                    </a>
+                    <a class="ms-sidebar-link" asp-controller="Project" asp-action="Index">
+                        <i class="fas fa-project-diagram"></i>
+                        <span>Projects</span>
+                    </a>
+                    <a class="ms-sidebar-link" asp-controller="Task" asp-action="Index">
+                        <i class="fas fa-tasks"></i>
+                        <span>Tasks</span>
+                    </a>
+                </div>
+
+                <div class="ms-sidebar-section">
+                    <h6 class="ms-sidebar-title">Team</h6>
+                    <a class="ms-sidebar-link" asp-controller="User" asp-action="Index">
+                        <i class="fas fa-users"></i>
+                        <span>Team Members</span>
+                    </a>
+                    <a class="ms-sidebar-link" asp-controller="Notification" asp-action="Index">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                        <span class="ms-badge ms-badge-danger">3</span>
+                    </a>
+                </div>
+
+                @if (User.IsInRole("SystemAdmin"))
+                {
+                    <div class="ms-sidebar-section">
+                        <h6 class="ms-sidebar-title">Administration</h6>
+                        <a class="ms-sidebar-link" asp-controller="Account" asp-action="ApproveUsers">
+                            <i class="fas fa-user-check"></i>
+                            <span>Approve Users</span>
+                        </a>
+                        <a class="ms-sidebar-link" asp-controller="User" asp-action="GetAllUsers">
+                            <i class="fas fa-users-cog"></i>
+                            <span>Manage Users</span>
+                        </a>
+                        <a class="ms-sidebar-link" asp-controller="Role" asp-action="Index">
+                            <i class="fas fa-user-tag"></i>
+                            <span>Roles</span>
+                        </a>
+                    </div>
+                }
+
+                <div class="ms-sidebar-section">
+                    <h6 class="ms-sidebar-title">Reports</h6>
+                    <a class="ms-sidebar-link" asp-controller="BugReport" asp-action="Index">
+                        <i class="fas fa-bug"></i>
+                        <span>Bug Reports</span>
+                    </a>
+                    <a class="ms-sidebar-link" asp-controller="ProjectReport" asp-action="Index">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Project Reports</span>
+                    </a>
+                    <a class="ms-sidebar-link" asp-controller="TestReport" asp-action="Index">
+                        <i class="fas fa-vial"></i>
+                        <span>Test Reports</span>
+                    </a>
+                </div>
+            </aside>
+
+            <main class="ms-main">
+                @RenderBody()
+            </main>
+        </div>
+    }
+    else
+    {
+        <!-- Unauthenticated users -->
+        <main style="display: contents;">
+            @RenderBody()
+        </main>
+    }
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

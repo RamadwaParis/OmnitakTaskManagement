@@ -1,0 +1,293 @@
+@{
+    ViewData["Title"] = "Welcome";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome - Omnitak Task Management</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .welcome-container {
+            background: rgba(44, 62, 80, 0.98); /* dark, not white */
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Loader overlay fills the screen */
+        .screen-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .welcome-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @*CSS Keyframes*@
+        @@keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+            animation: bounce 2s infinite;
+        }
+
+        @*CSS Keyframes*@
+        @@keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .welcome-subtitle {
+            font-size: 1.3rem;
+            color: #667eea;
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+
+        .user-info {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: black;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .user-name {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-role {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-email {
+            font-size: 1rem;
+            opacity: 0.8;
+            display: none;
+        }
+
+        .welcome-message {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .continue-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: black;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .continue-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .loading-dots {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .loading-dots span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #667eea;
+            margin: 0 2px;
+            animation: loading 1.4s infinite ease-in-out;
+        }
+
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @*CSS Keyframes*@
+        @@keyframes loading {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        .role-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .system-admin .role-icon { color: #e74c3c; }
+        .project-lead .role-icon { color: #3498db; }
+        .developer .role-icon { color: #2ecc71; }
+        .tester .role-icon { color: #f39c12; }
+        .department-head .role-icon { color: #9b59b6; }
+        .operations-manager .role-icon { color: #1abc9c; }
+        .business-analyst .role-icon { color: #34495e; }
+        .product-owner .role-icon { color: #e67e22; }
+        .resource-manager .role-icon { color: #95a5a6; }
+        .department-lead .role-icon { color: #8e44ad; }
+        .process-improvement .role-icon { color: #27ae60; }
+    </style>
+</head>
+<body>
+    <div class="welcome-container">
+        <div class="welcome-content">
+            <div class="welcome-icon">
+                <i class="fas fa-rocket"></i>
+            </div>
+            <h1 class="welcome-title">Welcome to Omnitak!</h1>
+            <p class="welcome-subtitle">Task Management System</p>
+            <div class="user-info @GetRoleClass(ViewData["UserRole"]?.ToString() ?? "")">
+                <div class="role-icon">
+                    @GetRoleIcon(ViewData["UserRole"]?.ToString() ?? "")
+                </div>
+                <div class="user-name">
+                    @ViewData["UserName"]
+                </div>
+                <div class="user-role">@ViewData["UserRole"]</div>
+                <div class="user-email" style="display:none;">@ViewData["UserEmail"]</div>
+            </div>
+            <div class="welcome-message">
+                <p><strong>Your account has been successfully activated!</strong></p>
+                <p>You now have access to all the tools and features available for your role. Get ready to streamline your workflow and boost productivity!</p>
+            </div>
+            <form method="post" action="@Url.Action("CompleteWelcome", "Account")" id="welcomeForm">
+                <button type="submit" class="continue-btn">
+                    <i class="fas fa-arrow-right"></i> Continue to Dashboard
+                </button>
+            </form>
+        </div>
+    </div>
+    <!-- Loader and auto-submit removed for instant access -->
+</body>
+</html>
+
+@functions {
+    private string GetWelcomeGreeting(string? role)
+    {
+        return role switch
+        {
+            "SystemAdmin" => "Welcome Mr. Administrator",
+            "TeamLead" => "Welcome Mr. Team Lead",
+            "Team Lead" => "Welcome Mr. Team Lead",
+            // "Engineer" removed
+            "Developer" => "Welcome Mr. Developer",
+            "Tester" => "Welcome Mr. Tester",
+            "Software Tester" => "Welcome Mr. Tester",
+            "Stakeholder" => "Welcome Mr. Stakeholder",
+            _ => "Welcome!"
+        };
+    }
+
+    private string GetRoleIcon(string? role)
+    {
+        return role switch
+        {
+            "System Administrator" => "<i class='fas fa-crown'></i>",
+            "SystemAdmin" => "<i class='fas fa-user-shield'></i>",
+            "TeamLead" => "<i class='fas fa-user-tie'></i>",
+            "Team Lead" => "<i class='fas fa-user-tie'></i>",
+            "Project Lead" => "<i class='fas fa-user-tie'></i>",
+            "Developer" => "<i class='fas fa-code'></i>",
+            "Quality Assurance Tester" => "<i class='fas fa-bug'></i>",
+            "Department Head" => "<i class='fas fa-building'></i>",
+            "Operations Manager" => "<i class='fas fa-cogs'></i>",
+            "Business Analyst" => "<i class='fas fa-chart-line'></i>",
+            "Product Owner" => "<i class='fas fa-product-hunt'></i>",
+            "Resource Manager" => "<i class='fas fa-users'></i>",
+            "Department Lead" => "<i class='fas fa-user-graduate'></i>",
+            "Process Improvement Specialist" => "<i class='fas fa-arrows-alt'></i>",
+            _ => "<i class='fas fa-user'></i>"
+        };
+    }
+
+    private string GetRoleClass(string? role)
+    {
+        return role switch
+        {
+            "System Administrator" => "system-admin",
+            "SystemAdmin" => "system-admin",
+            "TeamLead" => "team-lead",
+            "Team Lead" => "team-lead",
+            "Project Lead" => "team-lead",
+            "Developer" => "developer",
+            "Quality Assurance Tester" => "tester",
+            "Department Head" => "department-head",
+            "Operations Manager" => "operations-manager",
+            "Business Analyst" => "business-analyst",
+            "Product Owner" => "product-owner",
+            "Resource Manager" => "resource-manager",
+            "Department Lead" => "department-lead",
+            "Process Improvement Specialist" => "process-improvement",
+            _ => ""
+        };
+    }
+}

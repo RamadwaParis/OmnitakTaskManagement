@@ -1,0 +1,53 @@
+@model List<OmintakProduction.Models.TaskComment>
+@{
+    ViewData["Title"] = "My Comments";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-dark">
+                    <h5 class="mb-0"><i class="fas fa-comments me-2"></i>My Task Comments</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model?.Any() == true)
+                    {
+                        @foreach (var comment in Model.OrderByDescending(c => c.CreatedAt))
+                        {
+                            <div class="border-bottom pb-3 mb-3">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">Task ID: @comment.TaskId</h6>
+                                        <p class="mb-2">@comment.Comment</p>
+                                        <small class="text-muted">
+                                            Posted on @comment.CreatedAt.ToString("MMM dd, yyyy 'at' HH:mm")
+                                            @if (comment.IsEdited)
+                                            {
+                                                <span class="badge bg-secondary ms-2">Edited</span>
+                                            }
+                                        </small>
+                                    </div>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="/Task/Details/@comment.TaskId" class="btn btn-outline-primary">View Task</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-comment-slash fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No Comments Yet</h5>
+                            <p class="text-muted">You haven't posted any task comments yet.</p>
+                            <a href="/Task" class="btn btn-primary">
+                                <i class="fas fa-tasks me-2"></i>View Tasks
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

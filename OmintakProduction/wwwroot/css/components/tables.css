@@ -1,0 +1,192 @@
+/* Table base styles */
+.table {
+    width: 100%;
+    margin-bottom: var(--spacing-md);
+    background-color: var(--surface-background);
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    padding: var(--spacing-sm);
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table th {
+    font-weight: 600;
+    color: var(--text-primary);
+    background-color: var(--surface-alt);
+}
+
+/* Table variants */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: var(--surface-alt);
+}
+
+.table-hover tbody tr:hover {
+    background-color: var(--hover-background);
+}
+
+.table-bordered {
+    border: 1px solid var(--border-color);
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid var(--border-color);
+}
+
+/* Table sizes */
+.table-sm th,
+.table-sm td {
+    padding: var(--spacing-xs);
+}
+
+/* Responsive tables */
+.table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+    .table-responsive-sm {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Stack tables on mobile */
+    .table-stack-sm {
+        display: block;
+    }
+
+    .table-stack-sm thead {
+        display: none;
+    }
+
+    .table-stack-sm tbody,
+    .table-stack-sm tr,
+    .table-stack-sm td {
+        display: block;
+    }
+
+    .table-stack-sm tr {
+        margin-bottom: var(--spacing-md);
+        border: 1px solid var(--border-color);
+    }
+
+    .table-stack-sm td {
+        border: none;
+        border-bottom: 1px solid var(--border-color);
+        position: relative;
+        padding-left: 50%;
+    }
+
+    .table-stack-sm td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: var(--spacing-sm);
+        width: 45%;
+        font-weight: 600;
+    }
+}
+
+/* Table utilities */
+.table-fixed {
+    table-layout: fixed;
+}
+
+/* Table header styles */
+.table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid var(--border-color);
+}
+
+/* Table footer styles */
+.table tfoot td {
+    border-top: 2px solid var(--border-color);
+    font-weight: 600;
+}
+
+/* Table cell alignments */
+.table .text-left { text-align: left; }
+.table .text-center { text-align: center; }
+.table .text-right { text-align: right; }
+
+/* Table row states */
+.table .table-active {
+    background-color: var(--active-background);
+}
+
+.table .table-success {
+    background-color: var(--success-color-light);
+}
+
+.table .table-warning {
+    background-color: var(--warning-color-light);
+}
+
+.table .table-danger {
+    background-color: var(--error-color-light);
+}
+
+/* Table sorting */
+.table th.sortable {
+    cursor: pointer;
+    position: relative;
+    padding-right: 1.5rem;
+}
+
+.table th.sortable::after {
+    content: "↕";
+    position: absolute;
+    right: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.table th.sort-asc::after {
+    content: "↑";
+}
+
+.table th.sort-desc::after {
+    content: "↓";
+}
+
+/* Table pagination container */
+.table-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--spacing-md);
+}
+
+/* Table search and filter */
+.table-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+/* Table loading state */
+.table-loading {
+    position: relative;
+    min-height: 200px;
+}
+
+.table-loading::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

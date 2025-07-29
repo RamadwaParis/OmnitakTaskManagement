@@ -1,0 +1,170 @@
+@model IEnumerable<OmintakProduction.Models.BugReport>
+
+@{
+    ViewData["Title"] = "Bug Reports";
+}
+
+<link rel="stylesheet" href="~/css/views/bug-report.css" />
+
+<div class="bug-page">
+    <div class="bug-header">
+        <h2 class="bug-title">
+            <i class="fas fa-bug"></i>
+            Bug Reports
+        </h2>
+        <div class="button-group">
+            <a asp-action="Create" class="button">
+                <i class="fas fa-plus"></i>
+                Report New Bug
+            </a>
+            @if (User.IsInRole("Stakeholder") || User.IsInRole("Tester"))
+            {
+                <a asp-action="DownloadBugReport" class="button btn-secondary">
+                    <i class="fas fa-download"></i>
+                    Download Report
+                </a>
+            }
+        </div>
+    </div>
+
+    <div class="bug-stats">
+        <div class="stat-card">
+            <div class="stat-value danger">@Model.Count(b => b.Status == OmintakProduction.Models.BugStatus.Open)</div>
+            <div class="stat-label">Open Bugs</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value warning">@Model.Count(b => b.Status == OmintakProduction.Models.BugStatus.InProgress)</div>
+            <div class="stat-label">In Progress</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value success">@Model.Count(b => b.Status == OmintakProduction.Models.BugStatus.Resolved)</div>
+            <div class="stat-label">Resolved</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value info">@Model.Count(b => b.Severity == OmintakProduction.Models.BugSeverity.Critical || b.Severity == OmintakProduction.Models.BugSeverity.Blocker)</div>
+            <div class="stat-label">Critical/Blocker</div>
+        </div>
+    </div>
+
+    <div class="bug-list">
+        <div class="bug-list-header">
+            <h3>Bug Report List</h3>
+            <div class="bug-filters">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" placeholder="Search bugs...">
+                </div>
+            </div>
+        </div>
+
+        <div class="bug-table-container">
+            <table class="bug-table">
+                <thead>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Title)</th>
+                        <th>@Html.DisplayNameFor(model => model.Description)</th>
+                        <th>@Html.DisplayNameFor(model => model.Status)</th>
+                        <th>@Html.DisplayNameFor(model => model.Severity)</th>
+                        <th>Reported By</th>
+                        <th>Assigned To</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                            <td>
+                                <div class="status status-@item.Status.ToString().ToLower()">
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="severity severity-@item.Severity.ToString().ToLower()">
+                                    @Html.DisplayFor(modelItem => item.Severity)
+                                </div>
+                            </td>
+                            <td>@(item.ReportedByUser?.UserName ?? "N/A")</td>
+                            <td>@(item.AssignedToUser?.UserName ?? "Unassigned")</td>
+                            <td>@item.CreatedAt.ToString("MMM dd, yyyy")</td>
+                            <td>
+                                <div class="button-group">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="button">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="button">
+                                        <i class="fas fa-info-circle"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="button">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetStatusClass(OmintakProduction.Models.BugStatus status)
+    {
+        return status switch
+        {
+            OmintakProduction.Models.BugStatus.Open => "status-danger",
+            OmintakProduction.Models.BugStatus.InProgress => "status-warning",
+            OmintakProduction.Models.BugStatus.Resolved => "status-success",
+            _ => "status-secondary"
+        };
+    }
+
+    private string GetSeverityClass(OmintakProduction.Models.BugSeverity severity)
+    {
+        return severity switch
+        {
+            OmintakProduction.Models.BugSeverity.High => "severity-high",
+            OmintakProduction.Models.BugSeverity.Medium => "severity-medium",
+            OmintakProduction.Models.BugSeverity.Low => "severity-low",
+            _ => "severity-default"
+        };
+    }
+}
+<script>
+    function filterBugs(status) {
+        const rows = document.querySelectorAll('#bugReportsTable tbody tr');
+        const buttons = document.querySelectorAll('.btn-group .btn');
+        
+        // Reset button states
+        buttons.forEach(btn => btn.classList.remove('active'));
+        
+        // Set active button
+        event.target.classList.add('active');
+        
+        rows.forEach(row => {
+            if (status === 'all') {
+                row.style.display = '';
+            } else {
+                const rowStatus = row.getAttribute('data-status');
+                if (status === 'progress' && rowStatus === 'inprogress') {
+                    row.style.display = '';
+                } else if (rowStatus === status) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        });
+    }
+</script>
+
+<style>
+    .bg-orange {
+        background-color: #fd7e14 !important;
+        color: white;
+    }
+</style>

@@ -1,0 +1,259 @@
+@model OmintakProduction.Models.TesterDashboardViewModel
+@{
+    ViewData["Title"] = "Tester Dashboard";
+}
+
+<div class="dashboard">
+    <div class="dashboard-content">
+        <!-- Welcome Section -->
+        <div class="welcome-section animate-in">
+            <h1 class="welcome-title">
+                <i class="fas fa-bug"></i>
+                Quality Assurance Hub
+            </h1>
+            <p class="welcome-subtitle">
+                Ensure excellence through comprehensive testing, bug tracking, and quality validation.
+            </p>
+        </div>
+
+        <!-- Statistics Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">@(Model.CompletedTasksForTesting?.Count ?? 0)</div>
+                <div class="stat-label">
+                    <i class="fas fa-flask"></i>
+                    Ready for Testing
+                </div>
+            </div>
+            <div class="stat-card success">
+                <div class="stat-value">@Model.ResolvedBugReportsCount</div>
+                <div class="stat-label">
+                    <i class="fas fa-check-circle"></i>
+                    Bugs Resolved
+                </div>
+            </div>
+            <div class="stat-card warning">
+                <div class="stat-value">@Model.ActiveBugReportsCount</div>
+                <div class="stat-label">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Active Issues
+                </div>
+            </div>
+            <div class="stat-card info">
+                <div class="stat-value">@Model.CompletedTasks</div>
+                <div class="stat-label">
+                    <i class="fas fa-clipboard-check"></i>
+                    Tests Completed
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-2 gap-lg">
+            <!-- Tasks Ready for Testing -->
+            <div class="card elevated">
+                <h3 class="section-title">
+                    <i class="fas fa-tasks"></i>
+                    Testing Queue
+                </h3>
+                
+                @if (Model.CompletedTasksForTesting?.Any() == true)
+                {
+                    <div class="list">
+                        @foreach (var task in Model.CompletedTasksForTesting.Take(6))
+                        {
+                            <div class="list-item">
+                                <div class="list-item-content">
+                                    <div class="flex justify-between items-start gap-md">
+                                        <div>
+                                            <h6 class="card-title">@task.Title</h6>
+                                            <span class="text-secondary text-sm">@task.Project?.ProjectName</span>
+                                        </div>
+                                        <span class="badge @(task.Priority == OmintakProduction.Models.TaskPriority.High ? "danger" : 
+                                                           task.Priority == OmintakProduction.Models.TaskPriority.Medium ? "warning" : "primary")">
+                                            @task.Priority
+                                        </span>
+                                    </div>
+                                    <p class="text-secondary text-sm mt-sm">@task.Description</p>
+                                    <div class="flex justify-between items-center mt-md">
+                                        <span class="text-secondary text-sm">
+                                            Completed: @task.UpdatedAt?.ToString("MMM dd, yyyy")
+                                        </span>
+                                        <a href="/Task/Details/@task.Id" class="button button-primary button-sm">
+                                            Test
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-check text-3xl text-secondary mb-md"></i>
+                        <p class="text-secondary">No tasks ready for testing</p>
+                        <a href="/Task" class="button button-primary mt-md">
+                            <i class="fas fa-tasks"></i>
+                            View All Tasks
+                        </a>
+                    </div>
+                }
+                }
+            </div>
+
+            <!-- Bug Reports Overview -->
+            <div class="premium-card premium-card-elevated">
+                <h3 class="premium-section-title">
+                    <i class="fas fa-bug premium-icon accent"></i>
+                    Bug Reports
+                </h3>
+                
+                @if (Model.MyBugReports?.Any() == true)
+                {
+                    <div class="premium-list">
+                        @foreach (var bugReport in Model.MyBugReports.Take(6))
+                        {
+                            <div class="premium-list-item">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="premium-card-title mb-0">@bugReport.Title</h6>
+                                        <div class="d-flex gap-2">
+                                            <span class="premium-badge @(bugReport.Severity == OmintakProduction.Models.BugSeverity.Critical ? "danger" : 
+                                                                          bugReport.Severity == OmintakProduction.Models.BugSeverity.High ? "warning" : 
+                                                                          bugReport.Severity == OmintakProduction.Models.BugSeverity.Medium ? "primary" : "success")">
+                                                @bugReport.Severity
+                                            </span>
+                                            <span class="premium-badge @(bugReport.Status == OmintakProduction.Models.BugStatus.Open ? "warning" : 
+                                                                          bugReport.Status == OmintakProduction.Models.BugStatus.InProgress ? "primary" : 
+                                                                          bugReport.Status == OmintakProduction.Models.BugStatus.Resolved ? "success" : "primary")">
+                                                @bugReport.Status
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <p class="text-muted small mb-2">@bugReport.Description</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">@bugReport.CreatedAt.ToString("MMM dd, yyyy")</small>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-bug fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No bug reports found</p>
+                        <a href="/BugReport/Create" class="premium-btn primary">
+                            <i class="fas fa-plus"></i>
+                            Report Your First Bug
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Secondary Content Grid -->
+        <div class="premium-grid premium-grid-2 mt-4">
+            <!-- Bug Priority Distribution -->
+            <div class="premium-card premium-card-accent">
+                <h3 class="premium-section-title">
+                    <i class="fas fa-chart-pie premium-icon accent"></i>
+                    Bug Priority Distribution
+                </h3>
+                
+                @if (Model.BugReportsByPriority?.Any() == true)
+                {
+                    <div class="premium-grid premium-grid-2">
+                        @foreach (var priority in Model.BugReportsByPriority.Take(4))
+                        {
+                            <div class="text-center p-3">
+                                <div class="premium-stat-value" style="font-size: 2rem; color: @(priority.Key.Contains("Critical") ? "var(--premium-accent-danger)" : 
+                                                                                                  priority.Key.Contains("High") ? "var(--premium-accent-warning)" : 
+                                                                                                  priority.Key.Contains("Medium") ? "var(--premium-accent-primary)" : "var(--premium-accent-success)");">
+                                    @priority.Value
+                                </div>
+                                <div class="premium-stat-label">
+                                    @priority.Key Priority
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No bug priority data available</p>
+                    </div>
+                }
+            </div>
+
+            <!-- Recent Test Activities -->
+            <div class="premium-card premium-card-success">
+                <h3 class="premium-section-title">
+                    <i class="fas fa-history premium-icon" style="color: var(--premium-accent-success);"></i>
+                    Recent Activities
+                </h3>
+                
+                @if (Model.RecentTasks?.Any() == true)
+                {
+                    <div class="premium-list">
+                        @foreach (var task in Model.RecentTasks.Take(5))
+                        {
+                            <div class="premium-list-item">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-0" style="font-size: 0.9rem;">@task.Title</h6>
+                                            <small class="text-muted">@task.Project?.ProjectName</small>
+                                        </div>
+                                        <div class="premium-badge @(task.Status == OmintakProduction.Models.TaskStatus.Completed ? "success" : 
+                                                                     task.Status == OmintakProduction.Models.TaskStatus.InProgress ? "warning" : "primary")">
+                                            @task.Status
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No recent activities</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Quick Actions Panel -->
+        <div class="premium-card premium-card-elevated mt-4">
+            <h3 class="premium-section-title">
+                <i class="fas fa-bolt premium-icon accent"></i>
+                Testing Actions
+            </h3>
+            
+            <div class="premium-grid premium-grid-4">
+                <a href="/BugReport/Create" class="premium-btn primary text-decoration-none">
+                    <i class="fas fa-bug"></i>
+                    Report Bug
+                </a>
+                <a href="/BugReport" class="premium-btn primary text-decoration-none">
+                    <i class="fas fa-list"></i>
+                    View All Bugs
+                </a>
+                <a href="/Task" class="premium-btn primary text-decoration-none">
+                    <i class="fas fa-tasks"></i>
+                    View Tasks
+                </a>
+                <a href="/TestReport" class="premium-btn primary text-decoration-none">
+                    <i class="fas fa-clipboard-list"></i>
+                    Test Reports
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

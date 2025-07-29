@@ -1,0 +1,289 @@
+/* Project page layout */
+.project-page {
+    padding: var(--spacing-lg);
+}
+
+/* Project header */
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.project-title {
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.project-title i {
+    color: var(--primary-color);
+}
+
+/* Project stats */
+.project-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Project board */
+.project-board {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+    align-items: start;
+}
+
+/* Project columns */
+.project-column {
+    background: var(--surface-background);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    min-height: 200px;
+}
+
+.project-column-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: var(--spacing-md);
+}
+
+.column-title {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.column-count {
+    background: var(--surface-alt);
+    color: var(--text-secondary);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+    font-size: var(--text-sm);
+}
+
+/* Project cards */
+.project-card {
+    background: var(--surface-alt);
+    border-radius: var(--border-radius-sm);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.project-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-sm);
+}
+
+.project-card-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.project-card-meta {
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+    margin-top: var(--spacing-xs);
+}
+
+.project-card-body {
+    margin-bottom: var(--spacing-sm);
+}
+
+.project-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Status badges */
+.status {
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+    font-size: var(--text-xs);
+    font-weight: 500;
+}
+
+.status-active {
+    background: var(--success-color-light);
+    color: var(--success-color);
+}
+
+.status-planning {
+    background: var(--info-color-light);
+    color: var(--info-color);
+}
+
+.status-hold {
+    background: var(--warning-color-light);
+    color: var(--warning-color);
+}
+
+.status-done {
+    background: var(--primary-color-light);
+    color: var(--primary-color);
+}
+
+/* Progress bar */
+.progress-bar {
+    height: 4px;
+    background: var(--surface-alt);
+    border-radius: var(--border-radius-sm);
+    margin-top: var(--spacing-sm);
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--primary-color);
+    border-radius: var(--border-radius-sm);
+    transition: width 0.3s ease;
+}
+
+/* Team section */
+.team-members {
+    display: flex;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-sm);
+}
+
+.member-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--surface-alt);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+/* Actions */
+.project-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+/* List view */
+.project-board.list-view {
+    display: block;
+}
+
+.project-board.list-view .project-column {
+    margin-bottom: var(--spacing-xl);
+}
+
+.project-board.list-view .project-column-header {
+    background: var(--surface-alt);
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    margin-bottom: 0;
+}
+
+.project-board.list-view .project-card {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr auto;
+    gap: var(--spacing-md);
+    align-items: center;
+    margin: 0;
+    border-radius: 0;
+    border-bottom: 1px solid var(--border-color);
+    transform: none;
+}
+
+.project-board.list-view .project-card:last-child {
+    border-bottom: none;
+}
+
+.project-board.list-view .project-card-header {
+    margin: 0;
+}
+
+.project-board.list-view .project-card-body {
+    margin: 0;
+}
+
+.project-board.list-view .project-card-footer {
+    justify-content: flex-end;
+}
+
+.project-board.list-view .progress-bar {
+    width: 150px;
+    margin: 0;
+}
+
+/* View transitions */
+.project-board {
+    transition: all 0.3s ease;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .project-board {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .project-board.list-view .project-card {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md);
+    }
+    
+    .project-board.list-view .progress-bar {
+        width: 100%;
+        margin-top: var(--spacing-sm);
+    }
+}
+
+@media (max-width: 768px) {
+    .project-page {
+        padding: var(--spacing-md);
+    }
+
+    .project-board {
+        grid-template-columns: 1fr;
+    }
+
+    .project-actions {
+        flex-direction: column;
+    }
+
+    .project-actions .button {
+        width: 100%;
+    }
+    
+    .project-board.list-view .project-card {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+    
+    .project-board.list-view .project-card-footer {
+        justify-content: flex-start;
+        margin-top: var(--spacing-sm);
+    }
+}

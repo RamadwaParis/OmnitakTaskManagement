@@ -1,0 +1,5 @@
+﻿.card-header h3,
+.card-header i, 
+.card-header p {
+    color: #FFFFFF !important; /* Ensures icon color is white */
+}

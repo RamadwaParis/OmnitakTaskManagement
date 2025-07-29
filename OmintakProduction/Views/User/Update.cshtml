@@ -1,0 +1,71 @@
+@using System.Security.Claims;
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model OmintakProduction.Models.User
+
+@{
+    ViewBag.Title = "Edit Ticket";
+}
+
+<h2>Edit User</h2>
+
+@* Begin the form for editing a ticket *@
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken() @* Helps prevent CSRF attacks *@
+    @Html.HiddenFor(model => model.UserId) @* Keeps track of which ticket is being edited *@
+
+    <div class="form">
+        <h4 class="form-title">User Details</h4>
+        <hr class="divider" />
+        @* Displays validation messages, if any *@
+        @Html.ValidationSummary(true, "", new { @class = "error-text" })
+
+        @* Username field *@
+        <div class="form-field">
+            @Html.LabelFor(m => m.UserName, htmlAttributes: new { @class = "label" })
+            <div class="field-container">
+                @Html.EditorFor(m => m.UserName, new { htmlAttributes = new { @class = "input" } })
+                @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "error-text" })
+            </div>
+        </div>
+
+        <div class="form-field">
+            @Html.LabelFor(m => m.Email, htmlAttributes: new { @class = "label" })
+            <div class="field-container">
+                @Html.TextAreaFor(m => m.Email, new { @class = "textarea", rows = 4 })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "error-text" })
+            </div>
+        </div>
+
+        @if (User.FindFirst(ClaimTypes.Role)?.Value == "SystemAdmin")
+        {
+            <div class="form-field">
+                @Html.LabelFor(m => m.RoleId, htmlAttributes: new { @class = "label" })
+                <div class="field-container">
+                    @Html.TextAreaFor(m => m.RoleId, new { @class = "textarea", rows = 4 })
+                    @Html.ValidationMessageFor(m => m.RoleId, "", new { @class = "error-text" })
+                </div>
+            </div>
+        }
+
+        <div class="form-field">
+            @Html.LabelFor(m => m.Password, htmlAttributes: new { @class = "label" })
+            <div class="field-container">
+                @Html.TextAreaFor(m => m.Password, new { @class = "textarea", rows = 4 })
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "error-text" })
+            </div>
+        </div>
+
+        <div class="form-field">
+            <div class="field-actions">
+                <input type="submit" value="Save" class="button button-primary" />
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "button button-secondary" })
+            </div>
+        </div>
+    </div>
+}

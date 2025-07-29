@@ -1,0 +1,191 @@
+@model OmintakProduction.Models.DeveloperDashboardViewModel
+@{
+    ViewData["Title"] = "Developer Dashboard";
+}
+
+<div class="premium-dashboard">
+    <div class="container-fluid p-4">
+        <!-- Premium Welcome Section -->
+        <div class="premium-welcome premium-animate-in">
+            <h1 class="premium-title">
+                <i class="fas fa-code premium-icon me-2"></i>
+                Developer Workspace
+            </h1>
+            <p class="premium-subtitle mb-0">
+                Your development command center for task management, code delivery, and project collaboration.
+            </p>
+        </div>
+
+        <!-- Premium Statistics Grid -->
+        <div class="premium-grid premium-grid-4 mb-4">
+            <div class="premium-stat-card">
+                <div class="premium-stat-value">@(Model.TotalAssignedTasks)</div>
+                <div class="premium-stat-label">
+                    <i class="fas fa-tasks me-1"></i>
+                    Assigned Tasks
+                </div>
+            </div>
+            <div class="premium-stat-card success">
+                <div class="premium-stat-value">@(Model.CompletedTasks)</div>
+                <div class="premium-stat-label">
+                    <i class="fas fa-check-circle me-1"></i>
+                    Completed
+                </div>
+            </div>
+            <div class="premium-stat-card warning">
+                <div class="premium-stat-value">@(Model.ActiveTasks)</div>
+                <div class="premium-stat-label">
+                    <i class="fas fa-clock me-1"></i>
+                    In Progress
+                </div>
+            </div>
+            <div class="premium-stat-card info">
+                <div class="premium-stat-value">@(Model.OverdueTasks)</div>
+                <div class="premium-stat-label">
+                    <i class="fas fa-exclamation-triangle me-1"></i>
+                    Overdue
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="premium-grid premium-grid-2">
+            <!-- Active Tasks -->
+            <div class="premium-card premium-card-elevated">
+                <h3 class="premium-section-title">
+                    <i class="fas fa-code-branch premium-icon accent"></i>
+                    Active Development
+                </h3>
+                
+                @if (Model.MyActiveTasks?.Any() == true)
+                {
+                    <div class="premium-list">
+                        @foreach (var task in Model.MyActiveTasks.Take(6))
+                        {
+                            <div class="premium-list-item">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <h6 class="premium-card-title mb-0">@task.Title</h6>
+                                            <small class="text-muted">@task.Project?.ProjectName</small>
+                                        </div>
+                                        <span class="premium-badge @(task.Priority == OmintakProduction.Models.TaskPriority.High ? "danger" : 
+                                                                      task.Priority == OmintakProduction.Models.TaskPriority.Medium ? "warning" : "primary")">
+                                            @task.Priority
+                                        </span>
+                                    </div>
+                                    <p class="text-muted small mb-2">@task.Description</p>
+                                    
+                                    @if (task.DueDate.HasValue)
+                                    {
+                                        var daysLeft = (task.DueDate.Value - DateTime.Now).Days;
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">
+                                                Due: @task.DueDate?.ToString("MMM dd, yyyy")
+                                            </small>
+                                            <small class="@(daysLeft < 0 ? "text-danger" : daysLeft <= 2 ? "text-warning" : "text-muted")">
+                                                @(daysLeft < 0 ? Math.Abs(daysLeft) + " days overdue" : daysLeft + " days left")
+                                            </small>
+                                        </div>
+                                    }
+                                    
+                                    <div class="mt-2">
+                                        <a href="/Task/Details/@task.Id" class="premium-btn primary" style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">
+                                            Work on Task
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-code fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No active development tasks</p>
+                        <a href="/Task" class="premium-btn primary">
+                            <i class="fas fa-search"></i>
+                            Browse Available Tasks
+                        </a>
+                    </div>
+                }
+            </div>
+
+            <!-- Recent Completions -->
+            <div class="premium-card premium-card-elevated">
+                <h3 class="premium-section-title">
+                    <i class="fas fa-trophy premium-icon accent"></i>
+                    Recent Achievements
+                </h3>
+                
+                @if (Model.MyCompletedTasks?.Any() == true)
+                {
+                    <div class="premium-list">
+                        @foreach (var task in Model.MyCompletedTasks.Take(6))
+                        {
+                            <div class="premium-list-item">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <h6 class="premium-card-title mb-0">@task.Title</h6>
+                                            <small class="text-muted">@task.Project?.ProjectName</small>
+                                        </div>
+                                        <span class="premium-badge success">Completed</span>
+                                    </div>
+                                    <p class="text-muted small mb-2">@task.Description</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">
+                                            Completed: @task.UpdatedAt?.ToString("MMM dd, yyyy")
+                                        </small>
+                                        @if (task.DueDate.HasValue && task.UpdatedAt.HasValue)
+                                        {
+                                            var wasOnTime = task.UpdatedAt.Value.Date <= task.DueDate.Value.Date;
+                                            <small class="@(wasOnTime ? "text-success" : "text-warning")">
+                                                @(wasOnTime ? "On Time" : "Late")
+                                            </small>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-clipboard-check fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No completed tasks yet</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Quick Actions Panel -->
+        <div class="premium-card premium-card-elevated mt-4">
+            <h3 class="premium-section-title">
+                <i class="fas fa-bolt premium-icon accent"></i>
+                Development Tools
+            </h3>
+            
+            <div class="premium-grid premium-grid-4">
+                <a href="/Task/Create" class="premium-btn primary text-decoration-none">
+                    <i class="fas fa-plus"></i>
+                    Create Task
+                </a>
+                <a href="/Task" class="premium-btn primary text-decoration-none">
+                    <i class="fas fa-tasks"></i>
+                    View All Tasks
+                </a>
+                <a href="/TaskComment" class="premium-btn primary text-decoration-none">
+                    <i class="fas fa-comments"></i>
+                    Task Comments
+                </a>
+                <a href="/Project" class="premium-btn primary text-decoration-none">
+                    <i class="fas fa-project-diagram"></i>
+                    Browse Projects
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
