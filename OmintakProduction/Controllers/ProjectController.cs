@@ -37,7 +37,7 @@ namespace OmintakProduction.Controllers
             ViewBag.Teams = _context.Team.ToList();
             if (ModelState.IsValid)
             {
-                project.DueDate = DateOnly.FromDateTime(DateTime.Now);
+
                 if (project.TeamId == null || !_context.Team.Any(t => t.TeamId == project.TeamId))
                 {
                     ModelState.AddModelError("TeamId", "A valid team must be assigned.");
@@ -46,6 +46,7 @@ namespace OmintakProduction.Controllers
                 project.Team = await _context.Team.FindAsync(project.TeamId);
                 _context.Add(project);
                 await _context.SaveChangesAsync();
+
 
                 // Notify all active team members about new project
                 if (project.Team != null && project.Team.TeamMembers != null && project.Team.TeamMembers.Any())
@@ -91,38 +92,56 @@ namespace OmintakProduction.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(int id, [Bind("ProjectId,ProjectName,Description,DueDate,Status")] Project updatedProject)
+        public async Task<IActionResult> Update(int id, Project project, string? NewDueDate)
         {
-            // Make sure the ID from the route matches the form
-            if (id != updatedProject.ProjectId) return NotFound();
+            if (id != project.ProjectId)
+            {
+                return NotFound();
+            }
 
-            // Load the existing ticket from DB (includes Created_By)
-            var existingProject = await _context.Project.FindAsync(id);
-            if (existingProject == null) return NotFound();
+            // Get existing project to preserve data
+            var existingProject = await _context.Project
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.ProjectId == id);
 
+            if (existingProject == null)
+            {
+                return NotFound();
+            }
+
+            // Handle the DueDate
+            if (!string.IsNullOrEmpty(NewDueDate) && DateOnly.TryParse(NewDueDate, out DateOnly newDate))
+            {
+                project.DueDate = newDate;
+            }
+            else
+            {
+                // Keep the original due date if no new date was selected
+                project.DueDate = existingProject.DueDate;
+            }
+
+            // Preserve other properties that shouldn't change
+            project.TeamId = existingProject.TeamId;
+            
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // Only update fields that can be changed
-                    existingProject.ProjectName = updatedProject.ProjectName;
-                    existingProject.Description = updatedProject.Description;
-                    existingProject.Status = updatedProject.Status;
-
-                    // Save changes without altering Created_By or Created_At
-                    _context.Update(existingProject);
+                    _context.Update(project);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProjectExists(updatedProject.ProjectId)) return NotFound();
+                    if (!await _context.Project.AnyAsync(p => p.ProjectId == id))
+                    {
+                        return NotFound();
+                    }
                     throw;
                 }
-
-                return RedirectToAction(nameof(Index));
             }
 
-            return View("~/Views/Ticket/Update.cshtml", updatedProject);
+            return View(project);
         }
 
 
