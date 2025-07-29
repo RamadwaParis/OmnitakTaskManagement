@@ -26,3 +26,18 @@ html, body {
     border-radius: 15px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
+
+.fa-envelope, .fa-lock, .btn .fas.fa-sign-in-alt {
+    margin-right: 8px;
+}
+
+.d-grid {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+    .d-grid .btn {
+        min-width: 200px; /* Optional: gives the button a minimum width */
+        background: linear-gradient(135deg, #667eea 0%, #272847 100%);
+    }
