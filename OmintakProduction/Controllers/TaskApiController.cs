@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using OmintakProduction.Data;
 using OmintakProduction.Models;
 using System.Threading.Tasks;
+using System.Linq;
+using OmintakProduction.Models.TaskModels;
 
 namespace OmintakProduction.Controllers
 {
@@ -48,6 +51,86 @@ namespace OmintakProduction.Controllers
         }
 
         /// <summary>
+        /// Put a task on hold
+        /// </summary>
+        /// <param name="id">Task ID</param>
+        /// <param name="request">Hold request details</param>
+        /// <returns>Updated task details</returns>
+        [HttpPost("{id}/hold")]
+        [Authorize(Roles = "TeamLead")]
+        [ProducesResponseType(typeof(Models.Task), 200)]
+        [ProducesResponseType(404)]
+        public async System.Threading.Tasks.Task<IActionResult> PutTaskOnHold(int id, [FromBody] HoldTaskRequest request)
+        {
+            var task = await _context.Tasks
+                .Include(t => t.Project)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (task == null)
+                return NotFound("Task not found");
+
+            var userId = int.Parse(User.FindFirst("UserId")?.Value ?? "0");
+            task.PutOnHold(request.Reason, userId);
+            
+            await _context.SaveChangesAsync();
+            return Ok(task);
+        }
+
+        /// <summary>
+        /// Resume a task that was on hold
+        /// </summary>
+        /// <param name="id">Task ID</param>
+        /// <returns>Updated task details</returns>
+        [HttpPost("{id}/resume")]
+        [Authorize(Roles = "TeamLead")]
+        [ProducesResponseType(typeof(Models.Task), 200)]
+        [ProducesResponseType(404)]
+        public async System.Threading.Tasks.Task<IActionResult> ResumeTask(int id)
+        {
+            var task = await _context.Tasks
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (task == null)
+                return NotFound("Task not found");
+
+            if (!task.IsOnHold)
+                return BadRequest("Task is not on hold");
+
+            task.ResumeTask();
+            await _context.SaveChangesAsync();
+            return Ok(task);
+        }
+
+        /// <summary>
+        /// Get all tasks that are currently on hold
+        /// </summary>
+        /// <returns>List of on-hold tasks</returns>
+        [HttpGet("onhold")]
+        [Authorize(Roles = "TeamLead")]
+        [ProducesResponseType(typeof(IEnumerable<Models.Task>), 200)]
+        public async System.Threading.Tasks.Task<IActionResult> GetOnHoldTasks()
+        {
+            var userId = int.Parse(User.FindFirst("UserId")?.Value ?? "0");
+            
+            var managedTeamIds = await _context.Team
+                .Where(t => t.TeamLeadId == userId)
+                .Select(t => t.TeamId)
+                .ToListAsync();
+
+            var onHoldTasks = await _context.Tasks
+                .Include(t => t.Project)
+                .Include(t => t.HoldRequestedByUser)
+                .Where(t => t.IsOnHold && 
+                           t.Project != null && 
+                           t.Project.TeamId.HasValue &&
+                           managedTeamIds.Contains(t.Project.TeamId.Value))
+                .OrderByDescending(t => t.HoldStartDate)
+                .ToListAsync();
+
+            return Ok(onHoldTasks);
+        }
+
+        /// <summary>
         /// Create a new task
         /// </summary>
         /// <param name="title">Task title</param>
@@ -64,7 +147,7 @@ namespace OmintakProduction.Controllers
             var project = await _context.Project.FirstOrDefaultAsync(p => p.ProjectName == projectName);
             var users = await (from u in _context.User
                                join r in _context.Role on u.RoleId equals r.RoleId
-                               where roleNames.Contains(r.RoleName)
+                               where roleNames.Any() && r.RoleName != null && roleNames.Contains(r.RoleName)
                                select u).ToListAsync();
             var task = new Models.Task
             {

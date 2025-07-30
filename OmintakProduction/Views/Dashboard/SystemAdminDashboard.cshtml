@@ -3,590 +3,302 @@
     ViewData["Title"] = "System Admin Dashboard";
 }
 
-<style>
-/* System Admin styling */
-.admin-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    border-radius: 15px;
-    color: white;
-    transition: transform 0.3s ease;
-}
-.admin-card:hover {
-    transform: translateY(-5px);
-}
-.admin-stats-card {
-    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-    border: none;
-    border-radius: 10px;
-    color: #333;
-}
-.system-metric-card {
-    border-left: 4px solid #dc3545;
-    transition: all 0.3s ease;
-}
-.system-metric-card:hover {
-    border-left-color: #28a745;
-    transform: translateX(5px);
-}
-.user-card {
-    border: 1px solid #e9ecef;
-    border-radius: 10px;
-    transition: all 0.3s ease;
-}
-.user-card:hover {
-    border-color: #667eea;
-    transform: translateY(-2px);
-}
-.role-badge {
-    font-size: 0.7rem;
-    padding: 0.2rem 0.4rem;
-}
-</style>
+<div class="premium-dashboard">
+    <div class="container-fluid p-4">
+        <!-- Premium Welcome Section -->
+        <div class="premium-welcome premium-animate-in">
+            <h1 class="premium-title">
+                <i class="fas fa-cogs premium-icon me-2"></i>
+                System Administration
+            </h1>
+            <p class="premium-subtitle mb-0">
+                Command center for system oversight, user management, and enterprise operations.
+            </p>
+        </div>
 
-<div class="container-fluid py-4">
-    <!-- Welcome Section -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="admin-card p-4">
-                <h2 class="mb-0"><i class="fas fa-cogs me-2"></i>System Admin Dashboard</h2>
-                <p class="mt-2 mb-0">Welcome, System Administrator! Monitor system health, manage users, configure settings, and maintain security.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- System Statistics -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card admin-stats-card h-100">
-                <div class="card-body text-center">
-                    <i class="fas fa-users fa-2x mb-2 text-primary"></i>
-                    <h3 class="mb-1">@Model.AllUsers.Count</h3>
-                    <p class="mb-0">Total Users</p>
+        <!-- Premium Statistics Grid -->
+        <div class="premium-grid premium-grid-4 mb-4">
+            <div class="premium-stat-card">
+                <div class="premium-stat-value">@(Model.AllUsers?.Count ?? 0)</div>
+                <div class="premium-stat-label">
+                    <i class="fas fa-users me-1"></i>
+                    Total Users
                 </div>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card admin-stats-card h-100">
-                <div class="card-body text-center">
-                    <i class="fas fa-project-diagram fa-2x mb-2 text-success"></i>
-                    <h3 class="mb-1">@Model.AllProjects.Count</h3>
-                    <p class="mb-0">Active Projects</p>
+            <div class="premium-stat-card success">
+                <div class="premium-stat-value">@(Model.AllProjects?.Count ?? 0)</div>
+                <div class="premium-stat-label">
+                    <i class="fas fa-project-diagram me-1"></i>
+                    Active Projects
                 </div>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card admin-stats-card h-100">
-                <div class="card-body text-center">
-                    <i class="fas fa-shield-alt fa-2x mb-2 text-warning"></i>
-                    <h3 class="mb-1">@(Model.PendingUsers?.Count ?? 0)</h3>
-                    <p class="mb-0">Pending Approvals</p>
+            <div class="premium-stat-card warning">
+                <div class="premium-stat-value">@(Model.PendingUsers?.Count ?? 0)</div>
+                <div class="premium-stat-label">
+                    <i class="fas fa-user-clock me-1"></i>
+                    Pending Approvals
                 </div>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card admin-stats-card h-100">
-                <div class="card-body text-center">
-                    <i class="fas fa-server fa-2x mb-2 text-info"></i>
-                    <h3 class="mb-1">@(Model.SystemStatistics != null && Model.SystemStatistics.ContainsKey("SystemUptime") ? Model.SystemStatistics["SystemUptime"] : "99.8%")</h3>
-                    <p class="mb-0">System Uptime</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <!-- System Metrics -->
-        <div class="col-md-8">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-danger text-white">
-                    <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>System Health Metrics</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <!-- CPU Usage -->
-                        <div class="col-md-6 mb-3">
-                            <div class="card system-metric-card">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <h6 class="mb-0">CPU Usage</h6>
-                                        <span class="badge bg-success">Normal</span>
-                                    </div>
-                                    <div class="progress mb-2" style="height: 8px;">
-                                        <div class="progress-bar bg-success" style="width: 45%"></div>
-                                    </div>
-                                    <small class="text-muted">@(Model.SystemStatistics != null && Model.SystemStatistics.ContainsKey("CpuUsage") ? Model.SystemStatistics["CpuUsage"] : "45%") - Running smoothly</small>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Memory Usage -->
-                        <div class="col-md-6 mb-3">
-                            <div class="card system-metric-card">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <h6 class="mb-0">Memory Usage</h6>
-                                        <span class="badge bg-warning">Moderate</span>
-                                    </div>
-                                    <div class="progress mb-2" style="height: 8px;">
-                                        <div class="progress-bar bg-warning" style="width: 72%"></div>
-                                    </div>
-                                    <small class="text-muted">@(Model.SystemStatistics != null && Model.SystemStatistics.ContainsKey("MemoryUsage") ? Model.SystemStatistics["MemoryUsage"] : "72%") - Monitor closely</small>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Database Performance -->
-                        <div class="col-md-6 mb-3">
-                            <div class="card system-metric-card">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <h6 class="mb-0">Database Performance</h6>
-                                        <span class="badge bg-success">Excellent</span>
-                                    </div>
-                                    <div class="progress mb-2" style="height: 8px;">
-                                        <div class="progress-bar bg-success" style="width: 28%"></div>
-                                    </div>
-                                    <small class="text-muted">@(Model.SystemStatistics != null && Model.SystemStatistics.ContainsKey("DatabaseResponseTime") ? Model.SystemStatistics["DatabaseResponseTime"] : "28ms") avg response time</small>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Disk Usage -->
-                        <div class="col-md-6 mb-3">
-                            <div class="card system-metric-card">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <h6 class="mb-0">Disk Usage</h6>
-                                        <span class="badge bg-info">Good</span>
-                                    </div>
-                                    <div class="progress mb-2" style="height: 8px;">
-                                        <div class="progress-bar bg-info" style="width: 58%"></div>
-                                    </div>
-                                    <small class="text-muted">@(Model.SystemStatistics != null && Model.SystemStatistics.ContainsKey("DiskUsage") ? Model.SystemStatistics["DiskUsage"] : "58%") - 420GB available</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent User Activity -->
-            <div class="card shadow-sm">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent User Activity</h5>
-                </div>
-                <div class="card-body" style="max-height: 300px; overflow-y: auto;">
-                    @if (Model.SystemLogs != null && Model.SystemLogs.Any())
-                    {
-                        @foreach (var log in Model.SystemLogs.Take(5))
-                        {
-                            <div class="border-bottom pb-2 mb-2">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="mb-1">@(log.User != null ? $"{log.User.FirstName} {log.User.LastName}" : "System") @log.Action</h6>
-                                        <small class="text-muted">@(log.Task != null ? $"Task: {log.Task.Title}" : "System activity")</small>
-                                    </div>
-                                    <small class="text-muted">@log.CreatedAt.ToString("MMM dd, HH:mm")</small>
-                                </div>
-                            </div>
-                        }
-                    }
-                    else
-                    {
-                        <div class="text-center text-muted py-3">
-                            <i class="fas fa-clock fa-2x mb-2"></i>
-                            <p>No recent activity to display</p>
-                        </div>
-                    }
+            <div class="premium-stat-card info">
+                <div class="premium-stat-value">@(Model.AllTasks?.Count ?? 0)</div>
+                <div class="premium-stat-label">
+                    <i class="fas fa-tasks me-1"></i>
+                    Total Tasks
                 </div>
             </div>
         </div>
 
-        <!-- User Management & Quick Actions -->
-        <div class="col-md-4">
-            <!-- Pending User Approvals -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-warning text-white">
-                    <h5 class="mb-0"><i class="fas fa-user-clock me-2"></i>Pending Approvals</h5>
-                </div>
-                <div class="card-body" style="max-height: 250px; overflow-y: auto;">
-                    @if (Model.PendingUsers != null && Model.PendingUsers.Any())
-                    {
-                        @foreach (var user in Model.PendingUsers)
-                        {
-                            <div class="user-card p-2 mb-2">
-                                <div class="d-flex align-items-center">
-                                    <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px;">
-                                        <span class="text-white small">@(user.FirstName?.Substring(0, 1))@(user.LastName?.Substring(0, 1))</span>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <h6 class="mb-0 small">@user.FirstName @user.LastName</h6>
-                                        <small class="text-muted">@user.Email</small>
-                                        <div>
-                                            <span class="badge role-badge bg-secondary">Pending</span>
-                                        </div>
-                                    </div>
-                                    <div class="dropdown">
-                                        <button class="btn btn-sm btn-outline-success dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                            <i class="fas fa-check"></i> Approve
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#" onclick="approveUser(@user.UserId, 'Developer')"><i class="fas fa-code me-1"></i>As Developer</a></li>
-                                            <li><a class="dropdown-item" href="#" onclick="approveUser(@user.UserId, 'Tester')"><i class="fas fa-bug me-1"></i>As Tester</a></li>
-                                            <li><a class="dropdown-item" href="#" onclick="approveUser(@user.UserId, 'ProjectLead')"><i class="fas fa-users-cog me-1"></i>As Project Lead</a></li>
-                                            <li><a class="dropdown-item" href="#" onclick="approveUser(@user.UserId, 'Stakeholder')"><i class="fas fa-eye me-1"></i>As Stakeholder</a></li>
-                                            <li><hr class="dropdown-divider"></li>
-                                            <li><a class="dropdown-item text-danger" href="#" onclick="rejectUser(@user.UserId)"><i class="fas fa-times me-1"></i>Reject</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    }
-                    else
-                    {
-                        <div class="text-center text-muted py-3">
-                            <i class="fas fa-check-circle fa-2x mb-2"></i>
-                            <p>No pending user approvals</p>
-                        </div>
-                    }
-                </div>
-            </div>
-
-            <!-- Approved User Management -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="fas fa-users-cog me-2"></i>Active Users</h5>
-                </div>
-                <div class="card-body" style="max-height: 300px; overflow-y: auto;">
-                    @if (Model.AllUsers != null && Model.AllUsers.Any(u => u.IsApproved))
-                    {
-                        foreach (var user in Model.AllUsers.Where(u => u.IsApproved).Take(10))
-                        {
-                            string roleName = "Unknown";
-                            string roleColor = "secondary";
-                            
-                            switch (user.RoleId)
-                            {
-                                case 1: roleName = "SystemAdmin"; roleColor = "danger"; break;
-                                case 2: roleName = "Engineer"; roleColor = "info"; break;
-                                case 3: roleName = "Software Tester"; roleColor = "warning"; break;
-                                case 4: roleName = "ProjectLead"; roleColor = "primary"; break;
-                                case 5: roleName = "Developer"; roleColor = "success"; break;
-                                case 6: roleName = "Tester"; roleColor = "warning"; break;
-                                case 7: roleName = "Stakeholder"; roleColor = "secondary"; break;
-                            }
-                            
-                            <div class="user-card p-2 mb-2">
-                                <div class="d-flex align-items-center">
-                                    <div class="bg-@roleColor rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px;">
-                                        <span class="text-white small">@(user.FirstName?.Substring(0, 1))@(user.LastName?.Substring(0, 1))</span>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <h6 class="mb-0 small">@user.FirstName @user.LastName</h6>
-                                        <small class="text-muted">@user.Email</small>
-                                        <div>
-                                            <span class="badge role-badge bg-@roleColor">@roleName</span>
-                                            @if (user.Team != null)
-                                            {
-                                                <span class="badge role-badge bg-info">@user.Team.TeamName</span>
-                                            }
-                                            <span class="badge role-badge bg-success">@(user.isActive ? "Active" : "Inactive")</span>
-                                        </div>
-                                    </div>
-                                    <div class="dropdown">
-                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                            <i class="fas fa-cogs"></i>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="/User/Details/@user.UserId"><i class="fas fa-eye me-1"></i>View</a></li>
-                                            <li><a class="dropdown-item" href="/User/Edit/@user.UserId"><i class="fas fa-edit me-1"></i>Edit</a></li>
-                                            @if (user.isActive)
-                                            {
-                                                <li><a class="dropdown-item" href="#" onclick="toggleUserStatus(@user.UserId, false)"><i class="fas fa-ban me-1"></i>Disable</a></li>
-                                            }
-                                            else
-                                            {
-                                                <li><a class="dropdown-item" href="#" onclick="toggleUserStatus(@user.UserId, true)"><i class="fas fa-check me-1"></i>Enable</a></li>
-                                            }
-                                            <li><hr class="dropdown-divider"></li>
-                                            <li><a class="dropdown-item text-danger" href="#" onclick="confirmDeleteUser(@user.UserId, '@user.FirstName @user.LastName')"><i class="fas fa-trash me-1"></i>Delete User</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    }
-                    else
-                    {
-                        <div class="text-center text-muted py-3">
-                            <i class="fas fa-users fa-2x mb-2"></i>
-                            <p>No active users found</p>
-                        </div>
-                    }
-                </div>
-            </div>
-
-            <!-- Admin Quick Actions -->
-            <div class="card shadow-sm">
-                <div class="card-header bg-warning text-white">
-                    <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Admin Actions</h5>
-                </div>
-                <div class="card-body">
-                    <div class="d-grid gap-2">
-                        <a href="/User" class="btn btn-primary">
-                            <i class="fas fa-users me-2"></i>Manage Users
-                        </a>
-                        <a href="/Role" class="btn btn-info">
-                            <i class="fas fa-user-shield me-2"></i>Manage Roles
-                        </a>
-                        <a href="/Admin/Settings" class="btn btn-warning">
-                            <i class="fas fa-cog me-2"></i>System Settings
-                        </a>
-                        <a href="/Admin/Backup" class="btn btn-success">
-                            <i class="fas fa-database me-2"></i>Backup System
-                        </a>
-                        <a href="/Admin/Logs" class="btn btn-secondary">
-                            <i class="fas fa-file-alt me-2"></i>View Logs
-                        </a>
-                        <a href="/Admin/Security" class="btn btn-danger">
-                            <i class="fas fa-shield-alt me-2"></i>Security Center
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- System Alerts & Security -->
-    <div class="row mt-4">
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-warning text-white">
-                    <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>System Alerts</h5>
-                </div>
-                <div class="card-body">
-                    <div class="alert alert-warning d-flex align-items-center" role="alert">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        <div>
-                            <strong>Memory Usage Alert:</strong> System memory usage is approaching 75%. Consider reviewing running processes.
-                        </div>
-                    </div>
-                    <div class="alert alert-info d-flex align-items-center" role="alert">
-                        <i class="fas fa-info-circle me-2"></i>
-                        <div>
-                            <strong>Backup Scheduled:</strong> Automatic system backup scheduled for tonight at 2:00 AM.
-                        </div>
-                    </div>
-                    <div class="alert alert-success d-flex align-items-center" role="alert">
-                        <i class="fas fa-check-circle me-2"></i>
-                        <div>
-                            <strong>Security Update:</strong> All security patches have been applied successfully.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-header bg-danger text-white">
-                    <h5 class="mb-0"><i class="fas fa-shield-alt me-2"></i>Security Status</h5>
-                </div>
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span>Firewall Status</span>
-                        <span class="badge bg-success">Active</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span>SSL Certificate</span>
-                        <span class="badge bg-success">Valid</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span>Failed Login Attempts</span>
-                        <span class="badge bg-warning">3 today</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span>Last Security Scan</span>
-                        <span class="badge bg-info">2 hours ago</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- User Approval Modal -->
-<div class="modal fade" id="approvalModal" tabindex="-1" aria-labelledby="approvalModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="approvalModalLabel">Approve User</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to approve <strong id="userName"></strong> as a <strong id="userRole"></strong>?</p>
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle me-2"></i>
-                    Once approved, the user will be able to access their role-specific dashboard and system features.
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-success" id="confirmApproval">
-                    <i class="fas fa-check me-2"></i>Approve User
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-let currentUserId = 0;
-let currentRole = '';
-
-function approveUser(userId, role) {
-    currentUserId = userId;
-    currentRole = role;
-    
-    // Update modal content
-    document.getElementById('userName').textContent = getUserName(userId);
-    document.getElementById('userRole').textContent = role;
-    
-    // Show modal
-    const modal = new bootstrap.Modal(document.getElementById('approvalModal'));
-    modal.show();
-}
-
-function getUserName(userId) {
-    // Get actual user data from model
-    @if (Model.PendingUsers != null)
-    {
-        <text>const pendingUsers = @Html.Raw(Json.Serialize(Model.PendingUsers.Select(u => new { Id = u.UserId, Name = $"{u.FirstName} {u.LastName}" })));</text>
-    }
-    else
-    {
-        <text>const pendingUsers = [];</text>
-    }
-    const user = pendingUsers.find(u => u.Id === userId);
-    return user ? user.Name : 'Unknown User';
-}
-
-function rejectUser(userId) {
-    if (confirm('Are you sure you want to reject this user registration?')) {
-        // In real app, make AJAX call to reject user
-        fetch('/Admin/RejectUser', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-            },
-            body: JSON.stringify({ userId: userId })
-        })
-        .then(response => {
-            if (response.ok) {
-                location.reload(); // Refresh to update UI
-            } else {
-                alert('Error rejecting user');
-            }
-        });
-    }
-}
-
-// Handle approval confirmation
-document.getElementById('confirmApproval').addEventListener('click', function() {
-    // In real app, make AJAX call to approve user with role
-    fetch('/Admin/ApproveUserJson', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-        },
-        body: JSON.stringify({ 
-            userId: currentUserId, 
-            role: currentRole 
-        })
-    })
-    .then(response => {
-        if (response.ok) {
-            // Hide modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('approvalModal'));
-            modal.hide();
-            
-            // Show success message
-            const alertDiv = document.createElement('div');
-            alertDiv.className = 'alert alert-success alert-dismissible fade show';
-            alertDiv.innerHTML = `
-                <i class="fas fa-check-circle me-2"></i>
-                User approved successfully as ${currentRole}!
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-            document.querySelector('.container-fluid').prepend(alertDiv);
-            
-            // Refresh page after 2 seconds
-            setTimeout(() => location.reload(), 2000);
-        } else {
-            alert('Error approving user');
-        }
-    });
-});
-
-function toggleUserStatus(userId, enable) {
-    const action = enable ? 'enable' : 'disable';
-    if (confirm(`Are you sure you want to ${action} this user?`)) {
-        // In real app, make AJAX call to toggle user status
-        fetch('/User/ToggleStatus', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-            },
-            body: JSON.stringify({ userId: userId, enable: enable })
-        })
-        .then(response => {
-            if (response.ok) {
-                location.reload(); // Refresh to update UI
-            } else {
-                alert(`Error ${action}ing user`);
-            }
-        });
-    }
-}
-
-function confirmDeleteUser(userId, userName) {
-    if (confirm(`Are you sure you want to delete user "${userName}"? This action cannot be undone.`)) {
-        fetch('/User/SoftDelete', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-            },
-            body: JSON.stringify({ userId: userId })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Show success message
-                const alertDiv = document.createElement('div');
-                alertDiv.className = 'alert alert-success alert-dismissible fade show';
-                alertDiv.innerHTML = `
-                    <i class="fas fa-check-circle me-2"></i>
-                    ${data.message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                `;
-                document.querySelector('.container-fluid').prepend(alertDiv);
+        <!-- Main Content Grid -->
+        <div class="premium-grid premium-grid-2">
+            <!-- User Management -->
+            <div class="premium-card premium-card-elevated">
+                <h3 class="premium-section-title">
+                    <i class="fas fa-users-cog premium-icon accent"></i>
+                    User Management
+                </h3>
                 
-                // Refresh page after 2 seconds
-                setTimeout(() => location.reload(), 2000);
-            } else {
-                alert(data.message || 'Error deleting user');
-            }
-        })
-        .catch(error => {
-            alert('Error deleting user');
-            console.error('Error:', error);
-        });
-    }
-}
-</script>
+                @if (Model.AllUsers?.Any() == true)
+                {
+                    <div class="premium-list">
+                        @foreach (var user in Model.AllUsers.Take(6))
+                        {
+                            <div class="premium-list-item">
+                                <div class="d-flex align-items-center">
+                                    <div class="premium-avatar me-3" style="width: 40px; height: 40px; background: var(--premium-gradient-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">
+                                        @(user.FirstName?.Substring(0, 1))@(user.LastName?.Substring(0, 1))
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="mb-0">@user.FirstName @user.LastName</h6>
+                                                <small class="text-muted">@user.UserName</small>
+                                            </div>
+                                            <div class="text-end">
+                                                <div class="premium-badge @(user.IsApproved ? "success" : "warning")">
+                                                    @(user.IsApproved ? "Active" : "Pending")
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <a href="/User" class="premium-btn primary">
+                            <i class="fas fa-users"></i>
+                            Manage All Users
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No users found</p>
+                    </div>
+                }
+            </div>
+
+            <!-- System Overview -->
+            <div class="premium-card premium-card-elevated">
+                <h3 class="premium-section-title">
+                    <i class="fas fa-chart-line premium-icon accent"></i>
+                    System Overview
+                </h3>
+                
+                @if (Model.UsersByRole?.Any() == true)
+                {
+                    <div class="premium-list">
+                        @foreach (var roleGroup in Model.UsersByRole)
+                        {
+                            <div class="premium-list-item">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-0">@roleGroup.Key</h6>
+                                            <small class="text-muted">User Role</small>
+                                        </div>
+                                        <div class="premium-badge primary">
+                                            @roleGroup.Value users
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No role data available</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Secondary Content Grid -->
+        <div class="premium-grid premium-grid-2 mt-4">
+            <!-- Recent Projects -->
+            <div class="premium-card premium-card-accent">
+                <h3 class="premium-section-title">
+                    <i class="fas fa-project-diagram premium-icon accent"></i>
+                    Recent Projects
+                </h3>
+                
+                @if (Model.AllProjects?.Any() == true)
+                {
+                    <div class="premium-list">
+                        @foreach (var project in Model.AllProjects.Take(5))
+                        {
+                            <div class="premium-list-item">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <h6 class="premium-card-title mb-0">@project.ProjectName</h6>
+                                            <small class="text-muted">@project.Description</small>
+                                        </div>
+                                        <span class="premium-badge @(project.Status == "Active" ? "success" : "warning")">
+                                            @project.Status
+                                        </span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">
+                                            Started: @project.StartDate?.ToString("MMM dd, yyyy")
+                                        </small>
+                                        @if (project.Team != null)
+                                        {
+                                            <small class="text-muted">
+                                                Team: @project.Team.TeamName
+                                            </small>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <i class="fas fa-project-diagram fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No projects found</p>
+                    </div>
+                }
+            </div>
+
+            <!-- Pending User Approvals -->
+            <div class="premium-card premium-card-warning">
+                <h3 class="premium-section-title">
+                    <i class="fas fa-user-check premium-icon" style="color: var(--premium-accent-warning);"></i>
+                    Pending Approvals
+                </h3>
+                
+                @if (Model.PendingUsers?.Any() == true)
+                {
+                    <div class="premium-list">
+                        @foreach (var user in Model.PendingUsers.Take(5))
+                        {
+                            <div class="premium-list-item">
+                                <div class="d-flex align-items-center">
+                                    <div class="premium-avatar me-3" style="width: 32px; height: 32px; background: var(--premium-gradient-warning); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.75rem;">
+                                        @(user.FirstName?.Substring(0, 1))@(user.LastName?.Substring(0, 1))
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="mb-0" style="font-size: 0.9rem;">@user.FirstName @user.LastName</h6>
+                                                <small class="text-muted">@user.UserName</small>
+                                            </div>
+                                            <div class="premium-badge warning">
+                                                Pending
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <a href="/Account/ApproveUsers" class="premium-btn primary">
+                            <i class="fas fa-user-check"></i>
+                            Review All Approvals
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <i class="fas fa-check-circle fa-3x" style="color: var(--premium-accent-success);" class="mb-3"></i>
+                        <p class="text-muted">All users approved!</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- System Statistics -->
+        <div class="premium-card premium-card-elevated mt-4">
+            <h3 class="premium-section-title">
+                <i class="fas fa-chart-bar premium-icon accent"></i>
+                System Analytics
+            </h3>
+            
+            <div class="premium-grid premium-grid-4">
+                <div class="text-center p-3">
+                    <div class="premium-stat-value" style="font-size: 2rem; color: var(--premium-accent-primary);">
+                        @(Model.AllTasks?.Count(t => t.Status == OmintakProduction.Models.TaskStatus.Completed) ?? 0)
+                    </div>
+                    <div class="premium-stat-label">Completed Tasks</div>
+                </div>
+                <div class="text-center p-3">
+                    <div class="premium-stat-value" style="font-size: 2rem; color: var(--premium-accent-warning);">
+                        @(Model.AllTasks?.Count(t => t.Status == OmintakProduction.Models.TaskStatus.InProgress) ?? 0)
+                    </div>
+                    <div class="premium-stat-label">In Progress</div>
+                </div>
+                <div class="text-center p-3">
+                    <div class="premium-stat-value" style="font-size: 2rem; color: var(--premium-accent-success);">
+                        @(Model.AllProjects?.Count(p => p.Status == "Active") ?? 0)
+                    </div>
+                    <div class="premium-stat-label">Active Projects</div>
+                </div>
+                <div class="text-center p-3">
+                    <div class="premium-stat-value" style="font-size: 2rem; color: var(--premium-accent-danger);">
+                        @(Model.AllTickets?.Count ?? 0)
+                    </div>
+                    <div class="premium-stat-label">Support Tickets</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Panel -->
+        <div class="premium-card premium-card-elevated mt-4">
+            <h3 class="premium-section-title">
+                <i class="fas fa-bolt premium-icon accent"></i>
+                Administrative Actions
+            </h3>
+            
+            <div class="premium-grid premium-grid-4">
+                <a href="/Account/ApproveUsers" class="premium-btn primary text-decoration-none">
+                    <i class="fas fa-user-check"></i>
+                    Approve Users
+                </a>
+                <a href="/User" class="premium-btn primary text-decoration-none">
+                    <i class="fas fa-users-cog"></i>
+                    Manage Users
+                </a>
+                <a href="/Role" class="premium-btn primary text-decoration-none">
+                    <i class="fas fa-user-tag"></i>
+                    Manage Roles
+                </a>
+                <a href="/ProjectReport" class="premium-btn primary text-decoration-none">
+                    <i class="fas fa-chart-bar"></i>
+                    System Reports
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

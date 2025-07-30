@@ -6,38 +6,42 @@ namespace OmintakProduction.Models
     {
         public static readonly Dictionary<string, List<string>> Permissions = new()
         {
-            // System Admin: full access
+            // System Admin: full access with system-wide dashboard
             ["SystemAdmin"] = new List<string>
             {
-                "ViewDashboard", "ManageUsers", "ManageTasks", "ManageProjects", "ManageReports", "ViewLogs", "ManageSettings", "ViewAllData"
+                "ViewAdminDashboard", "ManageUsers", "ManageTasks", "ManageProjects", "ManageReports", 
+                "ViewLogs", "ManageSettings", "ViewAllData", "ManageRoles", "ViewSystemMetrics",
+                "ConfigureSystem", "ManageAllTeams", "ViewSystemStats"
             },
-            // Project Lead: manage team, tasks, and reports
-            ["ProjectLead"] = new List<string>
+            // Team Lead: project and team management focused dashboard
+            ["TeamLead"] = new List<string>
             {
-                "ViewDashboard", "AssignTasks", "ViewTeamWorkload", "TrackProgress", "GenerateReports", "ManageTasks", "ViewAllData"
+                "ViewTeamLeadDashboard", "ManageTeamProjects", "AssignProjectToTeam", "ViewTeamWorkload", 
+                "TrackTeamProgress", "GenerateTeamReports", "ManageTeamTasks", "ViewTeamData", 
+                "AssignTickets", "ManageTickets", "PutTasksOnHold", "ManageProjectTimelines",
+                "AssignTasksToTeam", "ViewTeamPerformance", "ManageTeamMembers", "SetTaskPriorities",
+                "ViewProjectMetrics"
             },
-            // Developer: work on assigned tasks
+            // Developer: task-focused dashboard with project visibility
             ["Developer"] = new List<string>
             {
-                "ViewDashboard", "ViewAssignedTasks", "UpdateTaskStatus", "AddTaskComment", "ViewTaskDependencies", "ReceiveNotifications"
+                "ViewDeveloperDashboard", "ViewAssignedTasks", "UpdateTaskStatus", "AddTaskComment", 
+                "ViewTaskDependencies", "ReceiveNotifications", "ViewTeamProjects", "ReportTaskBlocks",
+                "ViewProjectTimeline", "UpdateWorkProgress", "ViewTeamTasks", "CollaborateOnTasks",
+                "ViewPersonalMetrics"
             },
-            ["Engineer"] = new List<string>
-            {
-                "ViewDashboard", "ViewAssignedTasks", "UpdateTaskStatus", "AddTaskComment", "ViewTaskDependencies", "ReceiveNotifications"
-            },
-            // Tester: test tasks and report bugs
+            // Tester: testing and quality focused dashboard
             ["Tester"] = new List<string>
             {
-                "ViewDashboard", "ViewCompletedTasks", "CreateBugReport", "LinkBugToTask", "VerifyBugFix"
+                "ViewTesterDashboard", "ViewTestTasks", "CreateBugReport", "LinkBugToTask", "VerifyBugFix",
+                "ViewTestCases", "UpdateTestStatus", "ViewProjectQuality", "TrackBugStatus",
+                "ViewTestMetrics", "AssignBugPriority", "ViewTestProgress"
             },
-            ["SoftwareTester"] = new List<string>
-            {
-                "ViewDashboard", "ViewCompletedTasks", "CreateBugReport", "LinkBugToTask", "VerifyBugFix"
-            },
-            // Stakeholder: view only
+            // Stakeholder: high-level project overview dashboard
             ["Stakeholder"] = new List<string>
             {
-                "ViewDashboard", "ViewReports", "ViewProjectProgress"
+                "ViewStakeholderDashboard", "ViewProjectReports", "ViewProjectProgress", "ViewMilestones",
+                "ViewProjectMetrics", "AccessProjectTimeline", "ViewHighLevelStatus", "ViewProjectSummary"
             }
         };
 

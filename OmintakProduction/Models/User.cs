@@ -21,7 +21,9 @@
         public DateTime? DeletedAt { get; set; }
         public int? DeletedByUserId { get; set; }
         
+        // Navigation properties
         public Team? Team { get; set; }
+        public Role? Role { get; set; }
         public List<Ticket> Tickets { get; set; } = new List<Ticket>();
     }
 }

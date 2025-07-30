@@ -58,7 +58,7 @@ namespace OmintakProduction.Controllers
         }
 
         // GET: Task/Manage/{ticketId}
-        [Authorize(Roles = "ProjectLead,SystemAdmin")]
+        [Authorize(Roles = "TeamLead,SystemAdmin")]
         public async Task<IActionResult> Manage(int ticketId)
         {
             var ticket = await _context.Ticket.Include(t => t.Project).FirstOrDefaultAsync(t => t.Id == ticketId);
@@ -76,7 +76,7 @@ namespace OmintakProduction.Controllers
         }
 
         // GET: Task
-        [Authorize(Roles = "Developer,Engineer,ProjectLead,Tester,SoftwareTester,SystemAdmin")]
+        [Authorize(Roles = "Developer,Tester,TeamLead,SystemAdmin,Stakeholder")]
         public async Task<IActionResult> Index()
         {
             var tasks = await _context.Tasks
@@ -91,7 +91,7 @@ namespace OmintakProduction.Controllers
         }
 
         // GET: Task/Details/5
-        [Authorize(Roles = "Developer,Engineer,ProjectLead,Tester,SoftwareTester,SystemAdmin")]
+        [Authorize(Roles = "Developer,Tester,TeamLead,SystemAdmin,Stakeholder")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -114,7 +114,7 @@ namespace OmintakProduction.Controllers
         }
 
         // GET: Task/Create
-        [Authorize(Roles = "ProjectLead,SystemAdmin")]
+        [Authorize(Roles = "TeamLead,SystemAdmin")]
         public IActionResult Create(int? ticketId)
         {
             // Permission enforcement: Only allow if user has ManageTasks
@@ -149,8 +149,8 @@ namespace OmintakProduction.Controllers
         // POST: Task/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "ProjectLead,SystemAdmin")]
-        public async System.Threading.Tasks.Task<IActionResult> Create(OmintakProduction.Models.Task task, int ProjectId, int[] AssignedUserIds, int? ticketId)
+        [Authorize(Roles = "Developer,Engineer,TeamLead,Tester,SoftwareTester,SystemAdmin")]
+        public async Task<IActionResult> Create(OmintakProduction.Models.Task task, int[] AssignedUserIds, int? ticketId = null, int ProjectId = 0)
         {
             // Permission enforcement: Only allow if user has ManageTasks
             var userRole = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
@@ -248,7 +248,7 @@ namespace OmintakProduction.Controllers
         }
 
         // GET: Task/Edit/5
-        [Authorize(Roles = "Developer,Engineer,ProjectLead,SystemAdmin")]
+        [Authorize(Roles = "Developer,Tester,TeamLead,SystemAdmin,Stakeholder")]
         public async Task<IActionResult> Edit(int? id, int? ticketId)
         {
             if (id == null)
@@ -270,7 +270,7 @@ namespace OmintakProduction.Controllers
         // POST: Task/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Developer,Engineer,ProjectLead,SystemAdmin")]
+        [Authorize(Roles = "Developer,Tester,TeamLead,SystemAdmin,Stakeholder")]
         public async System.Threading.Tasks.Task<IActionResult> Edit(OmintakProduction.Models.Task model, int[] AssignedUserIds)
         {
             // ENFORCE: Task must always have an assignee
@@ -346,7 +346,7 @@ namespace OmintakProduction.Controllers
         }
 
         // GET: Task/Delete/5
-        [Authorize(Roles = "ProjectLead,SystemAdmin")]
+        [Authorize(Roles = "TeamLead,SystemAdmin")]
         public async Task<IActionResult> Delete(int? id, int? ticketId)
         {
             if (id == null)
@@ -371,7 +371,7 @@ namespace OmintakProduction.Controllers
         // POST: Task/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "ProjectLead,SystemAdmin")]
+        [Authorize(Roles = "TeamLead,SystemAdmin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var task = await _context.Tasks.FindAsync(id);

@@ -1,0 +1,63 @@
+/* User form specific styles */
+.form {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: var(--surface-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+}
+
+.form-title {
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+}
+
+.divider {
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    margin: 1.5rem 0;
+}
+
+.form-field {
+    margin-bottom: 1.5rem;
+}
+
+.field-container {
+    margin-top: 0.5rem;
+}
+
+.textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.field-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-start;
+    margin-top: 2rem;
+}
+
+/* Error states */
+.error-text {
+    color: var(--error-color);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .form {
+        margin: 1rem;
+        padding: 1rem;
+    }
+
+    .field-actions {
+        flex-direction: column;
+    }
+
+    .field-actions .button {
+        width: 100%;
+    }
+}

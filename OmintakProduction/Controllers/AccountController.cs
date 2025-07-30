@@ -222,7 +222,7 @@ namespace OmintakProduction.Controllers
             return role?.RoleName switch
             {
                 "SystemAdmin" => "System Administrator",
-                "ProjectLead" => "Project Lead",
+                // "ProjectLead" removed
                 "Developer" => "Developer",
                 "Tester" => "Tester",
                 "DepartmentHead" => "Department Head",

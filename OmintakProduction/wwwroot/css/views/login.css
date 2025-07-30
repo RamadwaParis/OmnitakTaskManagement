@@ -1,0 +1,43 @@
+﻿body {
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+.login-wrapper {
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(135deg, #667eea 0%, #272847 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.login-card {
+    max-width: 400px;
+    width: 90%;
+    border-radius: 15px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.fa-envelope, .fa-lock, .btn .fas.fa-sign-in-alt {
+    margin-right: 8px;
+}
+
+.d-grid {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+    .d-grid .btn {
+        min-width: 200px; /* Optional: gives the button a minimum width */
+        background: linear-gradient(135deg, #667eea 0%, #272847 100%);
+    }

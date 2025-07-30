@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using OmintakProduction.Data;
 using OmintakProduction.Models;
 using Task = System.Threading.Tasks.Task;
+using OmintakProduction.Services;
 
 namespace OmintakProduction.Controllers
 {
@@ -13,9 +14,29 @@ namespace OmintakProduction.Controllers
     {
         private readonly AppDbContext _context;
 
-        public BugReportController(AppDbContext context)
+        private readonly PdfGeneratorService _pdfGenerator;
+
+        public BugReportController(AppDbContext context, PdfGeneratorService pdfGenerator)
         {
             _context = context;
+            _pdfGenerator = pdfGenerator;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DownloadBugReport()
+        {
+            if (!User.IsInRole("Stakeholder") && !User.IsInRole("Tester"))
+            {
+                return Forbid();
+            }
+
+            var bugReports = await _context.BugReports
+                .Include(b => b.ReportedByUser)
+                .Include(b => b.AssignedToUser)
+                .ToListAsync();
+
+            var pdfBytes = _pdfGenerator.GenerateBugReportPdf(bugReports);
+            return File(pdfBytes, "application/pdf", $"BugReport_{DateTime.Now:yyyyMMdd}.pdf");
         }
 
         public async Task<IActionResult> Index()

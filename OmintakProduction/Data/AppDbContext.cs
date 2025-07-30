@@ -45,7 +45,6 @@ namespace OmintakProduction.Data
                 .HasForeignKey(t => t.TicketId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-
             // Configure many-to-many relationship for AssignedUsers in Task
             modelBuilder.Entity<Models.Task>()
                 .HasMany(t => t.AssignedUsers)
@@ -58,25 +57,12 @@ namespace OmintakProduction.Data
                 .HasForeignKey(t => t.CreatedByUserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            // Cascade delete: Deleting a project deletes its tickets
-            modelBuilder.Entity<Ticket>()
-                .HasOne(t => t.Project)
-                .WithMany(p => p.Tickets)
-                .HasForeignKey(t => t.ProjectId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // Cascade delete: Deleting a ticket deletes its tasks
-            modelBuilder.Entity<Models.Task>()
-                .HasOne(t => t.Ticket)
-                .WithMany(ti => ti.Tasks)
-                .HasForeignKey(t => t.TicketId)
-                .OnDelete(DeleteBehavior.Cascade);
-
+            // TaskHistory configuration - use NoAction to prevent cascade cycles
             modelBuilder.Entity<TaskHistory>()
                 .HasOne<Models.Task>()
                 .WithMany()
                 .HasForeignKey(th => th.TaskId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<TaskHistory>()
                 .HasOne<User>()
@@ -116,32 +102,32 @@ namespace OmintakProduction.Data
 
             modelBuilder.Entity<User>().HasData(
                 // System Administrator - Password: Admin@123 - Only user remaining
-                new User { 
-                    UserId = 1, 
-                    RoleId = 1, 
-                    UserName = "Tee", 
-                    Email = "uthandocibi@gmail.com", 
-                    FirstName = "Thando", 
-                    LastName = "Cibi", 
+                new User {
+                    UserId = 1,
+                    RoleId = 1,
+                    UserName = "Tee",
+                    Email = "uthandocibi@gmail.com",
+                    FirstName = "Thando",
+                    LastName = "Cibi",
                     Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi", // password
-                    isActive = true, 
-                    IsApproved = true, 
+                    isActive = true,
+                    IsApproved = true,
                     CreatedDate = new DateOnly(2025, 01, 01),
-                    IsDeleted = false 
+                    IsDeleted = false
                 }
             );
 
             modelBuilder.Entity<Ticket>().HasData(
                 new Ticket
                 {
-                Id = 1,
-                Title = "Sample Ticket",
-                Description = "This is a sample ticket description.",
-                Status = "ToDo",
-                DueDate = new DateOnly(2025, 06, 26),
-                CreatedAt = new DateOnly(2025, 06, 26),
-                CompletedAt = new DateOnly(2025, 06, 26),
-            });
+                    Id = 1,
+                    Title = "Sample Ticket",
+                    Description = "This is a sample ticket description.",
+                    Status = "ToDo",
+                    DueDate = new DateOnly(2025, 06, 26),
+                    CreatedAt = new DateOnly(2025, 06, 26),
+                    CompletedAt = new DateOnly(2025, 06, 26),
+                });
 
             modelBuilder.Entity<Ticket>().HasData(
                new Ticket
@@ -155,22 +141,22 @@ namespace OmintakProduction.Data
                    CompletedAt = new DateOnly(2025, 06, 26),
                });
 
-                    modelBuilder.Entity<Ticket>().HasData(
-           new Ticket
-           {
-               Id = 3,
-               Title = "Sample Ticket",
-               Description = "This is a sample ticket description.",
-               Status = "In_Review",
-               DueDate = new DateOnly(2025, 06, 26),
-               CreatedAt = new DateOnly(2025, 06, 26),
-               CompletedAt = new DateOnly(2025, 06, 26),
-           });
+            modelBuilder.Entity<Ticket>().HasData(
+   new Ticket
+   {
+       Id = 3,
+       Title = "Sample Ticket",
+       Description = "This is a sample ticket description.",
+       Status = "In_Review",
+       DueDate = new DateOnly(2025, 06, 26),
+       CreatedAt = new DateOnly(2025, 06, 26),
+       CompletedAt = new DateOnly(2025, 06, 26),
+   });
 
             modelBuilder.Entity<Ticket>().HasData(
            new Ticket
            {
-               Id = 4,  
+               Id = 4,
                Title = "Sample Ticket",
                Description = "This is a sample ticket description.",
                Status = "Done",
@@ -187,18 +173,15 @@ namespace OmintakProduction.Data
                Description = "This is a sample ticket description.",
                Status = "Done",
                DueDate = new DateOnly(2025, 06, 26),
-               
+
            });
 
             modelBuilder.Entity<Role>().HasData(
                 new Role { RoleId = 1, RoleName = "SystemAdmin" },
-                new Role { RoleId = 2, RoleName = "Engineer" },
-                new Role { RoleId = 3, RoleName = "Software Tester" },
-                new Role { RoleId = 4, RoleName = "ProjectLead" },
-                new Role { RoleId = 5, RoleName = "Developer" },
-                new Role { RoleId = 6, RoleName = "Tester" },
-                new Role { RoleId = 7, RoleName = "Stakeholder" },
-                new Role { RoleId = 8, RoleName = "TeamLead" }
+                new Role { RoleId = 2, RoleName = "Developer" },
+                new Role { RoleId = 3, RoleName = "Tester" },
+                new Role { RoleId = 4, RoleName = "Stakeholder" },
+                new Role { RoleId = 5, RoleName = "TeamLead" }
             );
 
             modelBuilder.Entity<Team>()
@@ -211,6 +194,14 @@ namespace OmintakProduction.Data
                 new Team { TeamId = 2, TeamName = "404Found" },
                 new Team { TeamId = 3, TeamName = "Genty" }
             );
+
+            modelBuilder.Entity<Team>()
+                .HasOne(t => t.TeamLead) // Navigation property in Team
+                .WithMany() // No inverse navigation in User
+                .HasForeignKey(t => t.TeamLeadId) // Foreign key in Team
+                .OnDelete(DeleteBehavior.Restrict); // Optional: Prevent cascading deletes
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

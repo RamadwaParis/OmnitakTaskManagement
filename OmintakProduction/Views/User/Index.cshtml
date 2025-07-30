@@ -1,5 +1,5 @@
 @using System.Security.Claims;
-@model List<OmintakProduction.Models.User>;
+@model List<OmintakProduction.Models.User>
 @{
     ViewData["Title"] = "Team Members";
 }
@@ -70,9 +70,13 @@
                                                         var roleName = user.RoleId switch
                                                         {
                                                             1 => "System Admin",
-                                                            2 => "Project Lead",
-                                                            3 => "Developer",
-                                                            4 => "Tester",
+                                                            2 => "Developer", 
+                                                            3 => "Software Tester",
+                                                            4 => "Team Lead",
+                                                            5 => "Developer",
+                                                            6 => "Tester",
+                                                            7 => "Stakeholder",
+                                                            8 => "Team Lead",
                                                             _ => "Team Member"
                                                         };
                                                     }

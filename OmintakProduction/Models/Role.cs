@@ -1,10 +1,13 @@
 ﻿namespace OmintakProduction.Models
 {
-    enum RoleNames
+
+    public enum RoleNames
     {
-        SystemAdmin=1,
-        Engineer,
-        SoftwareTester
+        SystemAdmin = 1,
+        Developer = 2,
+        Tester = 3,
+        Stakeholder = 4,
+        TeamLead = 5
     }
 
     public class Role

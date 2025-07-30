@@ -1,76 +1,70 @@
-@* @model IEnumerable<OmintakProduction.Models.BugReport>
+@model IEnumerable<OmintakProduction.Models.BugReport>
 
 @{
     ViewData["Title"] = "Bug Reports";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="work-item-title"><i class="fas fa-bug text-danger me-2"></i>Bug Reports</h2>
-    <a asp-action="Create" class="btn btn-primary">
-        <i class="fas fa-plus me-2"></i>Report New Bug
-    </a>
-</div>
+<link rel="stylesheet" href="~/css/views/bug-report.css" />
 
-<div class="row mb-3">
-    <div class="col-md-3">
-        <div class="work-item-card text-center">
-            <div class="work-item-body">
-                <h5 class="work-item-title text-danger">@Model.Count(b => b.Status == OmintakProduction.Models.BugStatus.Open)</h5>
-                <p class="work-item-description">Open Bugs</p>
-            </div>
+<div class="bug-page">
+    <div class="bug-header">
+        <h2 class="bug-title">
+            <i class="fas fa-bug"></i>
+            Bug Reports
+        </h2>
+        <div class="button-group">
+            <a asp-action="Create" class="button">
+                <i class="fas fa-plus"></i>
+                Report New Bug
+            </a>
+            @if (User.IsInRole("Stakeholder") || User.IsInRole("Tester"))
+            {
+                <a asp-action="DownloadBugReport" class="button btn-secondary">
+                    <i class="fas fa-download"></i>
+                    Download Report
+                </a>
+            }
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="work-item-card text-center">
-            <div class="work-item-body">
-                <h5 class="work-item-title text-warning">@Model.Count(b => b.Status == OmintakProduction.Models.BugStatus.InProgress)</h5>
-                <p class="work-item-description">In Progress</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="work-item-card text-center">
-            <div class="work-item-body">
-                <h5 class="work-item-title text-success">@Model.Count(b => b.Status == OmintakProduction.Models.BugStatus.Resolved)</h5>
-                <p class="work-item-description">Resolved</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="work-item-card text-center">
-            <div class="work-item-body">
-                <h5 class="work-item-title text-primary">@Model.Count(b => b.Severity == OmintakProduction.Models.BugSeverity.Critical || b.Severity == OmintakProduction.Models.BugSeverity.Blocker)</h5>
-                <p class="work-item-description">Critical/Blocker</p>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="work-item-card">
-    <div class="work-item-header">
-        <div class="row align-items-center">
-            <div class="col">
-                <h5 class="mb-0">All Bug Reports</h5>
-            </div>
-            <div class="col-auto">
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="filterBugs('all')">All</button>
-                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="filterBugs('open')">Open</button>
-                    <button type="button" class="btn btn-outline-warning btn-sm" onclick="filterBugs('progress')">In Progress</button>
-                    <button type="button" class="btn btn-outline-success btn-sm" onclick="filterBugs('resolved')">Resolved</button>
+    <div class="bug-stats">
+        <div class="stat-card">
+            <div class="stat-value danger">@Model.Count(b => b.Status == OmintakProduction.Models.BugStatus.Open)</div>
+            <div class="stat-label">Open Bugs</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value warning">@Model.Count(b => b.Status == OmintakProduction.Models.BugStatus.InProgress)</div>
+            <div class="stat-label">In Progress</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value success">@Model.Count(b => b.Status == OmintakProduction.Models.BugStatus.Resolved)</div>
+            <div class="stat-label">Resolved</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value info">@Model.Count(b => b.Severity == OmintakProduction.Models.BugSeverity.Critical || b.Severity == OmintakProduction.Models.BugSeverity.Blocker)</div>
+            <div class="stat-label">Critical/Blocker</div>
+        </div>
+    </div>
+
+    <div class="bug-list">
+        <div class="bug-list-header">
+            <h3>Bug Report List</h3>
+            <div class="bug-filters">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" placeholder="Search bugs...">
                 </div>
             </div>
         </div>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover" id="bugReportsTable">
+
+        <div class="bug-table-container">
+            <table class="bug-table">
                 <thead>
                     <tr>
-                        <th>Title</th>
-                        <th>Status</th>
-                        <th>Severity</th>
-                        <th>Project</th>
+                        <th>@Html.DisplayNameFor(model => model.Title)</th>
+                        <th>@Html.DisplayNameFor(model => model.Description)</th>
+                        <th>@Html.DisplayNameFor(model => model.Status)</th>
+                        <th>@Html.DisplayNameFor(model => model.Severity)</th>
                         <th>Reported By</th>
                         <th>Assigned To</th>
                         <th>Created</th>
@@ -80,53 +74,31 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr data-status="@item.Status.ToString().ToLower()">
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Description)</td>
                             <td>
-                                <strong>@Html.DisplayFor(modelItem => item.Title)</strong>
-                                <br />
-                                <small class="text-muted">@Html.DisplayFor(modelItem => item.Description)</small>
+                                <div class="status status-@item.Status.ToString().ToLower()">
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </div>
                             </td>
                             <td>
-                                @{
-                                    var statusClass = item.Status switch
-                                    {
-                                        OmintakProduction.Models.BugStatus.Open => "bg-danger",
-                                        OmintakProduction.Models.BugStatus.InProgress => "bg-warning",
-                                        OmintakProduction.Models.BugStatus.Testing => "bg-info",
-                                        OmintakProduction.Models.BugStatus.Resolved => "bg-success",
-                                        OmintakProduction.Models.BugStatus.Closed => "bg-secondary",
-                                        _ => "bg-secondary"
-                                    };
-                                }
-                                <span class="badge @statusClass">@item.Status</span>
+                                <div class="severity severity-@item.Severity.ToString().ToLower()">
+                                    @Html.DisplayFor(modelItem => item.Severity)
+                                </div>
                             </td>
-                            <td>
-                                @{
-                                    var severityClass = item.Severity switch
-                                    {
-                                        OmintakProduction.Models.BugSeverity.Low => "bg-light text-dark",
-                                        OmintakProduction.Models.BugSeverity.Medium => "bg-warning",
-                                        OmintakProduction.Models.BugSeverity.High => "bg-orange",
-                                        OmintakProduction.Models.BugSeverity.Critical => "bg-danger",
-                                        OmintakProduction.Models.BugSeverity.Blocker => "bg-dark",
-                                        _ => "bg-secondary"
-                                    };
-                                }
-                                <span class="badge @severityClass">@item.Severity</span>
-                            </td>
-                            <td>@Html.DisplayFor(modelItem => item.Project!.ProjectName)</td>
-                            <td>@Html.DisplayFor(modelItem => item.ReportedByUser!.UserName)</td>
-                            <td>@Html.DisplayFor(modelItem => item.AssignedToUser!.UserName)</td>
+                            <td>@(item.ReportedByUser?.UserName ?? "N/A")</td>
+                            <td>@(item.AssignedToUser?.UserName ?? "Unassigned")</td>
                             <td>@item.CreatedAt.ToString("MMM dd, yyyy")</td>
                             <td>
-                                <div class="btn-group btn-group-sm" role="group">
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary" title="Details">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-secondary" title="Edit">
+                                <div class="button-group">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="button">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" title="Delete">
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="button">
+                                        <i class="fas fa-info-circle"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="button">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </div>
@@ -139,6 +111,29 @@
     </div>
 </div>
 
+@functions {
+    private string GetStatusClass(OmintakProduction.Models.BugStatus status)
+    {
+        return status switch
+        {
+            OmintakProduction.Models.BugStatus.Open => "status-danger",
+            OmintakProduction.Models.BugStatus.InProgress => "status-warning",
+            OmintakProduction.Models.BugStatus.Resolved => "status-success",
+            _ => "status-secondary"
+        };
+    }
+
+    private string GetSeverityClass(OmintakProduction.Models.BugSeverity severity)
+    {
+        return severity switch
+        {
+            OmintakProduction.Models.BugSeverity.High => "severity-high",
+            OmintakProduction.Models.BugSeverity.Medium => "severity-medium",
+            OmintakProduction.Models.BugSeverity.Low => "severity-low",
+            _ => "severity-default"
+        };
+    }
+}
 <script>
     function filterBugs(status) {
         const rows = document.querySelectorAll('#bugReportsTable tbody tr');
@@ -173,4 +168,3 @@
         color: white;
     }
 </style>
- *@

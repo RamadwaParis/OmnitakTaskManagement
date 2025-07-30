@@ -14,7 +14,7 @@ namespace OmintakProduction.Controllers
     [Route("api/[controller]")]
     [Produces("application/json")]
     // Role-based permissions for Task Comments
-    [Authorize(Roles = "Developer,Engineer,Tester,SoftwareTester,ProjectLead,SystemAdmin")]
+    [Authorize(Roles = "Developer,Tester,TeamLead,SystemAdmin,Stakeholder")]
     public class TaskCommentApiController : ControllerBase
     {
         private readonly AppDbContext _context;

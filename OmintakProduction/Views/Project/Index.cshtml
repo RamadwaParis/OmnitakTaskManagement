@@ -4,50 +4,162 @@
     ViewData["Title"] = "Projects";
     var phases = new[] { "Active", "OnHold", "Done", "Planning" };
 }
-<style>
-    /* .sticky-header {
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    } */
 
-    .kanban-board {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 2rem;
-        padding-bottom: 1rem;
-        width: 100%;
-        overflow-x: visible;
-    }
+<div class="project-page">
+    <div class="project-header">
+        <h2 class="project-title">
+            <i class="fas fa-project-diagram"></i>
+            Projects Overview
+        </h2>
+        <div class="project-actions">
+            @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+            {
+                <a asp-action="Create" class="button button-primary">
+                    <i class="fas fa-plus"></i>
+                    New Project
+                </a>
+            }
+            <button type="button" class="button button-secondary" id="viewToggle">
+                <i class="fas fa-th-list"></i>
+                Toggle View
+            </button>
+        </div>
+    </div>
 
-    .kanban-column {
-        .kanban-board
+    <div class="project-stats">
+        <div class="stat-card">
+            <div class="stat-value">@Model.Count(p => p.Status == "Active")</div>
+            <div class="stat-label">Active Projects</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">@Model.Count(p => p.Status == "Planning")</div>
+            <div class="stat-label">In Planning</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">@Model.Count(p => p.Status == "OnHold")</div>
+            <div class="stat-label">On Hold</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">@Model.Count(p => p.Status == "Done")</div>
+            <div class="stat-label">Completed</div>
+        </div>
+    </div>
 
-    {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(250px, 1fr));
-        gap: 2rem;
-        padding-bottom: 1rem;
-        width: 100%;
-        overflow-x: visible;
-        align-items: start;
-    }
+    <div class="project-board">
+        @foreach (var phase in phases)
+        {
+            var projects = Model.Where(p => p.Status == phase);
+            <div class="project-column">
+                <div class="project-column-header">
+                    <h3 class="column-title">
+                        <i class="fas fa-@(phase.ToLower() switch {
+                            "active" => "play-circle",
+                            "onhold" => "pause-circle",
+                            "done" => "check-circle",
+                            "planning" => "clock",
+                            _ => "circle"
+                        })"></i>
+                        @phase
+                        <span class="column-count">@projects.Count()</span>
+                    </h3>
+                </div>
+                
+                @foreach (var project in projects)
+                {
+                    <div class="project-card">
+                        <div class="project-card-header">
+                            <h4 class="project-card-title">@project.ProjectName</h4>
+                            <span class="status status-@project.Status.ToLower()">@project.Status</span>
+                        </div>
+                        
+                        <div class="project-card-body">
+                            <p class="project-card-meta">
+                                <i class="fas fa-calendar"></i>
+                                Started: @project.StartDate?.ToString("MMM dd, yyyy")
+                            </p>
+                            
+                            @if (project.Tasks?.Any() == true)
+                            {
+                                var completedTasks = project.Tasks.Count(t => t.Status == OmintakProduction.Models.TaskStatus.Completed);
+                                var totalTasks = project.Tasks.Count;
+                                var progress = totalTasks > 0 ? (completedTasks * 100) / totalTasks : 0;
+                                
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: @progress%"></div>
+                                </div>
+                                <p class="project-card-meta">
+                                    <i class="fas fa-tasks"></i>
+                                    @completedTasks / @totalTasks tasks complete
+                                </p>
+                            }
 
-    .kanban-column {
-        /* background: linear-gradient(135deg, #4462B0 0%, #a78bfa 100%); */
-        border-radius: 18px;
-        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.18), 0 1.5px 8px 0 rgba(124, 58, 237, 0.10);
-        min-width: 250px;
-        padding: 1.5rem 1rem;
-        color: #fff;
-        display: flex;
-        flex-direction: column;
-        min-height: fit-content;
-        height: auto;
-    }
+                            @if (project.Team?.TeamMembers?.Any() == true)
+                            {
+                                <div class="team-members">
+                                    @foreach (var member in project.Team.TeamMembers.Take(3))
+                                    {
+                                        <div class="member-avatar" title="@member.UserName">
+                                            @(member.UserName?[0])
+                                        </div>
+                                    }
+                                    @if (project.Team.TeamMembers.Count > 3)
+                                    {
+                                        <div class="member-avatar">
+                                            +@(project.Team.TeamMembers.Count - 3)
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                        
+                        <div class="project-card-footer">
+                            <div class="button-group">
+                                <a asp-action="Details" asp-route-id="@project.ProjectId" class="button button-sm">View</a>
+                                @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@project.ProjectId" class="button button-sm button-secondary">Edit</a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
 
-    .kanban-column-title {
-        font-size: 1.2rem;
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const viewToggle = document.getElementById('viewToggle');
+            const projectBoard = document.querySelector('.project-board');
+            const viewPreference = localStorage.getItem('projectViewPreference') || 'grid';
+            
+            // Initialize view
+            setView(viewPreference);
+            
+            viewToggle.addEventListener('click', function() {
+                const currentView = projectBoard.classList.contains('list-view') ? 'grid' : 'list';
+                setView(currentView);
+                localStorage.setItem('projectViewPreference', currentView);
+            });
+            
+            function setView(viewType) {
+                if (viewType === 'list') {
+                    projectBoard.classList.add('list-view');
+                    viewToggle.querySelector('i').classList.remove('fa-th-list');
+                    viewToggle.querySelector('i').classList.add('fa-th');
+                } else {
+                    projectBoard.classList.remove('list-view');
+                    viewToggle.querySelector('i').classList.remove('fa-th');
+                    viewToggle.querySelector('i').classList.add('fa-th-list');
+                }
+            }
+        });
+    </script>
+}
+@* <style>
+    body {
         font-weight: 600;
         margin-bottom: 1.5rem;
         color: #fff;
@@ -118,7 +230,7 @@
     .kanban-card span {
         background: #4462b0;
     }
-</style>
+</style> *@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="work-item-title">
         <i class="fas fa-project-diagram text-primary me-2"></i>Projects

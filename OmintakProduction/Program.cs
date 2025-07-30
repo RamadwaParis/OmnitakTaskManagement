@@ -4,6 +4,7 @@ using OmintakProduction.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using OmintakProduction.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,9 @@ builder.Services.AddAuthentication(options =>
     });
 
 // Add Swagger services
+// Register services
+builder.Services.AddScoped<PdfGeneratorService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {

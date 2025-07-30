@@ -7,14 +7,14 @@
     {
         hideNavbar = true;
     }
-    string firstName = null;
-    string lastName = null;
-    if (User.Identity?.IsAuthenticated == true)
+    string firstName = string.Empty;
+    string lastName = string.Empty;
+    if (User.Identity?.IsAuthenticated == true && User.Identity is ClaimsIdentity claimsIdentity)
     {
-        firstName = ((ClaimsIdentity)User.Identity).Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname")?.Value;
-        lastName = ((ClaimsIdentity)User.Identity).Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname")?.Value;
+        firstName = claimsIdentity.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname")?.Value ?? string.Empty;
+        lastName = claimsIdentity.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname")?.Value ?? string.Empty;
     }
-    string displayName = (firstName != null && lastName != null) ? $"{firstName} {lastName}" : User.Identity?.Name ?? "User";
+    string displayName = (!string.IsNullOrEmpty(firstName) && !string.IsNullOrEmpty(lastName)) ? $"{firstName} {lastName}" : User.Identity?.Name ?? "User";
 }
 
 <!DOCTYPE html>

@@ -1,0 +1,35 @@
+@model OmintakProduction.Models.Role
+
+@{
+    ViewData["Title"] = "Role Details";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Role Details</h3>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.RoleId)</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.RoleId)</dd>
+                        
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.RoleName)</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.RoleName)</dd>
+                    </dl>
+
+                    <div class="form-group d-flex justify-content-between">
+                        <a asp-action="Edit" asp-route-id="@Model?.RoleId" class="btn btn-warning">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

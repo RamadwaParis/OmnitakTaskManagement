@@ -103,7 +103,7 @@
 
         .user-info {
             background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
+            color: black;
             padding: 1.5rem;
             border-radius: 15px;
             margin-bottom: 2rem;
@@ -138,7 +138,7 @@
         .continue-btn {
             background: linear-gradient(135deg, #667eea, #764ba2);
             border: none;
-            color: white;
+            color: black;
             padding: 1rem 2rem;
             border-radius: 50px;
             font-size: 1.1rem;
@@ -235,18 +235,15 @@
     {
         return role switch
         {
-            "System Administrator" => "Welcome Madam Admin",
-            "Project Lead" => "Welcome Mr. Project Lead",
-            "Developer" => "Welcome Developer",
-            "Quality Assurance Tester" => "Welcome Tester",
-            "Department Head" => "Welcome Department Head",
-            "Operations Manager" => "Welcome Operations Manager",
-            "Business Analyst" => "Welcome Business Analyst",
-            "Product Owner" => "Welcome Product Owner",
-            "Resource Manager" => "Welcome Resource Manager",
-            "Department Lead" => "Welcome Department Lead",
-            "Process Improvement Specialist" => "Welcome Process Specialist",
-            _ => "Welcome"
+            "SystemAdmin" => "Welcome Mr. Administrator",
+            "TeamLead" => "Welcome Mr. Team Lead",
+            "Team Lead" => "Welcome Mr. Team Lead",
+            // "Engineer" removed
+            "Developer" => "Welcome Mr. Developer",
+            "Tester" => "Welcome Mr. Tester",
+            "Software Tester" => "Welcome Mr. Tester",
+            "Stakeholder" => "Welcome Mr. Stakeholder",
+            _ => "Welcome!"
         };
     }
 
@@ -255,6 +252,9 @@
         return role switch
         {
             "System Administrator" => "<i class='fas fa-crown'></i>",
+            "SystemAdmin" => "<i class='fas fa-user-shield'></i>",
+            "TeamLead" => "<i class='fas fa-user-tie'></i>",
+            "Team Lead" => "<i class='fas fa-user-tie'></i>",
             "Project Lead" => "<i class='fas fa-user-tie'></i>",
             "Developer" => "<i class='fas fa-code'></i>",
             "Quality Assurance Tester" => "<i class='fas fa-bug'></i>",
@@ -274,7 +274,10 @@
         return role switch
         {
             "System Administrator" => "system-admin",
-            "Project Lead" => "project-lead",
+            "SystemAdmin" => "system-admin",
+            "TeamLead" => "team-lead",
+            "Team Lead" => "team-lead",
+            "Project Lead" => "team-lead",
             "Developer" => "developer",
             "Quality Assurance Tester" => "tester",
             "Department Head" => "department-head",

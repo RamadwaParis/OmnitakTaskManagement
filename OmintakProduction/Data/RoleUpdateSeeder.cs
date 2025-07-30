@@ -11,11 +11,10 @@ namespace OmintakProduction.Data
             var requiredRoles = new[]
             {
                 "SystemAdmin",
-                "ProjectLead", 
+                "TeamLead", 
                 "Developer",
                 "Tester",
-                "Stakeholder",
-                "TeamLead"
+                "Stakeholder"
             };
 
             foreach (var roleName in requiredRoles)

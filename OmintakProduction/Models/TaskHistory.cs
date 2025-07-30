@@ -25,7 +25,7 @@ namespace OmintakProduction.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Navigation properties
-        public Task? Task { get; set; }
-        public User? User { get; set; }
+        public virtual Task Task { get; set; } = null!;
+        public virtual User User { get; set; } = null!;
     }
 }

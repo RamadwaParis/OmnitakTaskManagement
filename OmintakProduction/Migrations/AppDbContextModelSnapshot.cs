@@ -249,36 +249,21 @@ namespace OmintakProduction.Migrations
                         new
                         {
                             RoleId = 2,
-                            RoleName = "Engineer"
-                        },
-                        new
-                        {
-                            RoleId = 3,
-                            RoleName = "Software Tester"
-                        },
-                        new
-                        {
-                            RoleId = 4,
-                            RoleName = "ProjectLead"
-                        },
-                        new
-                        {
-                            RoleId = 5,
                             RoleName = "Developer"
                         },
                         new
                         {
-                            RoleId = 6,
+                            RoleId = 3,
                             RoleName = "Tester"
                         },
                         new
                         {
-                            RoleId = 7,
+                            RoleId = 4,
                             RoleName = "Stakeholder"
                         },
                         new
                         {
-                            RoleId = 8,
+                            RoleId = 5,
                             RoleName = "TeamLead"
                         });
                 });
@@ -313,7 +298,19 @@ namespace OmintakProduction.Migrations
                     b.Property<int>("EstimatedHours")
                         .HasColumnType("int");
 
+                    b.Property<string>("HoldReason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("HoldRequestedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("HoldStartDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsOnHold")
                         .HasColumnType("bit");
 
                     b.Property<int>("Priority")
@@ -341,6 +338,8 @@ namespace OmintakProduction.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedByUserId");
+
+                    b.HasIndex("HoldRequestedByUserId");
 
                     b.HasIndex("ProjectId");
 
@@ -437,13 +436,13 @@ namespace OmintakProduction.Migrations
                     b.Property<int>("TaskId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TaskId1")
+                    b.Property<int>("TaskId1")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId1")
+                    b.Property<int>("UserId1")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -467,11 +466,16 @@ namespace OmintakProduction.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TeamId"));
 
+                    b.Property<int?>("TeamLeadId")
+                        .HasColumnType("int");
+
                     b.Property<string>("TeamName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("TeamId");
+
+                    b.HasIndex("TeamLeadId");
 
                     b.ToTable("Team");
 
@@ -669,6 +673,8 @@ namespace OmintakProduction.Migrations
 
                     b.HasKey("UserId");
 
+                    b.HasIndex("RoleId");
+
                     b.HasIndex("TeamId");
 
                     b.HasIndex("TeamId1");
@@ -776,6 +782,10 @@ namespace OmintakProduction.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("OmintakProduction.Models.User", "HoldRequestedByUser")
+                        .WithMany()
+                        .HasForeignKey("HoldRequestedByUserId");
+
                     b.HasOne("OmintakProduction.Models.Project", "Project")
                         .WithMany("Tasks")
                         .HasForeignKey("ProjectId");
@@ -786,6 +796,8 @@ namespace OmintakProduction.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("CreatedByUser");
+
+                    b.Navigation("HoldRequestedByUser");
 
                     b.Navigation("Project");
 
@@ -831,12 +843,14 @@ namespace OmintakProduction.Migrations
                     b.HasOne("OmintakProduction.Models.Task", null)
                         .WithMany()
                         .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("OmintakProduction.Models.Task", "Task")
                         .WithMany()
-                        .HasForeignKey("TaskId1");
+                        .HasForeignKey("TaskId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("OmintakProduction.Models.User", null)
                         .WithMany()
@@ -846,11 +860,23 @@ namespace OmintakProduction.Migrations
 
                     b.HasOne("OmintakProduction.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Task");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("OmintakProduction.Models.Team", b =>
+                {
+                    b.HasOne("OmintakProduction.Models.User", "TeamLead")
+                        .WithMany()
+                        .HasForeignKey("TeamLeadId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("TeamLead");
                 });
 
             modelBuilder.Entity("OmintakProduction.Models.TestReport", b =>
@@ -882,6 +908,12 @@ namespace OmintakProduction.Migrations
 
             modelBuilder.Entity("OmintakProduction.Models.User", b =>
                 {
+                    b.HasOne("OmintakProduction.Models.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("OmintakProduction.Models.Team", "Team")
                         .WithMany("TeamMembers")
                         .HasForeignKey("TeamId");
@@ -889,6 +921,8 @@ namespace OmintakProduction.Migrations
                     b.HasOne("OmintakProduction.Models.Team", null)
                         .WithMany("Users")
                         .HasForeignKey("TeamId1");
+
+                    b.Navigation("Role");
 
                     b.Navigation("Team");
                 });

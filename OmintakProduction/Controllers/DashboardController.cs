@@ -5,6 +5,7 @@ using OmintakProduction.Models;
 using TaskStatus = OmintakProduction.Models.TaskStatus;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using OmintakProduction.Services;
 
 namespace OmintakProduction.Controllers
 {
@@ -12,10 +13,34 @@ namespace OmintakProduction.Controllers
     public class DashboardController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly PdfGeneratorService _pdfGenerator;
 
-        public DashboardController(AppDbContext context)
+        public DashboardController(AppDbContext context, PdfGeneratorService pdfGenerator)
         {
             _context = context;
+            _pdfGenerator = pdfGenerator;
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Stakeholder")]
+        public async Task<IActionResult> DownloadDashboardReport()
+        {
+            var projects = await _context.Project
+                .Include(p => p.Team)
+                .Include(p => p.Tasks)
+                .ToListAsync();
+
+            var bugReports = await _context.BugReports
+                .Include(b => b.ReportedByUser)
+                .Include(b => b.AssignedToUser)
+                .ToListAsync();
+
+            var tasks = await _context.Tasks
+                .Include(t => t.AssignedUsers)
+                .ToListAsync();
+
+            var pdfBytes = _pdfGenerator.GenerateDashboardReportPdf(projects, bugReports, tasks);
+            return File(pdfBytes, "application/pdf", $"DashboardReport_{DateTime.Now:yyyyMMdd}.pdf");
         }
 
         private int GetCurrentUserId()
@@ -120,20 +145,18 @@ namespace OmintakProduction.Controllers
                 case "SystemAdmin":
                     var systemAdminData = await GetSystemAdminDashboardData(currentUserId);
                     return View("SystemAdminDashboard", systemAdminData);
-                case "ProjectLead":
-                    return View("ProjectLeadDashboard", dashboardData);
+                case "TeamLead":
+                    var teamLeadData = await GetTeamLeadDashboardData(currentUserId);
+                    return View("TeamLeadDashboard", teamLeadData);
                 case "Developer":
-                case "Engineer": // fallback for old role name
                     var developerData = await GetDeveloperDashboardData(currentUserId);
                     return View("DeveloperDashboard", developerData);
                 case "Tester":
-                case "SoftwareTester": // fallback for old role name
                     var testerData = await GetTesterDashboardData(currentUserId);
                     return View("TesterDashboard", testerData);
                 case "Stakeholder":
-                    return View("StakeholderDashboard", dashboardData);
-                case "TeamLead":
-                    return View("ProjectLeadDashboard", dashboardData); // TeamLead uses same dashboard as ProjectLead
+                    var stakeholderData = await GetStakeholderDashboardData(currentUserId);
+                    return View("StakeholderDashboard", stakeholderData);
                 default:
                     // For unapproved users or unknown roles, redirect to pending approval page
                     var currentUser = await _context.User.FindAsync(currentUserId);
@@ -141,7 +164,8 @@ namespace OmintakProduction.Controllers
                     {
                         return View("PendingApproval");
                     }
-                    return View("StakeholderDashboard", dashboardData); // fallback to view-only
+                    var fallbackData = await GetStakeholderDashboardData(currentUserId);
+                    return View("StakeholderDashboard", fallbackData); // fallback to view-only
             }
         }
 
@@ -224,8 +248,8 @@ namespace OmintakProduction.Controllers
             };
         }
 
-        // PROJECT LEAD DASHBOARD DATA
-        private async Task<ProjectLeadDashboardViewModel> GetProjectLeadDashboardData(int userId)
+        // TEAM LEAD DASHBOARD DATA
+        private async Task<TeamLeadDashboardViewModel> GetTeamLeadDashboardData(int userId)
         {
             var user = await _context.User.FindAsync(userId);
             var managedProjects = await _context.Project
@@ -245,7 +269,7 @@ namespace OmintakProduction.Controllers
                 .Where(t => managedProjects.Select(p => p.ProjectId).Contains(t.ProjectId ?? 0))
                 .ToListAsync();
 
-            return new ProjectLeadDashboardViewModel
+            return new TeamLeadDashboardViewModel
             {
                 ManagedProjects = managedProjects,
                 TeamMembers = teamMembers,
@@ -479,10 +503,10 @@ namespace OmintakProduction.Controllers
             return Json(data);
         }
 
-        [HttpGet("api/dashboard/projectlead/{userId}")]
-        public async Task<IActionResult> GetProjectLeadDashboardApi(int userId)
+        [HttpGet("api/dashboard/teamlead/{userId}")]
+        public async Task<IActionResult> GetTeamLeadDashboardApi(int userId)
         {
-            var data = await GetProjectLeadDashboardData(userId);
+            var data = await GetTeamLeadDashboardData(userId);
             return Json(data);
         }
 

@@ -12,7 +12,7 @@ namespace OmintakProduction.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Produces("application/json")]
-    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Developer,Engineer,Tester,SoftwareTester,ProjectLead,SystemAdmin")]
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Developer,Tester,TeamLead,SystemAdmin,Stakeholder")]
     public class NotificationApiController : ControllerBase
     {
         private readonly AppDbContext _context;

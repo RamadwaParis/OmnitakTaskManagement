@@ -1,0 +1,265 @@
+@model OmintakProduction.Models.TeamLeadDashboardViewModel
+@{
+    ViewData["Title"] = "Team Lead Dashboard";
+}
+
+<div class="premium-dashboard">
+    <div class="container-fluid p-4">
+        <!-- Premium Welcome Section -->
+        <div class="premium-welcome premium-animate-in">
+            <h1 class="premium-title">
+                <i class="fas fa-users-cog premium-icon me-2"></i>
+                Team Lead Dashboard
+            </h1>
+            <p class="premium-subtitle mb-0">
+                Orchestrate your team's success with comprehensive project oversight, team management, and performance insights.
+            </p>
+        </div>
+
+        <!-- Premium Statistics Grid -->
+        <div class="premium-grid premium-grid-4 mb-4">
+            <div class="premium-stat-card">
+                <div class="premium-stat-value">@Model.TotalProjects</div>
+                <div class="premium-stat-label">
+                    <i class="fas fa-project-diagram me-1"></i>
+                    Active Projects
+                </div>
+            </div>
+            <div class="premium-stat-card success">
+                <div class="premium-stat-value">@Model.TeamCount</div>
+                <div class="premium-stat-label">
+                    <i class="fas fa-users me-1"></i>
+                    Team Members
+                </div>
+            </div>
+            <div class="premium-stat-card warning">
+                <div class="premium-stat-value">@Model.CompletedTasks</div>
+                <div class="premium-stat-label">
+                    <i class="fas fa-check-circle me-1"></i>
+                    Completed Tasks
+                </div>
+            </div>
+            <div class="premium-stat-card info">
+                <div class="premium-stat-value">@Model.ActiveTasks</div>
+                <div class="premium-stat-label">
+                    <i class="fas fa-tasks me-1"></i>
+                    Active Tasks
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="premium-grid premium-grid-2">
+            <!-- Team Performance & Projects -->
+            <div class="premium-card premium-card-elevated">
+                <h3 class="premium-section-title">
+                    <i class="fas fa-chart-line premium-icon accent"></i>
+                    Project Portfolio
+                </h3>
+                
+                @if (Model.ManagedProjects?.Any() == true)
+                {
+                    <div class="premium-list">
+                        @foreach (var project in Model.ManagedProjects.Take(5))
+                        {
+                            <div class="premium-list-item">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="premium-card-title mb-0">@project.ProjectName</h6>
+                                        <span class="premium-badge @(project.Status == "Active" ? "success" : "warning")">
+                                            @project.Status
+                                        </span>
+                                    </div>
+                                    <p class="text-muted small mb-2">@project.Description</p>
+                                    
+                                    @{
+                                        var projectTasks = Model.AllTasks?.Where(t => t.ProjectId == project.ProjectId).ToList() ?? new List<OmintakProduction.Models.Task>();
+                                        var completedCount = projectTasks.Count(t => t.Status == OmintakProduction.Models.TaskStatus.Completed);
+                                        var totalCount = projectTasks.Count;
+                                        var progressPercentage = totalCount > 0 ? (completedCount * 100 / totalCount) : 0;
+                                    }
+                                    
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="premium-progress flex-grow-1 me-3">
+                                            <div class="premium-progress-bar @(progressPercentage >= 80 ? "success" : progressPercentage >= 60 ? "warning" : "")" 
+                                                 style="width: @(progressPercentage)%"></div>
+                                        </div>
+                                        <small class="text-muted">@completedCount/@totalCount tasks</small>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-project-diagram fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No projects assigned yet</p>
+                        <a href="/Project/Create" class="premium-btn primary">
+                            <i class="fas fa-plus"></i>
+                            Create First Project
+                        </a>
+                    </div>
+                }
+            </div>
+
+            <!-- Team Members & Workload -->
+            <div class="premium-card premium-card-elevated">
+                <h3 class="premium-section-title">
+                    <i class="fas fa-users premium-icon accent"></i>
+                    Team Overview
+                </h3>
+                
+                @if (Model.TeamMembers?.Any() == true)
+                {
+                    <div class="premium-list">
+                        @foreach (var member in Model.TeamMembers.Take(6))
+                        {
+                            <div class="premium-list-item">
+                                <div class="d-flex align-items-center">
+                                    <div class="premium-avatar me-3" style="width: 40px; height: 40px; background: var(--premium-gradient-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">
+                                        @(member.FirstName?.Substring(0, 1))@(member.LastName?.Substring(0, 1))
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="mb-0">@member.FirstName @member.LastName</h6>
+                                                <small class="text-muted">@member.UserName</small>
+                                            </div>
+                                            <div class="text-end">
+                                                @{
+                                                    var memberTasks = Model.AllTasks?.Where(t => t.AssignedUsers != null && t.AssignedUsers.Any(u => u.UserId == member.UserId)).Count() ?? 0;
+                                                }
+                                                <div class="premium-badge primary">@memberTasks tasks</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No team members found</p>
+                        <a href="/User" class="premium-btn primary">
+                            <i class="fas fa-user-plus"></i>
+                            Manage Team
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Secondary Content Grid -->
+        <div class="premium-grid premium-grid-2 mt-4">
+            <!-- Task Status Overview -->
+            <div class="premium-card premium-card-accent">
+                <h3 class="premium-section-title">
+                    <i class="fas fa-chart-pie premium-icon accent"></i>
+                    Task Distribution
+                </h3>
+                
+                @if (Model.TasksByStatus?.Any() == true)
+                {
+                    <div class="premium-grid premium-grid-2">
+                        @foreach (var status in Model.TasksByStatus.Take(4))
+                        {
+                            <div class="text-center p-3">
+                                <div class="premium-stat-value" style="font-size: 2rem; color: var(--premium-accent-primary);">
+                                    @status.Value
+                                </div>
+                                <div class="premium-stat-label">
+                                    @status.Key.Replace("TaskStatus.", "")
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <i class="fas fa-tasks fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No task data available</p>
+                    </div>
+                }
+            </div>
+
+            <!-- Overdue Tasks Alert -->
+            <div class="premium-card premium-card-danger">
+                <h3 class="premium-section-title">
+                    <i class="fas fa-exclamation-triangle premium-icon" style="color: var(--premium-accent-danger);"></i>
+                    Overdue Tasks
+                </h3>
+                
+                @if (Model.OverdueTasks?.Any() == true)
+                {
+                    <div class="premium-list">
+                        @foreach (var task in Model.OverdueTasks.Take(4))
+                        {
+                            <div class="premium-list-item">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-0">@task.Title</h6>
+                                            <small class="text-muted">Due: @task.DueDate?.ToString("MMM dd, yyyy")</small>
+                                        </div>
+                                        <span class="premium-badge danger">
+                                            @((DateTime.Now - task.DueDate)?.Days ?? 0) days overdue
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    
+                    @if (Model.OverdueTasks.Count > 4)
+                    {
+                        <div class="text-center mt-3">
+                            <a href="/Task" class="premium-btn primary">
+                                View All @Model.OverdueTasks.Count Overdue Tasks
+                            </a>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <i class="fas fa-check-circle fa-3x" style="color: var(--premium-accent-success);" class="mb-3"></i>
+                        <p class="text-muted">Great! No overdue tasks</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Quick Actions Panel -->
+        <div class="premium-card premium-card-elevated mt-4">
+            <h3 class="premium-section-title">
+                <i class="fas fa-bolt premium-icon accent"></i>
+                Quick Actions
+            </h3>
+            
+            <div class="premium-grid premium-grid-4">
+                <a href="/Project/Create" class="premium-btn primary text-decoration-none">
+                    <i class="fas fa-project-diagram"></i>
+                    Create Project
+                </a>
+                <a href="/Task/Create" class="premium-btn primary text-decoration-none">
+                    <i class="fas fa-plus"></i>
+                    Add Task
+                </a>
+                <a href="/User" class="premium-btn primary text-decoration-none">
+                    <i class="fas fa-users"></i>
+                    Manage Team
+                </a>
+                <a href="/ProjectReport" class="premium-btn primary text-decoration-none">
+                    <i class="fas fa-chart-bar"></i>
+                    Generate Reports
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -78,16 +78,31 @@ body {
 
 /* Microsoft 365 Header */
 .ms-header {
-    background-color: var(--ms-blue);
-    color: white;
+    background: #272847;
+    color: #fff;
     height: 48px;
     display: flex;
     align-items: center;
     padding: 0 var(--ms-spacing-l);
     box-shadow: var(--ms-shadow-depth-4);
-    position: sticky;
-    top: 0;
+    position: static;
     z-index: 1000;
+}
+
+.ms-sidebar-toggle {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    padding: 8px;
+    margin-right: 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.15s ease;
+}
+
+.ms-sidebar-toggle:hover {
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .ms-header-brand {
@@ -95,13 +110,17 @@ body {
     align-items: center;
     font-weight: 600;
     font-size: var(--ms-font-size-16);
-    color: white;
+    color: #fff;
     text-decoration: none;
     margin-right: auto;
 }
 
+.ms-header span {
+    color: #fff;
+}
+
 .ms-header-brand:hover {
-    color: white;
+    color: black;
     text-decoration: none;
 }
 
@@ -138,7 +157,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: black;
     font-weight: 600;
     font-size: var(--ms-font-size-14);
 }
@@ -146,7 +165,7 @@ body {
 /* Main Layout */
 .ms-layout {
     display: flex;
-    min-height: calc(100vh - 48px);
+    min-height: auto;
 }
 
 .ms-sidebar {
@@ -154,7 +173,19 @@ body {
     background-color: white;
     border-right: 1px solid var(--ms-gray-30);
     padding: var(--ms-spacing-l);
-    overflow-y: auto;
+    overflow-y: visible;
+    transition: transform 0.3s ease, width 0.3s ease;
+}
+
+.ms-sidebar.collapsed {
+    transform: translateX(-100%);
+    width: 0;
+    padding: 0;
+    border: none;
+}
+
+.ms-main.sidebar-collapsed {
+    margin-left: 0;
 }
 
 .ms-sidebar-section {
@@ -186,13 +217,13 @@ body {
 
 .ms-sidebar-link:hover {
     background-color: var(--ms-gray-20);
-    color: var(--ms-blue);
+    color: #4462b0;
     text-decoration: none;
 }
 
 .ms-sidebar-link.active {
-    background-color: var(--ms-blue-light);
-    color: var(--ms-blue);
+    background-color: #4462b0;
+    color: #fff;
     font-weight: 600;
 }
 
@@ -203,8 +234,12 @@ body {
     top: 0;
     bottom: 0;
     width: 3px;
-    background-color: var(--ms-blue);
+    background-color: #4462b0;
     border-radius: 0 2px 2px 0;
+}
+
+.ms-sidebar-link.active i {
+    color: #fff;
 }
 
 .ms-sidebar-link i {
@@ -223,7 +258,7 @@ body {
     flex: 1;
     padding: var(--ms-spacing-xxl);
     background-color: var(--ms-gray-10);
-    overflow-y: auto;
+    overflow-y: visible;
 }
 
 /* Page Header */
@@ -291,14 +326,14 @@ body {
 
 .ms-btn-primary {
     background-color: var(--ms-blue);
-    color: white;
+    color: black;
     border-color: var(--ms-blue);
 }
 
 .ms-btn-primary:hover {
     background-color: var(--ms-blue-hover);
     border-color: var(--ms-blue-hover);
-    color: white;
+    color: black;
 }
 
 .ms-btn-secondary {
@@ -315,26 +350,26 @@ body {
 
 .ms-btn-success {
     background-color: var(--ms-green);
-    color: white;
+    color: black;
     border-color: var(--ms-green);
 }
 
 .ms-btn-success:hover {
     background-color: #0e6e0e;
     border-color: #0e6e0e;
-    color: white;
+    color: black;
 }
 
 .ms-btn-danger {
     background-color: var(--ms-red);
-    color: white;
+    color: black;
     border-color: var(--ms-red);
 }
 
 .ms-btn-danger:hover {
     background-color: #b92b2b;
     border-color: #b92b2b;
-    color: white;
+    color: black;
 }
 
 /* Form Controls */
@@ -435,7 +470,7 @@ body {
 
 .ms-stat-card {
     background: linear-gradient(135deg, var(--ms-blue), var(--ms-blue-hover));
-    color: white;
+    color: black;
     padding: var(--ms-spacing-l);
     border-radius: var(--ms-border-radius-l);
     box-shadow: var(--ms-shadow-depth-8);
