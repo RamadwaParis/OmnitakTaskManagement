@@ -79,6 +79,15 @@ namespace OmintakProduction.Models
         public Dictionary<string, object> SystemStatistics { get; set; } = new Dictionary<string, object>();
         public List<Notification> RecentNotifications { get; set; } = new List<Notification>();
         public int UnreadNotificationCount { get; set; }
+        
+        // Computed properties for dashboard
+        public int ActiveTasks => AllTasks.Count(t => t.Status == TaskStatus.InProgress || t.Status == TaskStatus.Todo);
+        public int CompletedTasks => AllTasks.Count(t => t.Status == TaskStatus.Completed);
+        public int OverdueTasks => AllTasks.Count(t => t.DueDate.HasValue && t.DueDate.Value < DateTime.Now && t.Status != TaskStatus.Completed);
+        public int TotalProjects => AllProjects.Count;
+        public int TotalUsers => AllUsers.Count;
+        public List<Task> RecentTasks => AllTasks.OrderByDescending(t => t.UpdatedAt).ToList();
+        public List<Project> RecentProjects => AllProjects.OrderByDescending(p => p.StartDate ?? DateOnly.MinValue).ToList();
     }
 
     // Stakeholder Dashboard ViewModel

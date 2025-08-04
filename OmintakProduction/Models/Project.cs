@@ -1,4 +1,7 @@
-﻿namespace OmintakProduction.Models
+﻿using System.ComponentModel.DataAnnotations;
+using OmintakProduction.Validations;
+
+namespace OmintakProduction.Models
 {
     enum ProjectStatuses
     {
@@ -11,7 +14,11 @@
         public int ProjectId { get; set; }
         public string ProjectName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        
+        [NotPastDateOnly(AllowToday = true)]
+        [Display(Name = "Due Date")]
         public DateOnly DueDate { get; set; }
+        
         public DateOnly? StartDate { get; set; }
         public DateOnly? EndDate { get; set; }
         public string Status { get; set; } = "Active";
