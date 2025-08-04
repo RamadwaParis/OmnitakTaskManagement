@@ -16,8 +16,8 @@ body, html, .container, .row, .col {
 }
 
 body {
-    background: ##F7F8FD;
-    color: #f8f9fa;
+    background: #F7F8FD;
+    color: #333;
     font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -71,8 +71,8 @@ body {
     border: none;
     border-radius: 1rem;
     box-shadow: 0 4px 24px rgba(0,0,0,0.10);
-    background: #F7F8FD;
-    color: #fff;
+    background: #ffffff;
+    color: #333;
     /*transition: transform 0.2s, box-shadow 0.2s;*/
     padding: 2rem 1.5rem;
     margin-bottom: 2rem;
