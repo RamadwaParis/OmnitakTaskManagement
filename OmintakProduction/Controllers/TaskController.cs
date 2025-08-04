@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using OmintakProduction.Data;
 using OmintakProduction.Models;
+using OmintakProduction.Services;
 using System.Security.Claims;
 using System.Linq;
 using System;
@@ -18,10 +19,12 @@ namespace OmintakProduction.Controllers
     public class TaskController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly INotificationService _notificationService;
 
-        public TaskController(AppDbContext context)
+        public TaskController(AppDbContext context, INotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
         }
 
         // --- AUDIT TRAIL & NOTIFICATION HELPERS ---
@@ -39,22 +42,6 @@ namespace OmintakProduction.Controllers
             };
             _context.TaskHistory.Add(history);
             _context.SaveChanges();
-        }
-
-        private async System.Threading.Tasks.Task NotifyUser(int userId, string title, string message, NotificationType type, int? relatedEntityId, string? relatedEntityType)
-        {
-            var notification = new Notification
-            {
-                UserId = userId,
-                Title = title,
-                Message = message,
-                Type = type,
-                CreatedAt = DateTime.Now,
-                RelatedEntityId = relatedEntityId,
-                RelatedEntityType = relatedEntityType
-            };
-            _context.Notification.Add(notification);
-            await _context.SaveChangesAsync();
         }
 
         // GET: Task/Manage/{ticketId}
@@ -158,6 +145,17 @@ namespace OmintakProduction.Controllers
             {
                 return Forbid();
             }
+
+            // Validate due date is not in the past
+            if (task.DueDate.HasValue)
+            {
+                var dateValidation = DateValidationService.ValidateTaskDueDate(task.DueDate);
+                if (!dateValidation.isValid)
+                {
+                    ModelState.AddModelError("DueDate", dateValidation.errorMessage);
+                }
+            }
+
             int currentUserId = GetCurrentUserId();
             if (ticketId.HasValue)
             {
@@ -193,7 +191,7 @@ namespace OmintakProduction.Controllers
                     // Notify assignee
                     if (ticket?.AssignedToUser != null)
                     {
-                        await NotifyUser(ticket.AssignedToUser.UserId, $"New Task Assigned: {task.Title}", $"You have been assigned a new task.", NotificationType.Task, task.Id, "Task");
+                        await _notificationService.NotifyUserAssignedToTask(ticket.AssignedToUser.UserId, task.Id, task.Title);
                     }
                     TempData["SuccessMessage"] = "Task created successfully.";
                     return RedirectToAction("Manage", new { ticketId = ticketId.Value });
@@ -235,7 +233,7 @@ namespace OmintakProduction.Controllers
                     // Notify all assignees
                     foreach (var user in task.AssignedUsers)
                     {
-                        await NotifyUser(user.UserId, $"New Task Assigned: {task.Title}", $"You have been assigned a new task.", NotificationType.Task, task.Id, "Task");
+                        await _notificationService.NotifyUserAssignedToTask(user.UserId, task.Id, task.Title);
                     }
                     TempData["SuccessMessage"] = "Task created successfully.";
                     return RedirectToAction("Index");
@@ -273,6 +271,16 @@ namespace OmintakProduction.Controllers
         [Authorize(Roles = "Developer,Tester,TeamLead,SystemAdmin,Stakeholder")]
         public async System.Threading.Tasks.Task<IActionResult> Edit(OmintakProduction.Models.Task model, int[] AssignedUserIds)
         {
+            // Validate due date is not in the past
+            if (model.DueDate.HasValue)
+            {
+                var dateValidation = DateValidationService.ValidateTaskDueDate(model.DueDate);
+                if (!dateValidation.isValid)
+                {
+                    ModelState.AddModelError("DueDate", dateValidation.errorMessage);
+                }
+            }
+
             // ENFORCE: Task must always have an assignee
             if ((AssignedUserIds == null || AssignedUserIds.Length == 0) && model.TicketId.HasValue)
             {
@@ -309,7 +317,7 @@ namespace OmintakProduction.Controllers
                     LogTaskHistory(task.Id, currentUserId, TaskHistoryAction.AssigneeChanged, string.Join(",", oldAssignees), string.Join(",", newAssignees), "Assignees changed");
                     // Notify new assignees
                     foreach (var userId in newAssignees.Except(oldAssignees))
-                        await NotifyUser(userId, $"New Task Assigned: {model.Title}", $"You have been assigned a new task.", NotificationType.Task, task.Id, "Task");
+                        await _notificationService.NotifyUserAssignedToTask(userId, task.Id, model.Title);
                 }
                 // Update properties
                 task.Title = model.Title;
@@ -380,6 +388,15 @@ namespace OmintakProduction.Controllers
             {
                 ticketId = task.TicketId;
                 task.IsDeleted = true;
+                task.DeletedAt = DateTime.UtcNow;
+                
+                // Get current user ID from claims for audit trail
+                var currentUserIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
+                if (currentUserIdClaim != null && int.TryParse(currentUserIdClaim.Value, out int currentUserId))
+                {
+                    task.DeletedByUserId = currentUserId;
+                }
+
                 _context.Update(task);
                 await _context.SaveChangesAsync();
                 // Audit log

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OmintakProduction.Data;
 using OmintakProduction.Models;
+using OmintakProduction.Services;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
@@ -18,10 +19,12 @@ namespace OmintakProduction.Controllers
     public class AccountController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IUserApprovalService _userApprovalService;
 
-        public AccountController(AppDbContext context)
+        public AccountController(AppDbContext context, IUserApprovalService userApprovalService)
         {
             _context = context;
+            _userApprovalService = userApprovalService;
         }
 
 
@@ -101,7 +104,14 @@ namespace OmintakProduction.Controllers
             _context.User.Add(newUser);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Login", "Account");
+            // Notify admins of new registration
+            await _userApprovalService.NotifyAdminsOfNewRegistration(newUser);
+
+            // Set success message for approval pending
+            TempData["RegistrationSuccess"] = "Registration successful! Your account is pending admin approval. You will be notified once approved.";
+            ViewData["ShowApprovalMessage"] = true;
+
+            return View("Login");
         }
 
         [HttpPost]
@@ -183,6 +193,17 @@ namespace OmintakProduction.Controllers
             }
 
             // For web clients, redirect to dashboard
+            // Add flag for SystemAdmin to show approval modal
+            if (user.RoleId > 0)
+            {
+                Role getUserRole = new Role();
+                var role = getUserRole.getRole(user.RoleId);
+                if (role == "SystemAdmin")
+                {
+                    return RedirectToAction("Index", "Dashboard", new { fromLogin = "true" });
+                }
+            }
+            
             return RedirectToAction("Index", "Dashboard");
             // (Legacy admin login logic removed; all logins now use JWT)
         }
@@ -238,9 +259,9 @@ namespace OmintakProduction.Controllers
 
         [HttpGet]
         [Authorize(Roles = "SystemAdmin")]
-        public IActionResult ApproveUsers()
+        public async Task<IActionResult> ApproveUsers()
         {
-            var pendingUsers = _context.User.Where(u => !u.IsApproved && !u.IsDeleted).ToList();
+            var pendingUsers = await _userApprovalService.GetPendingApprovalUsers();
             ViewBag.Teams = _context.Team.ToList();
             ViewBag.Roles = _context.Role.ToList();
             return View(pendingUsers);
@@ -248,50 +269,128 @@ namespace OmintakProduction.Controllers
 
         [HttpPost]
         [Authorize(Roles = "SystemAdmin")]
-        public IActionResult ApproveUser(int userId, string newUsername, int roleId, int? teamId, int? projectId, string firstName, string lastName)
+        public async Task<IActionResult> ApproveUser(int userId, string newUsername, int roleId, int? teamId, int? projectId, string firstName, string lastName)
         {
-            var user = _context.User.Find(userId);
-            var team = teamId.HasValue ? _context.Team.Find(teamId.Value) : null;
-            var role = _context.Role.Find(roleId);
+            var success = await _userApprovalService.ApproveUser(userId, newUsername, roleId, teamId, projectId, firstName, lastName);
             
-            if (user != null && !string.IsNullOrWhiteSpace(newUsername) && role != null && !string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(lastName))
+            if (success)
             {
-                user.UserName = newUsername;
-                user.FirstName = firstName;
-                user.LastName = lastName;
-                user.RoleId = roleId;
-                user.isActive = true;
-                user.IsApproved = true;
-                user.TeamId = teamId;
-                user.ProjectId = projectId;
-                
-                if (team != null)
-                {
-                    user.Team = team;
-                }
-
-                _context.User.Update(user);
-                _context.SaveChanges();
-
+                var role = await _context.Role.FindAsync(roleId);
+                var team = teamId.HasValue ? await _context.Team.FindAsync(teamId.Value) : null;
                 string teamMessage = team != null ? $" and assigned to team {team.TeamName}" : "";
-                TempData["Success"] = $"User {firstName} {lastName} approved with role {role.RoleName}{teamMessage}.";
-
-                // Create notification for user
-                var notification = new Notification {
-                    UserId = user.UserId,
-                    Title = "Welcome to Omnitak!",
-                    Message = $"You have been approved with role <b>{role.RoleName}</b>{(team != null ? $" and assigned to team <b>{team.TeamName}</b>" : "")}.",
-                    Type = NotificationType.Success,
-                    IsRead = false,
-                    CreatedAt = DateTime.Now,
-                    RelatedEntityId = roleId,
-                    RelatedEntityType = "Role"
-                };
-                _context.Notification.Add(notification);
-                _context.SaveChanges();
+                TempData["Success"] = $"User {firstName} {lastName} approved with role {role?.RoleName}{teamMessage}.";
             }
+            else
+            {
+                TempData["Error"] = "Failed to approve user. Please try again.";
+            }
+            
             return RedirectToAction("ApproveUsers");
         }
+
+        [HttpPost]
+        [Authorize(Roles = "SystemAdmin")]
+        public async Task<IActionResult> RejectUser(int userId, string reason = "")
+        {
+            var success = await _userApprovalService.RejectUser(userId, reason);
+            
+            if (success)
+            {
+                TempData["Success"] = "User registration has been rejected.";
+            }
+            else
+            {
+                TempData["Error"] = "Failed to reject user. Please try again.";
+            }
+            
+            return RedirectToAction("ApproveUsers");
+        }
+
+        // API endpoints for modal functionality
+        [HttpGet]
+        [Route("api/checkPendingApprovals")]
+        public async Task<IActionResult> CheckPendingApprovals()
+        {
+            if (!User.IsInRole("SystemAdmin"))
+            {
+                return Json(new { hasPendingApprovals = false });
+            }
+
+            var pendingCount = await _context.User
+                .CountAsync(u => !u.IsApproved && !u.IsDeleted);
+
+            return Json(new { hasPendingApprovals = pendingCount > 0, count = pendingCount });
+        }
+
+        [HttpPost]
+        [Route("Account/ApproveUserQuick")]
+        public async Task<IActionResult> ApproveUserQuick([FromBody] ApprovalRequest request)
+        {
+            if (!User.IsInRole("SystemAdmin"))
+            {
+                return Json(new { success = false, message = "Unauthorized" });
+            }
+
+            try
+            {
+                var user = await _context.User.FindAsync(request.UserId);
+                if (user == null)
+                {
+                    return Json(new { success = false, message = "User not found" });
+                }
+
+                // Simple approval - just mark as approved
+                user.IsApproved = true;
+                user.isActive = true;
+                
+                // Assign default role if RoleId is 0 (assuming 0 means unassigned)
+                if (user.RoleId == 0)
+                {
+                    user.RoleId = 2; // Developer role
+                }
+                
+                await _context.SaveChangesAsync();
+                
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Route("Account/RejectUserQuick")]
+        public async Task<IActionResult> RejectUserQuick([FromBody] ApprovalRequest request)
+        {
+            if (!User.IsInRole("SystemAdmin"))
+            {
+                return Json(new { success = false, message = "Unauthorized" });
+            }
+
+            try
+            {
+                var success = await _userApprovalService.RejectUser(request.UserId, "Rejected by SystemAdmin");
+                
+                if (success)
+                {
+                    return Json(new { success = true });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Failed to reject user" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+    }
+
+    public class ApprovalRequest
+    {
+        public int UserId { get; set; }
     }
 }
 
