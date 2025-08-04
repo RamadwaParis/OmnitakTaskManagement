@@ -3,68 +3,80 @@
     ViewData["Title"] = "System Admin Dashboard";
 }
 
-<div class="premium-dashboard">
-    <div class="container-fluid p-4">
-        <!-- Premium Welcome Section -->
-        <div class="premium-welcome premium-animate-in">
-            <h1 class="premium-title">
-                <i class="fas fa-cogs premium-icon me-2"></i>
-                System Administration
-            </h1>
-            <p class="premium-subtitle mb-0">
-                Command center for system oversight, user management, and enterprise operations.
-            </p>
-        </div>
+<div class="ms-page-header">
+    <h1 class="ms-page-title">
+        <i class="fas fa-cogs me-2"></i>
+        System Administration
+    </h1>
+    <p class="ms-page-subtitle">
+        Command center for system oversight, user management, and enterprise operations.
+    </p>
+</div>
 
-        <!-- Premium Statistics Grid -->
-        <div class="premium-grid premium-grid-4 mb-4">
-            <div class="premium-stat-card">
-                <div class="premium-stat-value">@(Model.AllUsers?.Count ?? 0)</div>
-                <div class="premium-stat-label">
-                    <i class="fas fa-users me-1"></i>
-                    Total Users
-                </div>
-            </div>
-            <div class="premium-stat-card success">
-                <div class="premium-stat-value">@(Model.AllProjects?.Count ?? 0)</div>
-                <div class="premium-stat-label">
-                    <i class="fas fa-project-diagram me-1"></i>
-                    Active Projects
-                </div>
-            </div>
-            <div class="premium-stat-card warning">
-                <div class="premium-stat-value">@(Model.PendingUsers?.Count ?? 0)</div>
-                <div class="premium-stat-label">
-                    <i class="fas fa-user-clock me-1"></i>
-                    Pending Approvals
-                </div>
-            </div>
-            <div class="premium-stat-card info">
-                <div class="premium-stat-value">@(Model.AllTasks?.Count ?? 0)</div>
-                <div class="premium-stat-label">
-                    <i class="fas fa-tasks me-1"></i>
-                    Total Tasks
-                </div>
-            </div>
+<!-- Light Statistics Grid -->
+<div class="ms-dashboard-stats mb-4">
+    <div class="ms-stat-card">
+        <div class="ms-stat-number">@(Model.AllUsers?.Count ?? 0)</div>
+        <div class="ms-stat-label">
+            <i class="fas fa-users me-1"></i>
+            Total Users
         </div>
+        <div class="ms-stat-icon">
+            <i class="fas fa-users"></i>
+        </div>
+    </div>
+    <div class="ms-stat-card green">
+        <div class="ms-stat-number">@(Model.AllProjects?.Count ?? 0)</div>
+        <div class="ms-stat-label">
+            <i class="fas fa-project-diagram me-1"></i>
+            Active Projects
+        </div>
+        <div class="ms-stat-icon">
+            <i class="fas fa-project-diagram"></i>
+        </div>
+    </div>
+    <div class="ms-stat-card orange">
+        <div class="ms-stat-number">@(Model.PendingUsers?.Count ?? 0)</div>
+        <div class="ms-stat-label">
+            <i class="fas fa-user-clock me-1"></i>
+            Pending Approvals
+        </div>
+        <div class="ms-stat-icon">
+            <i class="fas fa-user-clock"></i>
+        </div>
+    </div>
+    <div class="ms-stat-card teal">
+        <div class="ms-stat-number">@(Model.AllTasks?.Count ?? 0)</div>
+        <div class="ms-stat-label">
+            <i class="fas fa-tasks me-1"></i>
+            Total Tasks
+        </div>
+        <div class="ms-stat-icon">
+            <i class="fas fa-tasks"></i>
+        </div>
+    </div>
+</div>
 
-        <!-- Main Content Grid -->
-        <div class="premium-grid premium-grid-2">
-            <!-- User Management -->
-            <div class="premium-card premium-card-elevated">
-                <h3 class="premium-section-title">
-                    <i class="fas fa-users-cog premium-icon accent"></i>
+<!-- Main Content Grid -->
+<div class="row g-4">
+    <!-- User Management -->
+    <div class="col-lg-6">
+        <div class="ms-card">
+            <div class="ms-card-header">
+                <h3 class="ms-card-title">
+                    <i class="fas fa-users-cog me-2"></i>
                     User Management
                 </h3>
-                
+            </div>
+            <div class="ms-card-body">
                 @if (Model.AllUsers?.Any() == true)
                 {
-                    <div class="premium-list">
+                    <div class="list-group list-group-flush">
                         @foreach (var user in Model.AllUsers.Take(6))
                         {
-                            <div class="premium-list-item">
+                            <div class="list-group-item border-0 px-0">
                                 <div class="d-flex align-items-center">
-                                    <div class="premium-avatar me-3" style="width: 40px; height: 40px; background: var(--premium-gradient-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">
+                                    <div class="ms-avatar me-3">
                                         @(user.FirstName?.Substring(0, 1))@(user.LastName?.Substring(0, 1))
                                     </div>
                                     <div class="flex-grow-1">
@@ -74,9 +86,9 @@
                                                 <small class="text-muted">@user.UserName</small>
                                             </div>
                                             <div class="text-end">
-                                                <div class="premium-badge @(user.IsApproved ? "success" : "warning")">
+                                                <span class="ms-badge ms-badge-@(user.IsApproved ? "success" : "warning")">
                                                     @(user.IsApproved ? "Active" : "Pending")
-                                                </div>
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -86,8 +98,8 @@
                     </div>
                     
                     <div class="text-center mt-3">
-                        <a href="/User" class="premium-btn primary">
-                            <i class="fas fa-users"></i>
+                        <a href="/User" class="ms-btn ms-btn-primary">
+                            <i class="fas fa-users me-1"></i>
                             Manage All Users
                         </a>
                     </div>
@@ -100,30 +112,33 @@
                     </div>
                 }
             </div>
+        </div>
+    </div>
 
-            <!-- System Overview -->
-            <div class="premium-card premium-card-elevated">
-                <h3 class="premium-section-title">
-                    <i class="fas fa-chart-line premium-icon accent"></i>
+    <!-- System Overview -->
+    <div class="col-lg-6">
+        <div class="ms-card ms-card-green">
+            <div class="ms-card-header">
+                <h3 class="ms-card-title">
+                    <i class="fas fa-chart-line me-2"></i>
                     System Overview
                 </h3>
-                
+            </div>
+            <div class="ms-card-body">
                 @if (Model.UsersByRole?.Any() == true)
                 {
-                    <div class="premium-list">
+                    <div class="list-group list-group-flush">
                         @foreach (var roleGroup in Model.UsersByRole)
                         {
-                            <div class="premium-list-item">
-                                <div class="flex-grow-1">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h6 class="mb-0">@roleGroup.Key</h6>
-                                            <small class="text-muted">User Role</small>
-                                        </div>
-                                        <div class="premium-badge primary">
-                                            @roleGroup.Value users
-                                        </div>
+                            <div class="list-group-item border-0 px-0">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">@roleGroup.Key</h6>
+                                        <small class="text-muted">User Role</small>
                                     </div>
+                                    <span class="ms-badge ms-badge-primary">
+                                        @roleGroup.Value users
+                                    </span>
                                 </div>
                             </div>
                         }
@@ -138,10 +153,12 @@
                 }
             </div>
         </div>
+    </div>
+</div>
 
-        <!-- Secondary Content Grid -->
-        <div class="premium-grid premium-grid-2 mt-4">
-            <!-- Recent Projects -->
+<!-- Secondary Content Grid -->
+<div class="row g-4 mt-4">
+    <!-- Recent Projects -->
             <div class="premium-card premium-card-accent">
                 <h3 class="premium-section-title">
                     <i class="fas fa-project-diagram premium-icon accent"></i>

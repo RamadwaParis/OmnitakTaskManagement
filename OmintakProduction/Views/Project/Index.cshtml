@@ -158,109 +158,344 @@
         });
     </script>
 }
-@* <style>
-    body {
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-        color: #fff;
-        text-shadow: 0 2px 8px rgba(124, 58, 237, 0.10);
-    }
 
-    .kanban-card {
-        background: #fff;
-        color: #7c3aed;
-        border-radius: 14px;
-        box-shadow: 0 4px 16px 0 rgba(124, 58, 237, 0.10);
-        margin-bottom: 1.2rem;
-        padding: 1.5rem;
-        transition: box-shadow 0.2s, transform 0.2s;
-        border: none;
-        display: flex;
+<style>
+/* Project Overview Styles with Horizontal Scroll */
+.project-page {
+    background: #f8f9fa;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+}
+
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.project-title {
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: #333;
+    margin: 0;
+}
+
+.project-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.project-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, var(--ms-card-light-blue), #e3f2fd);
+    color: var(--ms-blue);
+    padding: 1.5rem;
+    border-radius: var(--ms-border-radius-l);
+    box-shadow: var(--ms-shadow-depth-4);
+    border: 1px solid rgba(0, 123, 212, 0.1);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    box-shadow: var(--ms-shadow-depth-8);
+    transform: translateY(-2px);
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+/* Horizontal Scrolling Project Board */
+.project-board {
+    display: flex;
+    gap: 2rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+.project-board::-webkit-scrollbar {
+    height: 8px;
+}
+
+.project-board::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.project-board::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.project-board::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}
+
+.project-column {
+    min-width: 320px;
+    flex: 0 0 320px;
+    background: var(--ms-gray-10);
+    border-radius: var(--ms-border-radius-l);
+    padding: 1.5rem;
+    border: 1px solid var(--ms-gray-30);
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.project-column-header {
+    margin-bottom: 1.5rem;
+}
+
+.column-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--ms-gray-120);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.column-count {
+    background: var(--ms-blue);
+    color: white;
+    border-radius: 12px;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.8rem;
+    margin-left: auto;
+}
+
+.project-card {
+    background: white;
+    border: 1px solid var(--ms-gray-30);
+    border-radius: var(--ms-border-radius-m);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--ms-shadow-depth-4);
+    transition: all 0.3s ease;
+}
+
+.project-card:hover {
+    box-shadow: var(--ms-shadow-depth-8);
+    transform: translateY(-2px);
+}
+
+.project-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.project-card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--ms-gray-120);
+    margin: 0;
+    line-height: 1.3;
+}
+
+.status {
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-active {
+    background: #d1edff;
+    color: var(--ms-blue);
+}
+
+.status-planning {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-onhold {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-done {
+    background: #d1e7dd;
+    color: var(--ms-green);
+}
+
+.project-card-meta {
+    color: var(--ms-gray-90);
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.progress-bar {
+    background: var(--ms-gray-30);
+    border-radius: 10px;
+    height: 6px;
+    margin: 0.5rem 0;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background: var(--ms-blue);
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.team-members {
+    display: flex;
+    gap: 0.25rem;
+    margin: 0.5rem 0;
+}
+
+.member-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--ms-blue);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.project-card-footer {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--ms-gray-30);
+}
+
+.button-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: var(--ms-border-radius-m);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.button-primary {
+    background: var(--ms-blue);
+    color: white;
+}
+
+.button-primary:hover {
+    background: var(--ms-blue-hover);
+    color: white;
+}
+
+.button-secondary {
+    background: white;
+    color: var(--ms-gray-120);
+    border: 1px solid var(--ms-gray-60);
+}
+
+.button-secondary:hover {
+    background: var(--ms-gray-20);
+    color: var(--ms-gray-120);
+}
+
+.button-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8rem;
+}
+
+/* List View Toggle */
+.project-board.list-view {
+    display: block;
+    overflow: visible;
+}
+
+.project-board.list-view .project-column {
+    min-width: 100%;
+    flex: none;
+    margin-bottom: 2rem;
+}
+
+.project-board.list-view .project-card {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+}
+
+.project-board.list-view .project-card-header {
+    margin: 0;
+    flex: 1;
+}
+
+.project-board.list-view .project-card-body {
+    flex: 2;
+    margin: 0 1rem;
+}
+
+.project-board.list-view .project-card-footer {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+/* Responsive Design */
+@@media (max-width: 768px) {
+    .project-page {
+        padding: 1rem 0.5rem;
+    }
+    
+    .project-header {
         flex-direction: column;
         gap: 1rem;
-        min-width: 220px;
-        width: 100%;
+        align-items: stretch;
     }
-
-    .kanban-card:hover {
-        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.18);
-        transform: translateY(-2px) scale(1.01);
+    
+    .project-actions {
+        justify-content: center;
     }
-
-    .kanban-card .project-title {
-        font-weight: 600;
-        font-size: 1.1rem;
-        color: #7c3aed;
-        margin: 0;
-        line-height: 1.3;
+    
+    .project-board {
+        gap: 1rem;
     }
-
-    .kanban-card .project-desc {
-        color: #6b21a8;
-        font-size: 0.95rem;
-        line-height: 1.5;
-        margin: 0;
-        flex-grow: 1;
+    
+    .project-column {
+        min-width: 280px;
+        flex: 0 0 280px;
     }
-
-    .kanban-card .kanban-actions {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: nowrap;
-        margin-top: auto;
-        padding-top: 0.5rem;
-        border-top: 1px solid rgba(124, 58, 237, 0.08);
-        justify-content: flex-start;
+    
+    .project-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
     }
-
-    .kanban-card .kanban-actions .btn {
-        border-radius: 8px;
-        font-size: 0.9rem;
-        padding: 0.5rem 1rem;
-        transition: all 0.2s;
-        flex: 1;
-        min-width: 60px;
-        text-align: center;
-    }
-
-    .kanban-card .kanban-actions .btn:hover {
-        transform: translateY(-1px);
-    }
-
-    .kanban-card span {
-        background: #4462b0;
-    }
-</style> *@
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="work-item-title">
-        <i class="fas fa-project-diagram text-primary me-2"></i>Projects
-    </h2>
-    @if (User.FindFirst(ClaimTypes.Role)?.Value == "SystemAdmin")
-    {
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>Create New Project
-        </a>
-    }
-</div>
-<div class="kanban-board">
-    @foreach (var phase in phases)
-    {
-        <div class="kanban-column">
-            <div class="kanban-column-title">@phase</div>
-            @foreach (var project in Model?.Where(p => (p.Status ?? "Planning") == phase) ?? Enumerable.Empty<OmintakProduction.Models.Project>())
-            {
-                <div class="kanban-card mb-3">
-                    <div class="project-title">@project.ProjectName</div>
-                    <div class="project-desc mb-2">@project.Description</div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge text-purple">#@project.ProjectId</span>
-                        <div class="kanban-actions">
-                            <a asp-controller="Project" asp-action="Update" asp-route-id="@project.ProjectId" class="btn btn-sm btn-primary"><i class="fas fa-edit me-1"></i>Update</a>
-                            <a asp-controller="Project" asp-action="Delete" asp-route-id="@project.ProjectId" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash me-1"></i>Delete</a>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    }
-</div>
+}
+</style>

@@ -1,0 +1,166 @@
+@model OmintakProduction.Models.SystemAdminDashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="ms-page-header">
+    <h1 class="ms-page-title">Dashboard</h1>
+    <p class="ms-page-subtitle">Welcome to your task management overview</p>
+</div>
+
+<!-- Welcome Message -->
+@if (TempData["WelcomeMessage"] != null)
+{
+    <div class="ms-alert ms-alert-success">
+        <i class="fas fa-check-circle"></i>
+        @Html.Raw(TempData["WelcomeMessage"])
+    </div>
+}
+
+<!-- Dashboard Statistics -->
+<div class="ms-dashboard-stats">
+    <div class="ms-stat-card">
+        <div class="ms-stat-icon">
+            <i class="fas fa-tasks"></i>
+        </div>
+        <h2 class="ms-stat-number">@Model.ActiveTasks</h2>
+        <p class="ms-stat-label">Active Tasks</p>
+    </div>
+    
+    <div class="ms-stat-card purple">
+        <div class="ms-stat-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h2 class="ms-stat-number">@Model.CompletedTasks</h2>
+        <p class="ms-stat-label">Completed Tasks</p>
+    </div>
+    
+    <div class="ms-stat-card teal">
+        <div class="ms-stat-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h2 class="ms-stat-number">@Model.OverdueTasks</h2>
+        <p class="ms-stat-label">Overdue Tasks</p>
+    </div>
+    
+    <div class="ms-stat-card green">
+        <div class="ms-stat-icon">
+            <i class="fas fa-project-diagram"></i>
+        </div>
+        <h2 class="ms-stat-number">@Model.TotalProjects</h2>
+        <p class="ms-stat-label">Total Projects</p>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="ms-card">
+    <div class="ms-card-header">
+        <h2 class="ms-card-title">Quick Actions</h2>
+    </div>
+    <div class="ms-card-body">
+        <div class="ms-button-group">
+            <a href="@Url.Action("Create", "Task")" class="ms-btn ms-btn-primary">
+                <i class="fas fa-plus"></i>
+                New Task
+            </a>
+            <a href="@Url.Action("Create", "Project")" class="ms-btn ms-btn-secondary">
+                <i class="fas fa-folder-plus"></i>
+                New Project
+            </a>
+            <a href="@Url.Action("Create", "Ticket")" class="ms-btn ms-btn-accent">
+                <i class="fas fa-ticket-alt"></i>
+                New Ticket
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activities -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="ms-card">
+            <div class="ms-card-header">
+                <h3 class="ms-card-title">Recent Tasks</h3>
+                <a href="@Url.Action("Index", "Task")" class="ms-btn ms-btn-outline">View All</a>
+            </div>
+            <div class="ms-card-body">
+                @if (Model.RecentTasks?.Any() == true)
+                {
+                    <div class="ms-list">
+                        @foreach (var task in Model.RecentTasks.Take(5))
+                        {
+                            <div class="ms-list-item">
+                                <div class="ms-list-content">
+                                    <h4 class="ms-list-title">@task.Title</h4>
+                                    <p class="ms-list-description">@task.Description</p>
+                                    <div class="ms-list-meta">
+                                        <span class="ms-badge ms-badge-@(task.Status.ToString().ToLower())">@task.Status</span>
+                                        @if (task.DueDate.HasValue)
+                                        {
+                                            <span class="ms-text-muted">Due: @task.DueDate.Value.ToString("MMM dd")</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="ms-empty-state">
+                        <i class="fas fa-tasks"></i>
+                        <p>No recent tasks found</p>
+                        <a href="@Url.Action("Create", "Task")" class="ms-btn ms-btn-primary">Create Your First Task</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="ms-card">
+            <div class="ms-card-header">
+                <h3 class="ms-card-title">Recent Projects</h3>
+                <a href="@Url.Action("Index", "Project")" class="ms-btn ms-btn-outline">View All</a>
+            </div>
+            <div class="ms-card-body">
+                @if (Model.RecentProjects?.Any() == true)
+                {
+                    <div class="ms-list">
+                        @foreach (var project in Model.RecentProjects.Take(5))
+                        {
+                            <div class="ms-list-item">
+                                <div class="ms-list-content">
+                                    <h4 class="ms-list-title">@project.ProjectName</h4>
+                                    <p class="ms-list-description">@project.Description</p>
+                                    <div class="ms-list-meta">
+                                        <span class="ms-badge ms-badge-@(project.Status?.ToLower() ?? "default")">@project.Status</span>
+                                        <span class="ms-text-muted">Due: @project.DueDate.ToDateTime(TimeOnly.MinValue).ToString("MMM dd")</span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="ms-empty-state">
+                        <i class="fas fa-project-diagram"></i>
+                        <p>No recent projects found</p>
+                        <a href="@Url.Action("Create", "Project")" class="ms-btn ms-btn-primary">Create Your First Project</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Add any dashboard-specific JavaScript here
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize dashboard components
+            console.log('Dashboard loaded successfully');
+        });
+    </script>
+}

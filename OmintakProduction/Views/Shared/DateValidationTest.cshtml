@@ -1,0 +1,137 @@
+@{
+    ViewData["Title"] = "Date Validation Test";
+}
+
+<div class="ms-page-header">
+    <h1 class="ms-page-title">Date Validation Test</h1>
+    <p class="ms-page-subtitle">Test the date validation functionality for Tasks, Projects, and Tickets</p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="ms-card">
+            <div class="ms-card-header">
+                <h3 class="ms-card-title">Task Date Validation</h3>
+            </div>
+            <div class="ms-card-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="taskDueDate" class="form-label">Task Due Date</label>
+                        <input type="date" class="form-control" id="taskDueDate" name="DueDate" />
+                        <small class="form-text text-muted">Try selecting a past date to see validation in action</small>
+                    </div>
+                    <button type="submit" class="ms-btn ms-btn-primary">Test Task Validation</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="ms-card">
+            <div class="ms-card-header">
+                <h3 class="ms-card-title">Project Date Validation</h3>
+            </div>
+            <div class="ms-card-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="projectDueDate" class="form-label">Project Due Date</label>
+                        <input type="date" class="form-control" id="projectDueDate" name="DueDate" />
+                        <small class="form-text text-muted">Past dates will be automatically prevented</small>
+                    </div>
+                    <button type="submit" class="ms-btn ms-btn-primary">Test Project Validation</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="ms-card">
+            <div class="ms-card-header">
+                <h3 class="ms-card-title">Ticket Date Validation</h3>
+            </div>
+            <div class="ms-card-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="ticketDueDate" class="form-label">Ticket Due Date</label>
+                        <input type="date" class="form-control" id="ticketDueDate" name="DueDate" />
+                        <small class="form-text text-muted">Client-side validation prevents past dates</small>
+                    </div>
+                    <button type="submit" class="ms-btn ms-btn-primary">Test Ticket Validation</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ms-card mt-4">
+    <div class="ms-card-header">
+        <h3 class="ms-card-title">Validation Features</h3>
+    </div>
+    <div class="ms-card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h5><i class="fas fa-shield-alt text-success"></i> Server-Side Validation</h5>
+                <ul>
+                    <li><strong>Model Attributes:</strong> Added <code>[NotPastDate]</code> and <code>[NotPastDateOnly]</code> validation attributes</li>
+                    <li><strong>Controller Validation:</strong> Additional validation in Create and Edit methods</li>
+                    <li><strong>Service Validation:</strong> <code>DateValidationService</code> for reusable validation logic</li>
+                    <li><strong>Error Messages:</strong> User-friendly error messages displayed in forms</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h5><i class="fas fa-browser text-primary"></i> Client-Side Validation</h5>
+                <ul>
+                    <li><strong>HTML5 Min Attribute:</strong> Automatically sets minimum date to today</li>
+                    <li><strong>JavaScript Validation:</strong> Real-time validation as user types or changes dates</li>
+                    <li><strong>Visual Feedback:</strong> Red borders and error messages for invalid dates</li>
+                    <li><strong>Form Submission Prevention:</strong> Prevents form submission with invalid dates</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="alert alert-info mt-3">
+            <h6><i class="fas fa-info-circle"></i> How It Works</h6>
+            <p class="mb-0">
+                The validation system prevents users from assigning tasks, projects, or tickets with due dates in the past.
+                It combines both client-side (JavaScript) and server-side (C#) validation for maximum security and user experience.
+                The system allows selecting today's date but blocks any date before today.
+            </p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add some demo functionality
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const input = this.querySelector('input[type="date"]');
+                    const selectedDate = new Date(input.value);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    
+                    if (!input.value) {
+                        showNotification('Please select a date to test validation.', 'warning');
+                    } else if (selectedDate < today) {
+                        showNotification('Validation working! Past dates are not allowed.', 'error');
+                    } else {
+                        showNotification('Validation passed! This date would be accepted.', 'success');
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+<style>
+    .text-success { color: #28a745 !important; }
+    .text-primary { color: #007bff !important; }
+    .alert-info { 
+        background-color: #d1ecf1; 
+        border-color: #bee5eb; 
+        color: #0c5460; 
+    }
+</style>
