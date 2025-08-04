@@ -1,2 +1,0 @@
-// Run this in your project directory to install the JWT authentication package:
-// dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer

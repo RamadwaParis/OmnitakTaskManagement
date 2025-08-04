@@ -42,6 +42,8 @@ builder.Services.AddAuthentication(options =>
 // Add Swagger services
 // Register services
 builder.Services.AddScoped<PdfGeneratorService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IUserApprovalService, UserApprovalService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
