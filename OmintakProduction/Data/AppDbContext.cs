@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Abstractions;
 using OmintakProduction.Models;
 using BCrypt.Net;
-// ...existing code...
 
 namespace OmintakProduction.Data
 {
@@ -26,7 +25,7 @@ namespace OmintakProduction.Data
         public DbSet<TaskComment> TaskComment { get; set; }
         public DbSet<TaskHistory> TaskHistory { get; set; }
         public DbSet<BugReport> BugReports { get; set; }
-        public DbSet<Team> Team { get; set; } // Add DbSet for Team
+        public DbSet<Team> Team { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
