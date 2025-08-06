@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using OmintakProduction.Models;
 using OmintakProduction.Data;
+using OmintakProduction.Services;
 using System.Linq;
 
 namespace OmintakProduction.Controllers
@@ -10,10 +11,13 @@ namespace OmintakProduction.Controllers
     public class TeamController : Controller
     {
         private readonly AppDbContext _context;
-        public TeamController(AppDbContext context)
+        private readonly INotificationService _notificationService;
+        
+        public TeamController(AppDbContext context, INotificationService notificationService)
         {
             _context = context;
-            }
+            _notificationService = notificationService;
+        }
         
 
         // List all teams
@@ -34,7 +38,7 @@ namespace OmintakProduction.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Team team, int[] SelectedUserIds)
+        public async System.Threading.Tasks.Task<IActionResult> Create(Team team, int[] SelectedUserIds)
         {
             // Enforce max 5 members
             if (SelectedUserIds == null || SelectedUserIds.Length == 0)
@@ -53,6 +57,13 @@ namespace OmintakProduction.Controllers
                 team.TeamMembers = users;
                 _context.Team.Add(team);
                 _context.SaveChanges();
+                
+                // Notify all team members about team assignment
+                foreach (var user in users)
+                {
+                    await _notificationService.NotifyUserAssignedToTeam(user.UserId, team.TeamId, team.TeamName);
+                }
+                
                 return RedirectToAction("Index");
             }
             ViewBag.ActiveUsers = _context.User.Where(u => u.isActive).ToList();

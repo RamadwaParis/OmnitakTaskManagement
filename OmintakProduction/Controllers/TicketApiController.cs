@@ -29,7 +29,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(typeof(IEnumerable<Ticket>), 200)]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _context.Ticket.ToListAsync());
+            return Ok(await _context.Ticket.Where(t => !t.IsDeleted).ToListAsync());
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace OmintakProduction.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> Get(int id)
         {
-            var ticket = await _context.Ticket.FirstOrDefaultAsync(t => t.Id == id);
+            var ticket = await _context.Ticket.FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
             
             if (ticket == null) return NotFound();
             return Ok(ticket);
@@ -103,8 +103,13 @@ namespace OmintakProduction.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var ticket = await _context.Ticket.FindAsync(id);
-            if (ticket == null) return NotFound();
-            _context.Ticket.Remove(ticket);
+            if (ticket == null || ticket.IsDeleted) return NotFound();
+            
+            // Implement soft delete
+            ticket.IsDeleted = true;
+            ticket.DeletedAt = DateTime.UtcNow;
+            
+            _context.Update(ticket);
             await _context.SaveChangesAsync();
             return NoContent();
         }
@@ -119,7 +124,7 @@ namespace OmintakProduction.Controllers
         public async Task<IActionResult> GetByProject(int projectId)
         {
             var tickets = await _context.Ticket
-                .Where(t => t.ProjectId == projectId)
+                .Where(t => t.ProjectId == projectId && !t.IsDeleted)
                 .ToListAsync();
             return Ok(tickets);
         }
@@ -134,7 +139,7 @@ namespace OmintakProduction.Controllers
         public async Task<IActionResult> GetByStatus(string status)
         {
             var tickets = await _context.Ticket
-                .Where(t => t.Status == status)
+                .Where(t => t.Status == status && !t.IsDeleted)
                 .ToListAsync();
             return Ok(tickets);
         }
@@ -149,7 +154,7 @@ namespace OmintakProduction.Controllers
         public async Task<IActionResult> GetByUser(int userId)
         {
             var tickets = await _context.Ticket
-                .Where(t => t.AssignedToUserId == userId)
+                .Where(t => t.AssignedToUserId == userId && !t.IsDeleted)
                 .ToListAsync();
             return Ok(tickets);
         }
@@ -187,7 +192,7 @@ namespace OmintakProduction.Controllers
 
         private async Task<bool> TicketExists(int id)
         {
-            return await _context.Ticket.AnyAsync(e => e.Id == id);
+            return await _context.Ticket.AnyAsync(e => e.Id == id && !e.IsDeleted);
         }
     }
 }

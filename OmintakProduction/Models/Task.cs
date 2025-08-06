@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using OmintakProduction.Validations;
 
 namespace OmintakProduction.Models
 {
@@ -34,13 +35,20 @@ namespace OmintakProduction.Models
         public TaskStatus Status { get; set; } = TaskStatus.Todo;
         public TaskPriority Priority { get; set; } = TaskPriority.Medium;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+        
+        [NotPastDate(AllowToday = true)]
+        [Display(Name = "Due Date")]
         public DateTime? DueDate { get; set; }
+        
         public DateTime? CompletedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public string? Tags { get; set; }
         public int EstimatedHours { get; set; }
         public int ActualHours { get; set; }
         public bool IsDeleted { get; set; } = false;
+        public DateTime? DeletedAt { get; set; }
+        public int? DeletedByUserId { get; set; }
+        public User? DeletedByUser { get; set; }
 
         // Hold feature properties
         public bool IsOnHold { get; set; } = false;

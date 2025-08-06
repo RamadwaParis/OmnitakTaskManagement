@@ -1,21 +1,32 @@
 # Omnitak Task Management System
 
-A comprehensive, modern task management system built with ASP.NET Core MVC, featuring RESTful APIs and a beautiful custom-designed UI. This application provides enterprise-grade functionality for project management, task tracking, bug reporting, and team collaboration, all with a focus on clean, maintainable code and exceptional user experience.
+A comprehensive, modern task management system built with ASP.NET Core MVC, featuring role-based dashboards, RESTful APIs, and a beautiful Microsoft 365-inspired UI. This application provides enterprise-grade functionality for project management, task tracking, bug reporting, and team collaboration with role-specific access control.
 
-## 🌟 Latest Updates (July 28, 2025)
+## 🌟 Latest Updates (August 2025)
 
-### Custom UI Implementation
-- ✨ Completely removed Bootstrap dependency in favor of custom CSS
-- 🎨 Implemented custom design system with modern aesthetics
-- 📱 Enhanced responsive design with CSS Grid and Flexbox
-- 🎯 Added custom animations and transitions
-- 🎭 Implemented new theme system with CSS variables
+### Role-Based Dashboard System
+- ✨ Implemented role-specific dashboards for different user types
+- 🎯 System Admin, Developer, Tester, Team Lead, and Stakeholder views
+- 📊 Customized data and functionality based on user permissions
+- 🔐 Enhanced security with role-based access control
 
-### Performance Improvements
-- ⚡ Reduced CSS bundle size by 70% through custom implementation
-- 🚀 Improved page load times with optimized assets
-- 🧹 Cleaned up unused dependencies
-- 📦 Minimized JavaScript usage
+### Microsoft 365 UI Theme
+- 🎨 Modern Microsoft 365-inspired design system
+- 📱 Fully responsive layout with clean, professional aesthetics
+- 🎭 Consistent color scheme and typography
+- ⚡ Improved performance with optimized CSS
+
+### Enhanced Authentication & User Management
+- 🔒 Secure BCrypt password hashing
+- 👥 User approval system for new registrations
+- � Claims-based authentication with role management
+- 🔑 System admin controls for user management
+
+### Build & Deployment Improvements
+- 🧹 Cleaned up duplicate files and build conflicts
+- 🚀 Streamlined build process with error-free compilation
+- 📦 Optimized project structure and dependencies
+- ✅ Comprehensive migration system
 
 ---
 
@@ -81,35 +92,47 @@ This project is developed by a team of four:
 
 ### Core Functionality
 
+- **Role-Based Dashboard System**
+  - **System Admin Dashboard**: Complete system oversight, user management, and system statistics
+  - **Developer Dashboard**: Assigned tasks, development progress tracking, and code-related activities
+  - **Tester Dashboard**: Testing tasks, bug reports, and quality assurance metrics
+  - **Team Lead Dashboard**: Team management, project oversight, and performance tracking
+  - **Stakeholder Dashboard**: High-level project status, budget tracking, and strategic metrics
+
 - **User Management & Authentication**
-  - Secure user registration and login with BCrypt password hashing
-  - Role-based access control (Admin, User)
-  - User profile management
-  - Session management with cookies
+  - Secure user registration with admin approval system
+  - Role-based access control (SystemAdmin, Developer, Tester, TeamLead, Stakeholder)
+  - BCrypt password hashing for enhanced security
+  - Claims-based authentication with session management
+  - User profile management and status tracking
 
 - **Project Management**
-  - Create, view, update, and delete projects
-  - Project status tracking
-  - Budget and timeline management
-  - Project-task relationship management
+  - Comprehensive project CRUD operations
+  - Project status tracking and timeline management
+  - Budget allocation and expense tracking
+  - Team assignment and project-task relationships
+  - Progress monitoring and reporting
 
 - **Task Management**
-  - Comprehensive task CRUD operations
-  - Kanban board view with drag-and-drop functionality
-  - Task priority and status management
-  - Due date tracking and notifications
-  - Task assignment to team members
+  - Advanced task CRUD operations with priority levels
+  - Task assignment to multiple team members
+  - Status workflow management (Todo, InProgress, Completed, OnHold)
+  - Due date tracking with overdue notifications
+  - Task dependencies and milestone tracking
 
-- **Bug Report System**
-  - Bug report creation and tracking
-  - Severity classification (Critical, High, Medium, Low)
-  - Bug status workflow (Open, In Progress, Resolved, Closed)
-  - Assignment and resolution tracking
+- **Enhanced Bug Report System**
+  - Comprehensive bug tracking with severity levels
+  - Bug lifecycle management (Open, InProgress, Resolved, Closed)
+  - Assignment workflow and resolution tracking
+  - Integration with task management system
+  - Detailed bug analytics and reporting
 
-- **Notification System**
-  - Real-time notifications
+- **Notification & Communication System**
+  - Real-time notifications for task updates
+  - Role-specific notification filtering
   - Unread notification counters
-  - Notification management
+  - System-wide announcements
+  - Email integration capabilities
 
 ### API & Integration
 
@@ -121,32 +144,34 @@ This project is developed by a team of four:
 
 ## 🎨 Modern UI/UX
 
-### Custom Design System
+### Microsoft 365-Inspired Design
+
+- **Professional Theme System**
+  - Clean, modern Microsoft 365-inspired interface
+  - Consistent color palette with professional aesthetics
+  - Modern typography with excellent readability
+  - Responsive design that works on all devices
+  - Accessibility-first approach with WCAG compliance
+
+- **Role-Specific Dashboards**
+  - Customized layouts for each user role
+  - Role-appropriate widgets and statistics
+  - Contextual navigation and actions
+  - Personalized data visualization
+  - Intuitive user experience design
 
 - **Component-Based Architecture**
   - Modular CSS with reusable components
-  - CSS Grid and Flexbox layouts
-  - Custom card designs for tasks, projects, and bug reports
-  - Consistent spacing using CSS variables
+  - CSS Grid and Flexbox for modern layouts
+  - Custom card designs with consistent styling
+  - Interactive elements with smooth animations
+  - Responsive tables and data grids
 
-- **Modern Visual Design**
-  - Clean, minimalist interface
-  - Custom status and severity badges
-  - Interactive hover states and transitions
-  - Responsive tables with custom styling
-  - Beautiful stat cards with dynamic colors
-
-- **Theme System**
-  - CSS variables for easy theme customization
-  - Carefully curated color palette
-  - Consistent typography scale
-  - Modern shadow system
-  - Responsive spacing units
-
-- **Enhanced Accessibility**
-  - WCAG 2.1 compliant color contrasts
-  - Semantic HTML structure
-  - Proper ARIA labels
+- **Enhanced User Experience**
+  - Clean, intuitive navigation structure
+  - Context-aware menus and actions
+  - Real-time feedback and notifications
+  - Progressive disclosure of information
   - Keyboard navigation support
   - Screen reader friendly
 
@@ -187,32 +212,32 @@ This project is developed by a team of four:
 
 ### Backend Architecture
 
-- **ASP.NET Core 9** - Modern web framework for scalable applications
-- **Entity Framework Core** - Robust ORM for database operations
-- **Microsoft SQL Server** - Enterprise-grade database system
-- **BCrypt.Net** - Secure password hashing implementation
-- **JWT Authentication** - Token-based security
+- **ASP.NET Core 9** - Latest .NET framework for high-performance web applications
+- **Entity Framework Core** - Advanced ORM with comprehensive migration system
+- **Microsoft SQL Server** - Enterprise-grade database with full relational support
+- **BCrypt.Net** - Industry-standard password hashing for maximum security
+- **Claims-Based Authentication** - Modern authentication with role-based authorization
 
 ### Frontend Implementation
 
-- **Custom CSS Architecture**
-  - Modern CSS features (Grid, Flexbox, Custom Properties)
-  - Component-based structure
-  - BEM methodology for naming
-  - CSS variables for theming
-  - Mobile-first responsive design
+- **Microsoft 365 Theme**
+  - Professional, clean design language
+  - Responsive CSS Grid and Flexbox layouts
+  - CSS Custom Properties for consistent theming
+  - Mobile-first responsive design approach
+  - Optimized for performance and accessibility
 
-- **Razor Views**
-  - Clean, semantic HTML
-  - Server-side rendering
-  - Partial views for components
-  - ViewComponents for complex features
+- **Razor Views & Components**
+  - Server-side rendering for optimal SEO
+  - Reusable ViewComponents for complex features
+  - Partial views for modular development
+  - Strongly-typed models for compile-time safety
 
-- **Minimal JavaScript**
-  - Vanilla JS for essential interactivity
-  - No heavy frameworks
+- **Modern JavaScript**
+  - Vanilla JavaScript for essential interactivity
   - Progressive enhancement approach
-  - Performance-focused implementation
+  - Minimal dependencies for fast load times
+  - ES6+ features with broad compatibility
 
 ### Development Tools
 
@@ -282,12 +307,23 @@ This project is developed by a team of four:
    - Web Interface: `https://localhost:5001` or `http://localhost:5000`
    - Swagger API Docs: `https://localhost:5001/swagger`
 
-### Default Admin Account
+### Default System Admin Account
 
-After running migrations, you can use the default admin account:
+After running database migrations, you can log in using the system admin account:
 
-- **Email**: `admin@omnitak.com`
-- **Password**: `Admin123!`
+- **Email**: `uthandocibi@gmail.com`
+- **Password**: `password`
+- **Role**: System Administrator
+
+**System Admin Capabilities:**
+- ✅ Approve/reject new user registrations
+- ✅ Manage all users and their roles
+- ✅ Access complete system overview dashboard
+- ✅ View all projects, tasks, and bug reports
+- ✅ System configuration and maintenance
+- ✅ Generate system-wide reports and analytics
+
+**Security Note**: Please change the default password after first login for security purposes.
 
 ## 📡 API Usage
 
@@ -421,46 +457,45 @@ OmintakProduction/
 
 ## 🎯 Recent Enhancements
 
-### Custom CSS Implementation (July 2025)
+### Role-Based Dashboard System (August 2025)
 
-- ✅ Completely removed Bootstrap dependency
-- ✅ Implemented modern CSS architecture with BEM methodology
-- ✅ Created custom component library
-- ✅ Built comprehensive theme system using CSS variables
-- ✅ Enhanced responsiveness with CSS Grid and Flexbox
+- ✅ Implemented complete role-based dashboard architecture
+- ✅ Created role-specific view models and controllers
+- ✅ Built customized dashboards for all user roles
+- ✅ Enhanced security with role-based access control
+- ✅ Integrated claims-based authentication system
 
-### Component Improvements
+### UI/UX Improvements
 
-- ✅ Redesigned task cards with modern styling
-- ✅ Created custom status and severity badges
-- ✅ Implemented new button system
-- ✅ Enhanced table designs
-- ✅ Added custom form styles
-- ✅ Created new stat card components
+- ✅ Implemented Microsoft 365-inspired design theme
+- ✅ Fixed dashboard card styling and responsiveness
+- ✅ Enhanced sidebar navigation with proper alignment
+- ✅ Improved overall visual consistency and user experience
+- ✅ Optimized CSS for better performance
 
-### Bug Report System Updates
+### System Administration Features
 
-- ✅ Implemented new bug report dashboard
-- ✅ Added custom severity indicators
-- ✅ Enhanced bug list with modern table design
-- ✅ Improved bug detail view layout
-- ✅ Added search and filter functionality
-
-### Performance Optimizations
-
-- ✅ Reduced CSS bundle size by 70%
-- ✅ Improved page load times
-- ✅ Minimized JavaScript usage
-- ✅ Enhanced asset caching
-- ✅ Optimized image loading
+- ✅ Built comprehensive user management system
+- ✅ Implemented user approval workflow
+- ✅ Created system admin dashboard with full oversight
+- ✅ Enhanced security with proper password hashing
+- ✅ Added role-based navigation and permissions
 
 ### Technical Improvements
 
-- ✅ Organized CSS into modular structure
-- ✅ Enhanced code maintainability
-- ✅ Improved build process
-- ✅ Added comprehensive documentation
-- ✅ Enhanced testing coverage
+- ✅ Cleaned up build errors and duplicate files
+- ✅ Streamlined project structure and dependencies
+- ✅ Improved database migration system
+- ✅ Enhanced error handling and validation
+- ✅ Optimized application performance
+
+### Database & Security Enhancements
+
+- ✅ Updated password hashing to BCrypt with proper salt rounds
+- ✅ Implemented secure user seeding and migrations
+- ✅ Enhanced role-based security throughout the application
+- ✅ Improved data validation and entity relationships
+- ✅ Added comprehensive audit trails and logging
 
 ## 🔧 Configuration
 
@@ -504,3 +539,10 @@ For support and questions, please:
 ---
 
 ### Built with ❤️ by the Omnitak Development Team
+
+**Latest Updates**: August 2025
+- Enhanced role-based dashboard system
+- Microsoft 365-inspired UI improvements  
+- Comprehensive user management and security
+- Streamlined build process and deployment
+- Professional-grade task and project management

@@ -1,9 +1,11 @@
-﻿
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using OmintakProduction.Data;
 using OmintakProduction.Models;
+using OmintakProduction.Services;
 using System.Security.Claims;
 
 namespace OmintakProduction.Controllers
@@ -11,9 +13,12 @@ namespace OmintakProduction.Controllers
     public class TicketController : Controller
     {
         private readonly AppDbContext _context;
-        public TicketController(AppDbContext context)
+        private readonly INotificationService _notificationService;
+        
+        public TicketController(AppDbContext context, INotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
         }
 
         // POST: Ticket/AssignTicket
@@ -60,6 +65,12 @@ namespace OmintakProduction.Controllers
             _context.Update(ticket);
             await _context.SaveChangesAsync();
             
+            // Notify the assigned user if a user was assigned
+            if (assignedToUserId.HasValue)
+            {
+                await _notificationService.NotifyUserAssignedToTicket(assignedToUserId.Value, ticket.Id, ticket.Title);
+            }
+            
             return RedirectToAction("Edit", new { id = ticket.Id });
         }
 
@@ -75,17 +86,21 @@ namespace OmintakProduction.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var tickets = await _context.Ticket.ToListAsync();
+            var tickets = await _context.Ticket
+                .Where(t => !t.IsDeleted)
+                .Include(t => t.Project)
+                .Include(t => t.AssignedToUser)
+                .ToListAsync();
             return View("~/Views/Ticket/Index.cshtml", tickets);
         }
 
         public async Task<IActionResult> Details(int id)
         {
             var ticket = await _context.Ticket
-                .Include(t => t.Tasks)
+                .Include(t => t.Tasks.Where(task => !task.IsDeleted))
                 .Include(t => t.AssignedToUser)
                 .Include(t => t.Project)
-                .FirstOrDefaultAsync(t => t.Id == id);
+                .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
             if (ticket == null) return NotFound();
             return View("~/Views/Ticket/Details.cshtml", ticket);
         }
@@ -110,6 +125,13 @@ namespace OmintakProduction.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,Description,DueDate,Status,ProjectId,AssignedToUserId")] Ticket ticket)
         {
+            // Validate due date is not in the past
+            var dateValidation = DateValidationService.ValidateTicketDueDate(ticket.DueDate);
+            if (!dateValidation.isValid)
+            {
+                ModelState.AddModelError("DueDate", dateValidation.errorMessage);
+            }
+            
             if (ModelState.IsValid)
             {
                 ticket.CreatedAt = DateOnly.FromDateTime(DateTime.Now);
@@ -162,6 +184,13 @@ namespace OmintakProduction.Controllers
         {
             if (id != updatedTicket.Id) return NotFound();
 
+            // Validate due date is not in the past
+            var dateValidation = DateValidationService.ValidateTicketDueDate(updatedTicket.DueDate);
+            if (!dateValidation.isValid)
+            {
+                ModelState.AddModelError("DueDate", dateValidation.errorMessage);
+            }
+
             var existingTicket = await _context.Ticket.FindAsync(id);
             if (existingTicket == null) return NotFound();
 
@@ -194,28 +223,48 @@ namespace OmintakProduction.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "TeamLead,SystemAdmin,ProjectLead")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
 
             var ticket = await _context.Ticket
-                .FirstOrDefaultAsync(t => t.Id == id);
+                .Include(t => t.Project)
+                .Include(t => t.AssignedToUser)
+                .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
 
             return ticket == null ? NotFound() : View("~/Views/Ticket/Delete.cshtml", ticket);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(Ticket obj)
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "TeamLead,SystemAdmin,ProjectLead")]
+        public async Task<IActionResult> Delete(int id)
         {
-            _context.Ticket.Remove(obj);
-            await _context.SaveChangesAsync();
+            var ticket = await _context.Ticket.FindAsync(id);
+            if (ticket != null && !ticket.IsDeleted)
+            {
+                // Implement soft delete
+                ticket.IsDeleted = true;
+                ticket.DeletedAt = DateTime.UtcNow;
+                
+                // Get current user ID from claims for audit trail
+                var currentUserIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
+                if (currentUserIdClaim != null && int.TryParse(currentUserIdClaim.Value, out int currentUserId))
+                {
+                    ticket.DeletedByUserId = currentUserId;
+                }
+
+                _context.Update(ticket);
+                await _context.SaveChangesAsync();
+            }
 
             return RedirectToAction("Index");
         }
 
         private bool TicketExists(int id)
         {
-            return _context.Ticket.Any(e => e.Id == id);
+            return _context.Ticket.Any(e => e.Id == id && !e.IsDeleted);
         }
 
         public async Task<IActionResult> Edit(int id)

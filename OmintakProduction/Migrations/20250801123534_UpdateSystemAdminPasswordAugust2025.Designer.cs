@@ -12,8 +12,8 @@ using OmintakProduction.Data;
 namespace OmintakProduction.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250729075804_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250801123534_UpdateSystemAdminPasswordAugust2025")]
+    partial class UpdateSystemAdminPasswordAugust2025
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -291,6 +291,12 @@ namespace OmintakProduction.Migrations
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedByUserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -341,6 +347,8 @@ namespace OmintakProduction.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedByUserId");
+
+                    b.HasIndex("DeletedByUserId");
 
                     b.HasIndex("HoldRequestedByUserId");
 
@@ -541,12 +549,21 @@ namespace OmintakProduction.Migrations
                     b.Property<DateOnly>("CreatedAt")
                         .HasColumnType("date");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedByUserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateOnly>("DueDate")
                         .HasColumnType("date");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<int>("Priority")
                         .HasColumnType("int");
@@ -562,11 +579,18 @@ namespace OmintakProduction.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AssignedToUserId");
 
+                    b.HasIndex("DeletedByUserId");
+
                     b.HasIndex("ProjectId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Ticket");
 
@@ -578,6 +602,7 @@ namespace OmintakProduction.Migrations
                             CreatedAt = new DateOnly(2025, 6, 26),
                             Description = "This is a sample ticket description.",
                             DueDate = new DateOnly(2025, 6, 26),
+                            IsDeleted = false,
                             Priority = 1,
                             Status = "ToDo",
                             Title = "Sample Ticket"
@@ -589,6 +614,7 @@ namespace OmintakProduction.Migrations
                             CreatedAt = new DateOnly(2025, 6, 26),
                             Description = "This is a sample ticket description.",
                             DueDate = new DateOnly(2025, 6, 26),
+                            IsDeleted = false,
                             Priority = 1,
                             Status = "In_Progress",
                             Title = "Sample Ticket"
@@ -600,6 +626,7 @@ namespace OmintakProduction.Migrations
                             CreatedAt = new DateOnly(2025, 6, 26),
                             Description = "This is a sample ticket description.",
                             DueDate = new DateOnly(2025, 6, 26),
+                            IsDeleted = false,
                             Priority = 1,
                             Status = "In_Review",
                             Title = "Sample Ticket"
@@ -611,6 +638,7 @@ namespace OmintakProduction.Migrations
                             CreatedAt = new DateOnly(2025, 6, 26),
                             Description = "This is a sample ticket description.",
                             DueDate = new DateOnly(2025, 6, 26),
+                            IsDeleted = false,
                             Priority = 1,
                             Status = "Done",
                             Title = "Sample Ticket"
@@ -695,7 +723,7 @@ namespace OmintakProduction.Migrations
                             IsDeleted = false,
                             LastName = "Cibi",
                             NeedsWelcome = true,
-                            Password = "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+                            Password = "$2a$12$VrZfFLqrJcK3eZ2y7hYCl.QqG5JjS8Z4xKt3CYi2qE1UhAzF9LkTe",
                             RoleId = 1,
                             UserName = "Tee",
                             isActive = true
@@ -785,6 +813,11 @@ namespace OmintakProduction.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("OmintakProduction.Models.User", "DeletedByUser")
+                        .WithMany()
+                        .HasForeignKey("DeletedByUserId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("OmintakProduction.Models.User", "HoldRequestedByUser")
                         .WithMany()
                         .HasForeignKey("HoldRequestedByUserId");
@@ -799,6 +832,8 @@ namespace OmintakProduction.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("CreatedByUser");
+
+                    b.Navigation("DeletedByUser");
 
                     b.Navigation("HoldRequestedByUser");
 
@@ -896,15 +931,27 @@ namespace OmintakProduction.Migrations
             modelBuilder.Entity("OmintakProduction.Models.Ticket", b =>
                 {
                     b.HasOne("OmintakProduction.Models.User", "AssignedToUser")
-                        .WithMany("Tickets")
-                        .HasForeignKey("AssignedToUserId");
+                        .WithMany()
+                        .HasForeignKey("AssignedToUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("OmintakProduction.Models.User", "DeletedByUser")
+                        .WithMany()
+                        .HasForeignKey("DeletedByUserId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("OmintakProduction.Models.Project", "Project")
                         .WithMany("Tickets")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("OmintakProduction.Models.User", null)
+                        .WithMany("Tickets")
+                        .HasForeignKey("UserId");
+
                     b.Navigation("AssignedToUser");
+
+                    b.Navigation("DeletedByUser");
 
                     b.Navigation("Project");
                 });

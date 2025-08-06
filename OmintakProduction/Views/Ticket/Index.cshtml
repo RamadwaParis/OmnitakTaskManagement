@@ -2,7 +2,12 @@
 @model IEnumerable<OmintakProduction.Models.Ticket>;
 @{
     ViewData["Title"] = "Tickets";
+    var ticketsByStatus = Model.GroupBy(t => t.Status).ToList();
 }
+
+<!-- Add drag and drop JavaScript -->
+<script src="~/js/dragdrop.js"></script>
+
 <style>
 .tickets-table {
     background: #fff;
@@ -31,43 +36,266 @@
     font-size: 0.95rem;
     margin-right: 0.5rem;
 }
+
+/* Kanban Board Styles for Tickets */
+.ticket-kanban-board {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.ticket-kanban-column {
+    background: var(--ms-surface-background);
+    border-radius: var(--ms-border-radius-l);
+    box-shadow: var(--ms-shadow-depth-4);
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    min-height: 500px;
+}
+
+.ticket-kanban-column.drag-over {
+    border-color: var(--ms-blue);
+    background-color: rgba(0, 123, 212, 0.05);
+}
+
+.ticket-kanban-column-header {
+    padding: var(--ms-spacing-l);
+    border-bottom: 1px solid var(--ms-gray-30);
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: var(--ms-border-radius-l) var(--ms-border-radius-l) 0 0;
+}
+
+.ticket-kanban-items {
+    padding: var(--ms-spacing-m);
+    min-height: 400px;
+}
+
+.ticket-kanban-item {
+    background: white;
+    border-radius: var(--ms-border-radius-m);
+    padding: var(--ms-spacing-l);
+    margin-bottom: var(--ms-spacing-m);
+    box-shadow: var(--ms-shadow-depth-4);
+    border: 1px solid var(--ms-gray-30);
+    cursor: grab;
+    transition: all 0.3s ease;
+}
+
+.ticket-kanban-item:hover {
+    box-shadow: var(--ms-shadow-depth-8);
+    transform: translateY(-2px);
+}
+
+.ticket-kanban-item.dragging {
+    opacity: 0.5;
+    transform: rotate(2deg);
+}
+
+.ticket-kanban-item-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--ms-gray-120);
+    margin-bottom: var(--ms-spacing-s);
+}
+
+.ticket-kanban-item-description {
+    color: var(--ms-gray-90);
+    font-size: 0.9rem;
+    margin-bottom: var(--ms-spacing-m);
+    line-height: 1.4;
+}
+
+.view-toggle {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.view-toggle .ms-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.view-toggle .ms-btn.active {
+    background: #7c3aed;
+    color: white;
+}
 </style>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="work-item-title"><i class="fas fa-ticket-alt text-primary me-2"></i>Tickets</h2>
-    @if (User.FindFirst(ClaimTypes.Role)?.Value == "SystemAdmin")
-    {
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>Create New Ticket
-        </a>
-    }
+    <div class="d-flex gap-2 align-items-center">
+        <div class="view-toggle">
+            <button type="button" class="ms-btn ms-btn-secondary active" onclick="showTicketView('kanban')" id="kanbanViewBtn">
+                <i class="fas fa-columns me-1"></i>Kanban View
+            </button>
+            <button type="button" class="ms-btn ms-btn-secondary" onclick="showTicketView('table')" id="tableViewBtn">
+                <i class="fas fa-table me-1"></i>Table View
+            </button>
+        </div>
+        @if (User.FindFirst(ClaimTypes.Role)?.Value == "SystemAdmin")
+        {
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Create New Ticket
+            </a>
+        }
+    </div>
 </div>
-<div class="tickets-table-wrapper">
-    <table class="table tickets-table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var ticket in Model)
-            {
+
+<!-- Kanban Board View -->
+<div id="kanbanView" class="ticket-view">
+    <div class="ticket-kanban-board">
+        @{
+            var statuses = new[] { "To Do", "In Progress", "In Review", "Done" };
+        }
+        @foreach (var status in statuses)
+        {
+            var statusTickets = ticketsByStatus.FirstOrDefault(g => g.Key == status)?.ToList() ?? new List<OmintakProduction.Models.Ticket>();
+            <div class="ticket-kanban-column drop-zone" data-status="@status">
+                <div class="ticket-kanban-column-header">
+                    <h5 class="mb-1">@status</h5>
+                    <span class="ms-badge ms-badge-primary">@statusTickets.Count tickets</span>
+                </div>
+                <div class="ticket-kanban-items">
+                    @foreach (var ticket in statusTickets)
+                    {
+                        <div class="ticket-kanban-item draggable ms-card"
+                             data-id="@ticket.Id"
+                             data-type="ticket"
+                             data-status="@ticket.Status"
+                             data-priority="@ticket.Priority.ToString()"
+                             draggable="true">
+                            <div class="ticket-kanban-item-title">@ticket.Title</div>
+                            <div class="ticket-kanban-item-description">
+                                @ticket.Description
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="d-flex gap-2">
+                                    <span class="ms-badge ms-badge-@(GetStatusBadgeClass(ticket.Status))">@ticket.Status</span>
+                                    <span class="ms-badge ms-badge-@(GetPriorityBadgeClass(ticket.Priority.ToString()))">@ticket.Priority</span>
+                                </div>
+                                <small class="text-muted">Due: @ticket.DueDate.ToString("MMM dd")</small>
+                            </div>
+                            @if (ticket.AssignedToUser != null)
+                            {
+                                <div class="mb-2">
+                                    <i class="fas fa-user me-1"></i>
+                                    <strong>Assigned:</strong> @ticket.AssignedToUser.UserName
+                                </div>
+                            }
+                            <div class="d-flex gap-2 mt-3">
+                                <a asp-controller="Ticket" asp-action="Details" asp-route-id="@ticket.Id" 
+                                   class="ms-btn ms-btn-secondary btn-sm flex-fill">
+                                    <i class="fas fa-eye me-1"></i> Details
+                                </a>
+                                <a asp-controller="Ticket" asp-action="Update" asp-route-id="@ticket.Id" 
+                                   class="ms-btn ms-btn-secondary btn-sm">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                @if (User.FindFirst(ClaimTypes.Role)?.Value == "SystemAdmin")
+                                {
+                                    <a asp-controller="Ticket" asp-action="Delete" asp-route-id="@ticket.Id" 
+                                       class="ms-btn ms-btn-danger btn-sm"
+                                       onclick="return confirm('Are you sure you want to delete this ticket?');">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Table View -->
+<div id="tableView" class="ticket-view" style="display: none;">
+    <div class="tickets-table-wrapper">
+        <table class="table tickets-table">
+            <thead>
                 <tr>
-                    <td>@ticket.Id</td>
-                    <td>@ticket.Title</td>
-                    <td>@ticket.Description</td>
-                    <td>
-                        <a asp-controller="Ticket" asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-info">Details</a>
-                        <a asp-controller="Ticket" asp-action="Update" asp-route-id="@ticket.Id" class="btn btn-primary">Update</a>
-                        @if (User.FindFirst(ClaimTypes.Role)?.Value == "SystemAdmin")
-                        {
-                            <a asp-controller="Ticket" asp-action="Delete" asp-route-id="@ticket.Id" class="btn btn-danger">Delete</a>
-                        }
-                    </td>
+                    <th>Id</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var ticket in Model)
+                {
+                    <tr>
+                        <td>@ticket.Id</td>
+                        <td>@ticket.Title</td>
+                        <td>@ticket.Description</td>
+                        <td>
+                            <span class="ms-badge ms-badge-@(GetStatusBadgeClass(ticket.Status))">@ticket.Status</span>
+                        </td>
+                        <td>
+                            <span class="ms-badge ms-badge-@(GetPriorityBadgeClass(ticket.Priority.ToString()))">@ticket.Priority</span>
+                        </td>
+                        <td>
+                            <a asp-controller="Ticket" asp-action="Details" asp-route-id="@ticket.Id" class="btn btn-info">Details</a>
+                            <a asp-controller="Ticket" asp-action="Update" asp-route-id="@ticket.Id" class="btn btn-primary">Update</a>
+                            @if (User.FindFirst(ClaimTypes.Role)?.Value == "SystemAdmin")
+                            {
+                                <a asp-controller="Ticket" asp-action="Delete" asp-route-id="@ticket.Id" class="btn btn-danger">Delete</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
+
+<script>
+function showTicketView(viewType) {
+    const kanbanView = document.getElementById('kanbanView');
+    const tableView = document.getElementById('tableView');
+    const kanbanBtn = document.getElementById('kanbanViewBtn');
+    const tableBtn = document.getElementById('tableViewBtn');
+    
+    if (viewType === 'kanban') {
+        kanbanView.style.display = 'block';
+        tableView.style.display = 'none';
+        kanbanBtn.classList.add('active');
+        tableBtn.classList.remove('active');
+    } else {
+        kanbanView.style.display = 'none';
+        tableView.style.display = 'block';
+        kanbanBtn.classList.remove('active');
+        tableBtn.classList.add('active');
+    }
+}
+</script>
+
+@functions {
+    private string GetStatusBadgeClass(string status)
+    {
+        return status?.ToLower() switch
+        {
+            "to do" => "secondary",
+            "in progress" => "warning",
+            "in review" => "info",
+            "done" => "success",
+            _ => "secondary"
+        };
+    }
+    
+    private string GetPriorityBadgeClass(string priority)
+    {
+        return priority?.ToLower() switch
+        {
+            "low" => "success",
+            "medium" => "warning",
+            "high" => "danger",
+            "critical" => "danger",
+            _ => "secondary"
+        };
+    }
+}

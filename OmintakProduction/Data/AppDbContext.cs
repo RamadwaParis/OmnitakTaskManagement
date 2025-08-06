@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Abstractions;
 using OmintakProduction.Models;
 using BCrypt.Net;
-// ...existing code...
 
 namespace OmintakProduction.Data
 {
@@ -26,7 +25,7 @@ namespace OmintakProduction.Data
         public DbSet<TaskComment> TaskComment { get; set; }
         public DbSet<TaskHistory> TaskHistory { get; set; }
         public DbSet<BugReport> BugReports { get; set; }
-        public DbSet<Team> Team { get; set; } // Add DbSet for Team
+        public DbSet<Team> Team { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,6 +36,20 @@ namespace OmintakProduction.Data
                 .WithMany(p => p.Tickets)
                 .HasForeignKey(t => t.ProjectId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Configure Ticket.AssignedToUser relationship
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.AssignedToUser)
+                .WithMany()
+                .HasForeignKey(t => t.AssignedToUserId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // Configure Ticket.DeletedByUser relationship for soft delete audit trail
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.DeletedByUser)
+                .WithMany()
+                .HasForeignKey(t => t.DeletedByUserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             // Cascade delete: Deleting a ticket deletes its tasks
             modelBuilder.Entity<Models.Task>()
@@ -57,15 +70,22 @@ namespace OmintakProduction.Data
                 .HasForeignKey(t => t.CreatedByUserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            // Configure Task.DeletedByUser relationship for soft delete audit trail
+            modelBuilder.Entity<Models.Task>()
+                .HasOne(t => t.DeletedByUser)
+                .WithMany()
+                .HasForeignKey(t => t.DeletedByUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             // TaskHistory configuration - use NoAction to prevent cascade cycles
             modelBuilder.Entity<TaskHistory>()
-                .HasOne<Models.Task>()
+                .HasOne(th => th.Task)
                 .WithMany()
                 .HasForeignKey(th => th.TaskId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<TaskHistory>()
-                .HasOne<User>()
+                .HasOne(th => th.User)
                 .WithMany()
                 .HasForeignKey(th => th.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
@@ -101,7 +121,7 @@ namespace OmintakProduction.Data
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<User>().HasData(
-                // System Administrator - Password: Admin@123 - Only user remaining
+                // System Administrator - Password: password - Only user remaining
                 new User {
                     UserId = 1,
                     RoleId = 1,

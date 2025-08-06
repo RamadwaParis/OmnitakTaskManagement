@@ -45,7 +45,7 @@ namespace OmintakProduction.Controllers
 
         private int GetCurrentUserId()
         {
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
             {
                 return userId;
@@ -59,46 +59,42 @@ namespace OmintakProduction.Controllers
             return roleClaim?.Value ?? string.Empty;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? fromLogin = null)
         {
-            var teams = await _context.Team.Include(t => t.TeamMembers).ToListAsync();
-            var activeProjects = await _context.Project.CountAsync(p => p.Status == "Active");
-            var dashboardData = new DashboardViewModel
+            // Set flag for admin approval modal if coming from login
+            if (!string.IsNullOrEmpty(fromLogin) && fromLogin == "true" && User.IsInRole("SystemAdmin"))
             {
-                ActiveTasks = await _context.Tasks.CountAsync(t => t.Status == TaskStatus.InProgress || t.Status == TaskStatus.Todo),
-                CompletedTasks = await _context.Tasks.CountAsync(t => t.Status == TaskStatus.Completed),
-                OverdueTasks = await _context.Tasks.CountAsync(t => t.DueDate < DateTime.Now && t.Status != TaskStatus.Completed),
-                TotalProjects = await _context.Project.CountAsync(),
-                ActiveProjects = activeProjects,
-                ActiveTickets = await _context.Ticket.CountAsync(),
-                ActiveTicketsList = await _context.Ticket.Where(t => t.Status == "Active").OrderByDescending(t => t.CreatedAt).ToListAsync(),
-                TeamCount = teams.Count,
-                Teams = teams,
-                RecentTasks = await _context.Tasks
-                    .Include(t => t.AssignedUsers)
-                    .Include(t => t.Project)
-                    .OrderByDescending(t => t.CreatedAt)
-                    .Take(5)
-                    .ToListAsync(),
-                RecentNotifications = await _context.Notification
-                    .Include(n => n.User)
-                    .OrderByDescending(n => n.CreatedAt)
-                    .Take(5)
-                    .ToListAsync(),
-                UnreadNotificationCount = await _context.Notification.CountAsync(n => !n.IsRead),
-                TasksByStatus = (await _context.Tasks
-                    .GroupBy(t => t.Status)
-                    .Select(g => new { Status = g.Key.ToString(), Count = g.Count() })
-                    .ToListAsync())
-                    .Cast<object>()
-                    .ToList(),
-                RecentProjects = await _context.Project
-                    .OrderByDescending(p => p.DueDate)
-                    .Take(5)
-                    .ToListAsync()
-            };
+                ViewBag.CheckApprovals = true;
+            }
+            
+            // Get current user info
+            int currentUserId = GetCurrentUserId();
+            string userRole = GetCurrentUserRole();
+            
+            // Debug logging
+            Console.WriteLine($"Dashboard - UserId: {currentUserId}, Role: {userRole}");
+            
+            // Validate user exists and is approved
+            var currentUser = await _context.User.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == currentUserId);
+            if (currentUser == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            
+            if (!currentUser.IsApproved || !currentUser.isActive)
+            {
+                return View("PendingApproval");
+            }
 
-            // Get user's name and surname from claims or session
+            // Set welcome message
+            SetWelcomeMessage();
+
+            // Route to role-specific dashboard
+            return await RouteToRoleSpecificDashboard(userRole, currentUserId);
+        }
+
+        private void SetWelcomeMessage()
+        {
             string welcomeName = string.Empty;
             if (User?.Identity != null && User.Identity.IsAuthenticated)
             {
@@ -126,20 +122,10 @@ namespace OmintakProduction.Controllers
             {
                 TempData["WelcomeMessage"] = "Welcome!";
             }
+        }
 
-            // Get user role from claims
-            string userRole = string.Empty;
-            int currentUserId = GetCurrentUserId();
-            if (User?.Identity != null && User.Identity.IsAuthenticated)
-            {
-                var roleClaim = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role);
-                if (roleClaim != null)
-                {
-                    userRole = roleClaim.Value;
-                }
-            }
-
-            // Route to the correct dashboard view based on role
+        private async Task<IActionResult> RouteToRoleSpecificDashboard(string userRole, int currentUserId)
+        {
             switch (userRole)
             {
                 case "SystemAdmin":
@@ -158,14 +144,10 @@ namespace OmintakProduction.Controllers
                     var stakeholderData = await GetStakeholderDashboardData(currentUserId);
                     return View("StakeholderDashboard", stakeholderData);
                 default:
-                    // For unapproved users or unknown roles, redirect to pending approval page
-                    var currentUser = await _context.User.FindAsync(currentUserId);
-                    if (currentUser != null && (!currentUser.IsApproved || !currentUser.isActive))
-                    {
-                        return View("PendingApproval");
-                    }
+                    // For unknown roles, fallback to limited stakeholder view
+                    Console.WriteLine($"Unknown role: {userRole}, falling back to Stakeholder view");
                     var fallbackData = await GetStakeholderDashboardData(currentUserId);
-                    return View("StakeholderDashboard", fallbackData); // fallback to view-only
+                    return View("StakeholderDashboard", fallbackData);
             }
         }
 
@@ -390,19 +372,6 @@ namespace OmintakProduction.Controllers
                 UnreadNotificationCount = await _context.Notification
                     .CountAsync(n => n.UserId == userId && !n.IsRead)
             };
-        }
-
-        public async Task<IActionResult> UnifiedDashboard()
-        {
-            var model = new UnifiedDashboardViewModel
-            {
-                Tasks = await _context.Tasks.Include(t => t.Project).Include(t => t.AssignedUsers).ToListAsync(),
-                Tickets = await _context.Ticket.ToListAsync(),
-                Users = await _context.User.ToListAsync(),
-                UrgentItems = new List<string>(),
-                Projects = await _context.Project.ToListAsync()
-            };
-            return View(model);
         }
 
         // HELPER METHODS

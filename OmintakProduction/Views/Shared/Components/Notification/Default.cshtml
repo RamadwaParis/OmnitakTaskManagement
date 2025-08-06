@@ -1,0 +1,22 @@
+@model int
+
+<a class="ms-sidebar-link" asp-controller="Notification" asp-action="Index">
+    <i class="fas fa-bell"></i>
+    <span>Notifications</span>
+    @if (Model > 0)
+    {
+        <span class="ms-badge ms-badge-danger" id="notification-badge">@Model</span>
+    }
+</a>
+
+<style>
+    #notification-badge {
+        background-color: var(--status-danger);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        min-width: 1.5rem;
+        text-align: center;
+    }
+</style>

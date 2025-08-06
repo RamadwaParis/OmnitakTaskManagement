@@ -1,0 +1,53 @@
+@model IEnumerable<OmintakProduction.Models.User>
+
+@if (Model?.Any() == true)
+{
+    <div class="pending-approvals-list">
+        <p class="text-muted mb-3">
+            <i class="fas fa-info-circle me-1"></i>
+            You have @Model.Count() user@(Model.Count() == 1 ? "" : "s") waiting for approval.
+        </p>
+        
+        <div class="approval-cards">
+            @foreach (var user in Model)
+            {
+                <div class="approval-card" data-user-id="@user.UserId">
+                    <div class="approval-card-header">
+                        <div class="user-info">
+                            <div class="user-avatar">@(user.FirstName?.Substring(0, 1).ToUpper() ?? "U")</div>
+                            <div class="user-details">
+                                <h6 class="user-name">@user.FirstName @user.LastName</h6>
+                                <p class="user-email">@user.Email</p>
+                                <small class="user-username text-muted">@user.UserName</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="approval-actions">
+                        <button type="button" class="ms-btn ms-btn-success btn-sm me-2" 
+                                onclick="approveUser(@user.UserId, '@user.FirstName @user.LastName')">
+                            <i class="fas fa-check me-1"></i>Approve
+                        </button>
+                        <button type="button" class="ms-btn ms-btn-danger btn-sm" 
+                                onclick="rejectUser(@user.UserId, '@user.FirstName @user.LastName')">
+                            <i class="fas fa-times me-1"></i>Reject
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+        
+        <div class="approval-footer mt-3">
+            <a href="@Url.Action("ApproveUsers", "Account")" class="ms-btn ms-btn-secondary">
+                <i class="fas fa-external-link-alt me-1"></i>View Full Approval Page
+            </a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="no-approvals text-center py-4">
+        <i class="fas fa-check-circle text-success display-4 mb-3"></i>
+        <h5>All Caught Up!</h5>
+        <p class="text-muted">No users are currently waiting for approval.</p>
+    </div>
+}
